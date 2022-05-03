@@ -102,3 +102,9 @@ dist
 
 # TernJS port file
 .tern-port
+
+# All dot-prefixed files and directories
+.*
+!.npmrc
+!.eslintrc.cjs
+!.prettierrc.cjs

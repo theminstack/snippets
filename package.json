@@ -1,0 +1,30 @@
+{
+  "license": "CC0-1.0",
+  "private": true,
+  "scripts": {
+    "test": "tsc --noEmit && eslint . --max-warnings=0 && jest --no-cache"
+  },
+  "devDependencies": {
+    "@types/eslint": "^8.4.2",
+    "@types/jest": "^27.5.0",
+    "@types/node": "^16.11.33",
+    "@types/react": "^18.0.8",
+    "@types/react-dom": "^18.0.3",
+    "eslint": "^8.14.0",
+    "eslint-config-rational": "^0.1.8",
+    "jest": "^28.0.3",
+    "jest-environment-jsdom": "^28.0.2",
+    "prettier": "^2.6.2",
+    "react": "^18.1.0",
+    "react-dom": "^18.1.0",
+    "ts-jest": "^28.0.0",
+    "typescript": "^4.6.4"
+  },
+  "engines": {
+    "node": ">=16",
+    "npm": ">=8",
+    "yarn": "please-use-npm",
+    "pnpm": "please-use-npm"
+  },
+  "engineStrict": true
+}

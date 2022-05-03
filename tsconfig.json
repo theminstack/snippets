@@ -1,0 +1,22 @@
+// Modern code (to be polyfilled) and explicit ambient types.
+{
+  "compilerOptions": {
+    "noEmit": true,
+    "moduleResolution": "node",
+    "module": "ESNext",
+    "target": "ESNext",
+    "types": ["jest", "node"],
+    "strict": true,
+    "skipLibCheck": true,
+    "esModuleInterop": true,
+    "isolatedModules": true,
+    "forceConsistentCasingInFileNames": true,
+    "downlevelIteration": true,
+    "useDefineForClassFields": true,
+    "importsNotUsedAsValues": "error",
+    "preserveValueImports": true,
+    "jsx": "react-jsx",
+  },
+  "include": ["*/**/*.ts", "*/**/*.tsx"],
+  "exclude": ["**/node_modules", "**/.*"]
+}
