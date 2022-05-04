@@ -15,4 +15,7 @@ module.exports = {
     },
   ],
   root: true,
+  rules: {
+    'max-lines': ['warn', { max: 200, skipBlankLines: true, skipComments: true }],
+  },
 };
