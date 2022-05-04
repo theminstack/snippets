@@ -108,3 +108,4 @@ dist
 !.npmrc
 !.eslintrc.cjs
 !.prettierrc.cjs
+!.github
