@@ -2,12 +2,12 @@
 
 Tiny source code snippets, _with tests_, completely free to **copy into your project**.
 
-[![Node.js CI](https://github.com/tinysource/tinysource/actions/workflows/node.js.yml/badge.svg)](https://github.com/tinysource/tinysource/actions/workflows/node.js.yml)
-[![Coverage Status](https://coveralls.io/repos/github/tinysource/tinysource/badge.svg?branch=main)](https://coveralls.io/github/tinysource/tinysource?branch=main)
+[![checks](https://badgen.net/github/checks/tinysource/tinysource)](https://github.com/tinysource/tinysource/actions/workflows/node.js.yml)
+[![coverage](https://badgen.net/coveralls/c/github/tinysource/tinysource)](https://coveralls.io/github/tinysource/tinysource)
 
 ## The problem
 
-The JavaScript/NodeJS ecosystem is full of libraries. This can be a good thing, because it lets you accomplish more by doing less. But it can also be a bad thing, because each dependency you use opens up a path for a [supply chain attack](https://blog.sonatype.com/npm-project-used-by-millions-hijacked-in-supply-chain-attack), they can lead to dependency hell, there can be licensing conflicts, and sometimes too many dependencies can slow down development and/or runtime performance.
+The JavaScript/NodeJS ecosystem is full of libraries. This can be a good thing, because it lets you accomplish more by doing less. But it can also be a bad thing, because each dependency you use opens up a path for a [supply chain attack](https://blog.sonatype.com/npm-project-used-by-millions-hijacked-in-supply-chain-attack), can lead to dependency hell, can cause licensing conflicts, and sometimes too many dependencies can slow down development and/or runtime performance.
 
 ## The opposite problem
 
