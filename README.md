@@ -42,9 +42,9 @@ There are some simple rules of thumb for code that is easy and helpful to copy i
 
 - No runtime dependencies
   - With the exception of a single _popular_ framework, if the snippet is specifically designed for that framework (eg. React)
-- Tests included (Jest in this repo)
 - One reasonably sized (~150 lines max) source file (not including a separate tests file)
-- Free and unencumbered in the public domain (ie. the [CC0-1.0](https://creativecommons.org/publicdomain/zero/1.0/legalcode.txt) license)
+- One test file (for Jest in this repo)
+- Free and unencumbered in the public domain (eg. under the [CC0-1.0](https://creativecommons.org/publicdomain/zero/1.0/legalcode.txt) license)
 
 ## Contributing to this repository
 
