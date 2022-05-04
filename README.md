@@ -5,6 +5,10 @@ Tiny source code snippets, _with tests_, completely free to **copy into your pro
 [![checks](https://badgen.net/github/checks/tinysource/tinysource)](https://github.com/tinysource/tinysource/actions/workflows/node.js.yml)
 [![coverage](https://badgen.net/coveralls/c/github/tinysource/tinysource)](https://coveralls.io/github/tinysource/tinysource)
 
+## Snippets
+
+- [Subject](subject/README.md) - Multicast observable value. A value that can have zero or more subscribers, which are notified via callback when a new value is set.
+
 ## The problem
 
 The JavaScript/NodeJS ecosystem is full of libraries. This can be a good thing, because it lets you accomplish more by doing less. But it can also be a bad thing, because each dependency you use opens up a path for a [supply chain attack](https://blog.sonatype.com/npm-project-used-by-millions-hijacked-in-supply-chain-attack), can lead to dependency hell, can cause licensing conflicts, and sometimes too many dependencies can slow down development and/or runtime performance.
@@ -61,10 +65,11 @@ If you agree, then...
     - Add docblock comments to all exports
     - Please use [kebab-case](https://en.wiktionary.org/wiki/kebab_case) for directory and file names
   - A test file matching the source file (eg. `foo/foo.test.ts`)
-  - A `README.md` file
-    - Describe what it's for
+  - A readme file (eg. `foo/README.md`)
+    - Describe what the snippet for
     - Show example use
 - Run `npm test` at the repo root to ensure tests run, pass, and have reasonable (80%) coverage
+- Add an entry to the end of the [Snippets](#snippets) list
 - Open a pull request
 
 Pull request will be merged after verifying that the code meets the requirements called out in this document.
