@@ -2,6 +2,9 @@
 
 Tiny source code snippets, _with tests_, completely free to **copy into your project**.
 
+[![Node.js CI](https://github.com/tinysource/tinysource/actions/workflows/node.js.yml/badge.svg)](https://github.com/tinysource/tinysource/actions/workflows/node.js.yml)
+[![Coverage Status](https://coveralls.io/repos/github/tinysource/tinysource/badge.svg?branch=main)](https://coveralls.io/github/tinysource/tinysource?branch=main)
+
 ## The problem
 
 The JavaScript/NodeJS ecosystem is full of libraries. This can be a good thing, because it lets you accomplish more by doing less. But it can also be a bad thing, because each dependency you use opens up a path for a [supply chain attack](https://blog.sonatype.com/npm-project-used-by-millions-hijacked-in-supply-chain-attack), they can lead to dependency hell, there can be licensing conflicts, and sometimes too many dependencies can slow down development and/or runtime performance.
@@ -60,7 +63,7 @@ If you agree, then...
   - A `README.md` file
     - Describe what it's for
     - Show example use
-- Run `npm test` at the repo root to ensure tests run, pass, and have reasonable (~80%) coverage
+- Run `npm test` at the repo root to ensure tests run, pass, and have reasonable (80%) coverage
 - Open a pull request
 
 Pull request will be merged after verifying that the code meets the requirements called out in this document.
