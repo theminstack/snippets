@@ -31,8 +31,8 @@ Pros:
 Cons:
 
 - Possible code duplication in multiple projects
-    - Larger source/bundle sizes
-    - Diverging implementations
+  - Larger source/bundle sizes
+  - Diverging implementations
 - No versioned updates
 
 Duplication can be mitigated by using a monorepo to _locally_ share code, or by relying on compression to reduce the duplication overhead.
@@ -58,6 +58,7 @@ If you agree, then...
 - Fork the repository
 - Add a new directory containing three files:
   - A source file (eg. `foo/foo.ts`)
+    - Add docblock comments to all exports
     - Please use [kebab-case](https://en.wiktionary.org/wiki/kebab_case) for directory and file names
   - A test file matching the source file (eg. `foo/foo.test.ts`)
   - A `README.md` file
