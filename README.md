@@ -7,7 +7,7 @@ Tiny source code snippets, _with tests_, completely free to **copy into your pro
 
 ## Snippets
 
-- [Subject](subject/README.md) - Multicast observable value. A value that can have zero or more subscribers, which are notified via callback when a new value is set.
+- [Subject](subject/README.md) - React to a value being set.
 
 ## The problem
 
