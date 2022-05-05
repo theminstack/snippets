@@ -7,8 +7,9 @@ Tiny source code snippets, _with tests_, completely free to **copy into your pro
 
 ## Snippets
 
-- [Subject](subject) - React to a value being set.
-- [Events](events) - Publish and subscribe to named events.
+- [subject](subject) - React to a value being set.
+- [events](events) - Publish and subscribe to named events.
+- [react-use-boolean](react-use-boolean) - React boolean state hook.
 
 ## The problem
 
