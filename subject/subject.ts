@@ -10,6 +10,20 @@ type Subscriber<TValue> = {
 type SubscriberCallback<TValue> = (value: TValue) => void;
 
 /**
+ * Options passed to the {@link createSubject} function.
+ */
+type SubjectOptions<TValue> = {
+  /**
+   * Determine whether the current and next values are different. By default,
+   * values are considered changed if they do not referentially match (`!==`).
+   *
+   * If this function returns false, the value will not be set, and no
+   * subscribers will be notified. This effectively ignores the `next()` call.
+   */
+  readonly changed?: (value: TValue, nextValue: TValue) => boolean;
+};
+
+/**
  * Options passed to the {@link Subject.subscribe} method.
  */
 type SubscribeOptions = {
@@ -26,14 +40,14 @@ type SubscribeOptions = {
 type Subscription = {
   /**
    * Unsubscribe from the subject. The subscribed callback will no longer be
-   * invoked when the subject value is set.
+   * called when the subject value is changed.
    */
   readonly unsubscribe: () => void;
 };
 
 /**
  * Multicast observable value. A value that can have zero or more subscribers,
- * which are notified via callback when a new value is set.
+ * which are notified via callback when the value is changed.
  */
 type Subject<TValue> = {
   /**
@@ -43,11 +57,11 @@ type Subject<TValue> = {
    */
   readonly next: (value: TValue) => void;
   /**
-   * Add a callback which will be invoked when the next value is set. If the
-   * `immediate` option is set, the callback will also be invoked immediately.
+   * Add a callback which will be called when the value is changed. If the
+   * `immediate` option is set, the callback will also be called immediately.
    *
-   * @param next Callback to be invoked when the next value is set.
-   * @param options Callback invocation options.
+   * @param next Call when the value is changed.
+   * @param options Subscriber options.
    * @param options.immediate Invoke the callback immediately.
    */
   readonly subscribe: (next: SubscriberCallback<TValue>, options?: SubscribeOptions) => Subscription;
@@ -57,23 +71,36 @@ type Subject<TValue> = {
   readonly value: TValue;
 };
 
+const changedDefault = (value: unknown, nextValue: unknown) => {
+  return value !== nextValue;
+};
+
 /**
  * Create a new {@link Subject} instance.
  *
  * A subject is a multicast observable value. In other words: a value that can
- * have zero or more subscribers, which are notified via callback when a new
- * value is set.
+ * have zero or more subscribers, which are notified via callback when the
+ * value is changed.
  *
  * @param initialValue Initial value of the subject.
+ * @param options Subject options.
+ * @param options.changed Determine if current and next values are different.
  */
-const createSubject = <TValue>(initialValue: TValue): Subject<TValue> => {
+const createSubject = <TValue>(
+  initialValue: TValue,
+  { changed = changedDefault }: SubjectOptions<TValue> = {},
+): Subject<TValue> => {
   let value = initialValue;
 
   const subscribers = new Set<Subscriber<TValue>>();
 
   return {
-    next: (newValue) => {
-      value = newValue;
+    next: (nextValue) => {
+      if (!changed(value, nextValue)) {
+        return;
+      }
+
+      value = nextValue;
       [...subscribers].forEach((subscriber) => {
         subscriber.next(value);
       });
@@ -98,4 +125,11 @@ const createSubject = <TValue>(initialValue: TValue): Subject<TValue> => {
   };
 };
 
-export { type Subject, type SubscribeOptions, type SubscriberCallback, type Subscription, createSubject };
+export {
+  type Subject,
+  type SubjectOptions,
+  type SubscribeOptions,
+  type SubscriberCallback,
+  type Subscription,
+  createSubject,
+};
