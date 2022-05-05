@@ -8,6 +8,7 @@ Tiny source code snippets, _with tests_, completely free to **copy into your pro
 ## Snippets
 
 - [Subject](subject) - React to a value being set.
+- [Events](events) - Publish and subscribe to named events.
 
 ## The problem
 
