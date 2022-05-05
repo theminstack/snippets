@@ -7,7 +7,7 @@ Tiny source code snippets, _with tests_, completely free to **copy into your pro
 
 ## Snippets
 
-- [Subject](subject/README.md) - React to a value being set.
+- [Subject](subject) - React to a value being set.
 
 ## The problem
 
