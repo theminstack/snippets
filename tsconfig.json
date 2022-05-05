@@ -13,7 +13,6 @@
     "forceConsistentCasingInFileNames": true,
     "downlevelIteration": true,
     "useDefineForClassFields": true,
-    "importsNotUsedAsValues": "error",
     "preserveValueImports": true,
     "jsx": "react-jsx",
   },

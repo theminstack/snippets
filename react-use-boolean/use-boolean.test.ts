@@ -2,7 +2,7 @@ import { act, renderHook } from '@testing-library/react-hooks';
 
 import { useBoolean } from './use-boolean';
 
-describe('use-boolean', () => {
+describe('react-use-boolean', () => {
   test('default initial value', () => {
     const { result } = renderHook(useBoolean);
     expect(result.current.value).toBe(false);

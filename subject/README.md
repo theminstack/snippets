@@ -5,10 +5,7 @@ React to a value being set.
 A Subject is a multicast observable. The "observable" part means that it can be subscribed to by registering a callback. The "multicast" part means that there can be more than one subscriber.
 
 ```ts
-const subject = createSubject('first-value', {
-  // Optional. This is the default.
-  changed: (value, nextValue) => value !== nextValue
-});
+const subject = createSubject('first-value');
 
 console.log(subject.value);
 // stdout: first-value

@@ -7,31 +7,26 @@ Tiny source code snippets, _with tests_, completely free to **copy into your pro
 
 ## Snippets
 
-- [subject](subject) - React to a value being set.
-- [events](events) - Publish and subscribe to named events.
-- [react-use-boolean](react-use-boolean) - React boolean state hook.
+- [events](events) - Named events with publication and subscription.
+- [react-use-boolean](react-use-boolean) - Boolean React states with helpful setters.
+- [react-use-subject](react-use-subject) - Subjects as sharable, atomic, React states.
+- [subject](subject) - Subscribable values.
 
-## The problem
+## The case for copying
 
-The JavaScript/NodeJS ecosystem is full of libraries. This can be a good thing, because it lets you accomplish more by doing less. But it can also be a bad thing, because each dependency you use opens up a path for a [supply chain attack](https://blog.sonatype.com/npm-project-used-by-millions-hijacked-in-supply-chain-attack), can lead to dependency hell, can cause licensing conflicts, and sometimes too many dependencies can slow down development and/or runtime performance.
+What if, instead of taking a dependency on a library (eg. installed with NPM), or having to write utility code yourself, you simply _copied_ some code (and its tests) into your project?
 
-## The opposite problem
-
-Alright, then just don't use as many dependencies. But, there are some problems with this approach too. You have to write more. Everything you write yourself, you have to test. There's not much community around code that is only used by you and maybe your team. The documentation might not be as complete as for a widely adopted open source project.
-
-## A possible solution
-
-What if, instead of taking a dependency on a library (eg. installed with NPM), you simply _copied_ some code (and its tests) into your project?
-
-This isn't a good solution for large dependencies (eg. React), but its definitely feasible for smaller dependencies like: individual RxJS utilities, simple state management, collections, algorithms, validation, string parsing, React hooks, types, etc.
+This isn't a good solution for large dependencies (eg. React), but its definitely feasible for smaller dependencies like: individual RxJS utilities, simple state management, collections, algorithms, validation, string parsing, React hooks, types, etc. Think [stack overflow](https://stackoverflow.com/), but _curated and tested_.
 
 Pros:
 
 - Still leveraging community written code
 - Tests are already written
-- No risk of supply chain attacks
+- No risk of [supply chain attacks](https://blog.sonatype.com/npm-project-used-by-millions-hijacked-in-supply-chain-attack)
 - No risk of version hell
+- No licensing conflicts
 - Build-time downleveling and transpiling
+- Customizable
 - Easier to debug
 
 Cons:
@@ -51,8 +46,8 @@ There are some simple rules of thumb for code that is easy and helpful to copy i
 
 - No runtime dependencies
   - With the exception of a single _popular_ framework, if the snippet is specifically designed for that framework (eg. React)
-- One reasonably sized (~150 lines max) source file (not including a separate tests file)
-- One test file (for Jest in this repo)
+- One reasonably sized source file (~150 lines)
+- One test file (Jest compatible in this repo)
 - Free and unencumbered in the public domain (eg. under the [CC0-1.0](https://creativecommons.org/publicdomain/zero/1.0/legalcode.txt) license)
 
 ## Contributing to this repository
@@ -74,4 +69,4 @@ If you agree, then...
 - Add an entry to the end of the [Snippets](#snippets) list
 - Open a pull request
 
-Pull request will be merged after verifying that the code meets the requirements called out in this document.
+Pull requests will be merged after verifying that the code meets the requirements called out in this document.
