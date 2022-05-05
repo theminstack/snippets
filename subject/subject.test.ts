@@ -4,33 +4,47 @@ beforeEach(() => {
   jest.spyOn(console, 'log').mockImplementation();
 });
 
-test('subject', () => {
-  const subject = createSubject('first-value');
-  expect(subject.value).toBe('first-value');
+describe('subject', () => {
+  test('subscribe and unsubscribe', () => {
+    const subject = createSubject('first-value');
+    expect(subject.value).toBe('first-value');
 
-  const subscription = subject.subscribe((value) => {
-    console.log(`A ${value}`);
+    const listenerA = jest.fn();
+    const subscription = subject.subscribe(listenerA);
+    expect(listenerA).toHaveBeenCalledTimes(0);
+
+    subject.next('second-value');
+    expect(listenerA).toHaveBeenLastCalledWith('second-value');
+
+    const listenerB = jest.fn();
+    subject.subscribe(listenerB, { immediate: true });
+    expect(listenerB).toHaveBeenCalledWith('second-value');
+
+    subject.next('third-value');
+    expect(listenerA).toHaveBeenCalledWith('third-value');
+    expect(listenerB).toHaveBeenCalledWith('third-value');
+
+    subscription.unsubscribe();
+    expect(listenerA).toHaveBeenCalledTimes(2);
+    expect(listenerB).toHaveBeenCalledTimes(2);
+
+    subject.next('fourth-value');
+    expect(listenerA).toHaveBeenCalledTimes(2);
+    expect(listenerB).toHaveBeenCalledTimes(3);
+    expect(jest.mocked(listenerB).mock.calls.at(-1)).toEqual(['fourth-value']);
   });
-  expect(console.log).toHaveBeenCalledTimes(0);
 
-  subject.next('second-value');
-  expect(jest.mocked(console.log).mock.calls.at(-1)).toEqual(['A second-value']);
+  test('change detection', () => {
+    const listener = jest.fn();
 
-  subject.subscribe(
-    (value) => {
-      console.log(`B ${value}`);
-    },
-    { immediate: true },
-  );
-  expect(jest.mocked(console.log).mock.calls.at(-1)).toEqual(['B second-value']);
+    const subjectA = createSubject(1);
+    subjectA.subscribe(listener);
+    subjectA.next(1);
+    expect(listener).toBeCalledTimes(0);
 
-  subject.next('third-value');
-  expect(jest.mocked(console.log).mock.calls.at(-2)).toEqual(['A third-value']);
-  expect(jest.mocked(console.log).mock.calls.at(-1)).toEqual(['B third-value']);
-
-  subscription.unsubscribe();
-  expect(console.log).toHaveBeenCalledTimes(4);
-
-  subject.next('fourth-value');
-  expect(jest.mocked(console.log).mock.calls.at(-1)).toEqual(['B fourth-value']);
+    const subjectB = createSubject(1, { changed: () => false });
+    subjectB.subscribe(listener);
+    subjectB.next(2);
+    expect(listener).toBeCalledTimes(0);
+  });
 });
