@@ -1,6 +1,6 @@
 # TinySource
 
-Tiny source code snippets, _with tests_, completely free to **copy into your project**.
+Completely free TS/JS one-file source code snippets _with tests_, which can be copied to **avoid extra dependencies** (contributions welcome).
 
 [![checks](https://badgen.net/github/checks/tinysource/tinysource)](https://github.com/tinysource/tinysource/actions/workflows/node.js.yml)
 [![coverage](https://badgen.net/coveralls/c/github/tinysource/tinysource)](https://coveralls.io/github/tinysource/tinysource)
@@ -16,9 +16,9 @@ Tiny source code snippets, _with tests_, completely free to **copy into your pro
 
 ## The case for copying
 
-What if, instead of taking a dependency on a library (eg. installed with NPM), or having to write utility code yourself, you simply _copied_ some code (and its tests) into your project?
+What if, instead of adding _another_ dependency to your project, or having to write utility code yourself, you just copied some already tested code? You've probably already even done this privately.
 
-This isn't a good solution for large dependencies (eg. React), but its definitely feasible for smaller dependencies like: individual RxJS utilities, simple state management, collections, algorithms, validation, string parsing, React hooks, types, etc. Think [stack overflow](https://stackoverflow.com/), but _curated and tested_.
+Copying isn't a good solution for large dependencies (eg. React), but its definitely feasible for smaller dependencies like: individual RxJS utilities, simple state management, collections, algorithms, validation, string parsing, React hooks, types, etc. Think [stack overflow](https://stackoverflow.com/), but _curated and tested_.
 
 Pros:
 
