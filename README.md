@@ -7,10 +7,12 @@ Tiny source code snippets, _with tests_, completely free to **copy into your pro
 
 ## Snippets
 
+- [hash-djb2a](hash-djb2a) - Fast and good string hash function.
 - [events](events) - Named events with publication and subscription.
 - [react-use-boolean](react-use-boolean) - Boolean React states with helpful setters.
 - [react-use-subject](react-use-subject) - Subjects as sharable, atomic, React states.
 - [subject](subject) - Subscribable values.
+- [subject-selector](subject-selector) - Subscribable values computed from other subjects.
 
 ## The case for copying
 
