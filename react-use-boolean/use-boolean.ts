@@ -43,7 +43,9 @@ const useBoolean = (initialValue = false): BooleanState => {
     setValue(false);
   }, []);
   const toggle = useCallback(() => {
-    setValue((current) => !current);
+    setValue((current) => {
+      return !current;
+    });
   }, []);
 
   return { setFalse, setTrue, setValue, toggle, value };

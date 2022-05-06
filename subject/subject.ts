@@ -3,13 +3,6 @@ type Subscriber<TValue> = {
 };
 
 /**
- * Callback passed to the {@link Subject.subscribe} method.
- *
- * @param value Current subject value.
- */
-type SubscriberCallback<TValue> = (value: TValue) => void;
-
-/**
  * Options passed to the {@link Subject.subscribe} method.
  */
 type SubscribeOptions = {
@@ -32,8 +25,10 @@ type Subscription = {
 };
 
 /**
- * Multicast observable value. A value that can have zero or more subscribers,
- * which are notified via callback when a new value is set.
+ * Multicast observable value.
+ *
+ * A value that can have zero or more subscribers, which are notified via
+ * callback when a new value is set.
  */
 type Subject<TValue> = {
   /**
@@ -50,7 +45,7 @@ type Subject<TValue> = {
    * @param options Callback invocation options.
    * @param options.immediate Invoke the callback immediately.
    */
-  readonly subscribe: (next: SubscriberCallback<TValue>, options?: SubscribeOptions) => Subscription;
+  readonly subscribe: (next: (value: TValue) => void, options?: SubscribeOptions) => Subscription;
   /**
    * Current subject value.
    */
@@ -74,8 +69,8 @@ const createSubject = <TValue>(initialValue: TValue): Subject<TValue> => {
   return {
     next: (newValue) => {
       value = newValue;
-      [...subscribers].forEach((subscriber) => {
-        subscriber.next(value);
+      [...subscribers].forEach(({ next }) => {
+        next(value);
       });
     },
     subscribe: (next, { immediate = false } = {}) => {
@@ -87,7 +82,7 @@ const createSubject = <TValue>(initialValue: TValue): Subject<TValue> => {
       subscribers.add(subscriber);
 
       if (immediate) {
-        subscriber.next(value);
+        next(value);
       }
 
       return { unsubscribe };
@@ -98,4 +93,4 @@ const createSubject = <TValue>(initialValue: TValue): Subject<TValue> => {
   };
 };
 
-export { type Subject, type SubscribeOptions, type SubscriberCallback, type Subscription, createSubject };
+export { type Subject, type SubscribeOptions, type Subscription, createSubject };

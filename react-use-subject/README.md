@@ -17,12 +17,14 @@ const count = createSubject(0);
 
 const useCounter = () => {
   return useSubject(count);
-}
+};
 
 const Counter = () => {
   const [value, setValue] = useCounter();
   const increment = useCallback(() => {
-    setValue((current) => current + 1);
+    setValue((current) => {
+      return current + 1;
+    });
   }, [setValue]);
 
   return <div onClick={increment}>{value}</div>;
@@ -52,6 +54,6 @@ const count = createSubject(0);
 render(
   <CounterContext.Provider value={count}>
     <Counter />
-  </CounterContext.Provider>
+  </CounterContext.Provider>,
 );
 ```

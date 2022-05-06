@@ -42,7 +42,9 @@ const useSubject = <TValue>(subject: SubjectLike<TValue>): SubjectHookResult<TVa
      * Ignore the first callback if the subject calls the listener immediately
      * (eg. RxJS BehaviorSubject).
      */
-    let set: (newValue: TValue) => void = () => undefined;
+    let set: (newValue: TValue) => void = () => {
+      return;
+    };
 
     const subscription = subject.subscribe((newValue) => {
       set(newValue);
@@ -88,7 +90,13 @@ const createSubjectContext: createSubjectContext = <TValue = undefined>(
   defaultValue?: TValue,
 ): [hook: () => SubjectHookResult<TValue>, context: Context<SubjectLike<TValue>>] => {
   const context = createContext<SubjectLike<TValue>>({
-    subscribe: () => ({ unsubscribe: () => undefined }),
+    subscribe: () => {
+      return {
+        unsubscribe: () => {
+          return;
+        },
+      };
+    },
     value: defaultValue as unknown as TValue,
   });
   const useSubjectContext = () => {

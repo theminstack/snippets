@@ -1,36 +1,30 @@
 import { createSubject } from './subject';
 
-beforeEach(() => {
-  jest.spyOn(console, 'log').mockImplementation();
-});
-
 test('subject', () => {
   const subject = createSubject('first-value');
   expect(subject.value).toBe('first-value');
 
-  const subscription = subject.subscribe((value) => {
-    console.log(`A ${value}`);
-  });
-  expect(console.log).toHaveBeenCalledTimes(0);
+  const nextA = jest.fn();
+  const subscription = subject.subscribe(nextA);
+  expect(nextA).toHaveBeenCalledTimes(0);
 
   subject.next('second-value');
-  expect(jest.mocked(console.log).mock.calls.at(-1)).toEqual(['A second-value']);
+  expect(nextA).toHaveBeenLastCalledWith('second-value');
 
-  subject.subscribe(
-    (value) => {
-      console.log(`B ${value}`);
-    },
-    { immediate: true },
-  );
-  expect(jest.mocked(console.log).mock.calls.at(-1)).toEqual(['B second-value']);
+  const nextB = jest.fn();
+  subject.subscribe(nextB, { immediate: true });
+  expect(nextB).toHaveBeenLastCalledWith('second-value');
 
   subject.next('third-value');
-  expect(jest.mocked(console.log).mock.calls.at(-2)).toEqual(['A third-value']);
-  expect(jest.mocked(console.log).mock.calls.at(-1)).toEqual(['B third-value']);
+  expect(nextA).toHaveBeenCalledTimes(2);
+  expect(nextA).toHaveBeenLastCalledWith('third-value');
+  expect(nextB).toHaveBeenCalledTimes(2);
+  expect(nextB).toHaveBeenLastCalledWith('third-value');
 
   subscription.unsubscribe();
-  expect(console.log).toHaveBeenCalledTimes(4);
+  expect(nextA).toHaveBeenCalledTimes(2);
+  expect(nextB).toHaveBeenCalledTimes(2);
 
   subject.next('fourth-value');
-  expect(jest.mocked(console.log).mock.calls.at(-1)).toEqual(['B fourth-value']);
+  expect(nextB).toHaveBeenLastCalledWith('fourth-value');
 });
