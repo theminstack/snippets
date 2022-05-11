@@ -7,6 +7,7 @@ Completely free TS/JS one-file source code snippets _with tests_, which can be c
 
 ## Snippets
 
+- [fsm](fsm) - Finite state machine.
 - [hash-djb2a](hash-djb2a) - Fast and good string hash function.
 - [events](events) - Named events with publication and subscription.
 - [react-use-boolean](react-use-boolean) - Boolean React states with helpful setters.
