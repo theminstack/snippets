@@ -2,9 +2,9 @@
 
 Store the current state of a stepwise operation.
 
-An [finite state machine](https://en.wikipedia.org/wiki/Finite-state_machine) is datatype that represents a [directed graph](https://en.wikipedia.org/wiki/Directed_graph), where the graph nodes are a finite set of states, and the graph edges are transitions between those states.
+A [finite state machine](https://en.wikipedia.org/wiki/Finite-state_machine) is a datatype that represents a [directed graph](https://en.wikipedia.org/wiki/Directed_graph), where the graph nodes are a finite set of states, and the graph edges are transitions between those states.
 
-Define a state machine with state types and the transitions between states.
+Here is how you define a state machine with state types and the transitions between states.
 
 ```ts
 const water = createFsm<{
