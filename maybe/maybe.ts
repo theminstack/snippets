@@ -1,10 +1,10 @@
 const MAYBE = Symbol.for('@@maybe');
 
-type None = null | undefined | void;
+type Nullish = null | undefined | void;
 
-type Throwable = {};
+type NonNullish = {};
 
-type Required<TValue> = Exclude<TValue, None>;
+type Required<TValue> = Exclude<TValue, Nullish>;
 
 type MaybeBase<TValue> = {
   readonly [MAYBE]: Maybe<TValue>;
@@ -12,12 +12,12 @@ type MaybeBase<TValue> = {
    * Get the next monad if the current monad has an `error`. Otherwise, return
    * the current monad.
    */
-  readonly catch: <TNext>(next: (error: Throwable) => None | TNext) => Maybe<TNext | TValue>;
+  readonly catch: <TNext>(next: (error: NonNullish) => Nullish | TNext) => Maybe<TNext | TValue>;
   /**
    * Get the next monad if the current monad is `empty` and does not have an
    * `error`. Otherwise, return the current monad.
    */
-  readonly else: <TNext>(next: TNext | (() => None | TNext) | null | undefined) => Maybe<TNext | TValue>;
+  readonly else: <TNext>(next: TNext | (() => Nullish | TNext) | null | undefined) => Maybe<TNext | TValue>;
   /**
    * True if the monad does not have a non-nullish value. Otherwise, false.
    *
@@ -27,7 +27,7 @@ type MaybeBase<TValue> = {
   /**
    * Get the current error if any.
    */
-  readonly error: Throwable | null;
+  readonly error: NonNullish | null;
   /**
    * Get an `empty` monad if the current monad is `ok` and the `predicate`
    * returns false. Otherwise, return the current monad.
@@ -39,7 +39,7 @@ type MaybeBase<TValue> = {
    * Get the next monad if the current monad is `ok`. Otherwise, return the
    * current `empty` monad.
    */
-  readonly map: <TNext>(next: (value: Required<TValue>) => Maybe<TNext> | None | TNext) => Maybe<TNext>;
+  readonly map: <TNext>(next: (value: Required<TValue>) => Maybe<TNext> | Nullish | TNext) => Maybe<TNext>;
   /**
    * True if the monad has a non-nullish value. Otherwise, false.
    *
@@ -102,7 +102,7 @@ const createOk = <TValue>(value: Required<TValue>): MaybeOk<TValue> => {
   return instance;
 };
 
-const createEmpty = (error: Throwable | null): MaybeNotOk<never> => {
+const createEmpty = (error: NonNullish | null): MaybeNotOk<never> => {
   const instance: MaybeNotOk<never> = {
     get [MAYBE]() {
       return instance;
@@ -129,10 +129,10 @@ const createEmpty = (error: Throwable | null): MaybeNotOk<never> => {
  * @param init A value, or value factory.
  */
 const maybe = <TValue>(
-  init: Maybe<TValue> | TValue | (() => Maybe<TValue> | None | TValue) | null | undefined,
+  init: Maybe<TValue> | TValue | (() => Maybe<TValue> | Nullish | TValue) | null | undefined,
 ): Maybe<TValue> => {
   try {
-    const value = typeof init === 'function' ? (init as () => Maybe<TValue> | None | TValue)() : init;
+    const value = typeof init === 'function' ? (init as () => Maybe<TValue> | Nullish | TValue)() : init;
 
     if (isMaybe(value)) {
       return value;
@@ -151,7 +151,7 @@ const maybe = <TValue>(
  * or nullish (ie. null or undefined), a default error will be created.
  */
 maybe.error = <TValue = never>(error?: unknown): Maybe<TValue> => {
-  return createEmpty((error ?? new Error('unknown')) as Throwable);
+  return createEmpty((error ?? new Error('unknown')) as NonNullish);
 };
 
 /**
