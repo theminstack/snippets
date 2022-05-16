@@ -2,7 +2,7 @@
 
 Safely represent and manipulate a value which may be unavailable, possibly due to an error.
 
-A [Maybe monad](https://en.wikipedia.org/wiki/Monad_(functional_programming)#An_example:_Maybe) is an immutable wrapper which allows you to defer handling null/undefined values and errors, until you want to capture the result of the operation.
+A [Maybe monad](https://en.wikipedia.org/wiki/Monad_(functional_programming)#An_example:_Maybe) is an immutable wrapper which allows you to defer handling null/undefined values and errors, until you want to capture the result of the operation. It's a alternative way of handling null/undefined values and errors.
 
 Let's say you want to access a user object which is stored as a JSON string in session or local storage. The vanilla way to do so might look like the following.
 

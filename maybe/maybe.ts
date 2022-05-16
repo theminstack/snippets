@@ -30,7 +30,7 @@ type MaybeBase<TValue> = {
   readonly error: Throwable | null;
   /**
    * Get an `empty` monad if the current monad is `ok` and the `predicate`
-   * returns false. Otherwise, return the current `ok` monad.
+   * returns false. Otherwise, return the current monad.
    */
   readonly filter: <TNext extends TValue = TValue>(
     predicate: ((value: Required<TValue>) => boolean) | ((value: TValue) => value is TNext),
