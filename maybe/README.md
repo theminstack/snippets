@@ -8,7 +8,8 @@ Let's say you want to access a user object which is stored as a JSON string in s
 
 ```ts
 function getUsername() {
-  const json = sessionStorage.getItem('user') ?? localStorage.getItem('user');
+  const json = sessionStorage.getItem('user')
+    ?? localStorage.getItem('user');
   
   if (json == null) {
     return null;
@@ -24,7 +25,9 @@ function getUsername() {
   return name
 }
 
-// The above function might return a username, null, or throw an error. So you /// have to access it as follows.
+// The above function might return a username,
+// null, or throw an error. So you have to access
+// it as follows.
 
 let username: string | null;
 
@@ -48,7 +51,7 @@ function getUsername(): Maybe<string> {
   return maybe(sessionStorage.getItem('user'))
     .else(() => localStorage.getItem('user'))
     .map((json) => JSON.parse(json)?.name)
-    .filter((username) => typeof username === 'string');
+    .filter((name) => typeof name === 'string');
 }
 
 const username = getUsername();
