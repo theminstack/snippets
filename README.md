@@ -11,6 +11,7 @@ Completely free TS/JS one-file source code snippets _with tests_, which can be c
 - [fsm](fsm) - Finite state machine.
 - [hash-djb2a](hash-djb2a) - Fast and good string hash function.
 - [maybe](maybe) - Functionally represent and manipulate possibly missing/error values.
+- [react-decorator](react-decorator) - Decorate non-empty DOM content with a wrapper.
 - [react-use-boolean](react-use-boolean) - Boolean React states with helpful setters.
 - [react-use-subject](react-use-subject) - Subjects as sharable, atomic, React states.
 - [subject](subject) - Subscribable values.
