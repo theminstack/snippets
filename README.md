@@ -7,6 +7,8 @@ Completely free TS/JS one-file source code snippets _with tests_, which can be c
 
 ## Snippets
 
+- [debounce](debounce) - Ignore repeating calls that happen too fast.
+- [defer](defer) - Delay execution until idle.
 - [events](events) - Named events with publication and subscription.
 - [fsm](fsm) - Finite state machine.
 - [hash-djb2a](hash-djb2a) - Fast and good string hash function.
@@ -16,6 +18,7 @@ Completely free TS/JS one-file source code snippets _with tests_, which can be c
 - [react-use-subject](react-use-subject) - Subjects as sharable, atomic, React states.
 - [subject](subject) - Subscribable values.
 - [subject-selector](subject-selector) - Subscribable values computed from other subjects.
+- [throttle](throttle) - Execute as fast as possible, but no faster.
 
 ## The case for copying
 
