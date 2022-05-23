@@ -1,0 +1,3 @@
+# Types
+
+Common utility types.
