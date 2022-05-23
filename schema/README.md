@@ -38,6 +38,23 @@ You can also infer the TypeScript type from the schema.
 type Articles = SchemaType<typeof $articles>;
 ```
 
+Which would give you a type equivalent to...
+
+```ts
+type Articles = [
+  {
+    id: number;
+    url: string;
+    launches: [
+      {
+        id: number;
+        provider: string;
+      }
+    ];
+  }
+]
+```
+
 If you want to throw an error when validation fails, you can use the `parse` method instead of the `test` method.
 
 ```ts
@@ -68,3 +85,44 @@ The following basic schemas are "built-in" and can be used to compose more compl
 - `$.intersection(...schemas)` - Anything matching all of the `schemas`.
 - `$.custom(predicate)` - Anything matching a custom type `predicate`.
 
+## Optional
+
+Any schema can be made "optional", which adds `undefined` to the allowed types.
+
+```ts
+const $base = $.string; // Schema<string>
+const $optional = $base.optional(); // Schema<string | undefined>
+
+$base.test('string'); // true
+$base.test(1); // false
+$base.test(undefined); // false
+
+$optional.test('string'); // true
+$optional.test(1); // false
+$optional.test(undefined); // true
+```
+
+This is equivalent to the following.
+
+```ts
+const $optionalString = $.union($.string, $.undefined);
+```
+
+## Partial
+
+Object (`$.object`) and record (`$.record`) schemas can be made "partial", which makes all properties optional.
+
+```ts
+const $base = $.object({ foo: $.string }); // Schema<{ foo: string }>
+const $partial = $base.partial(); // Schema<{ foo?: string | undefined }>
+
+$base.test({ foo: '' }); // true
+$base.test({ foo: 1 }); // false
+$base.test({ foo: undefined }); // false
+$base.test({}); // false
+
+$partial.test({ foo: '' }); // true
+$partial.test({ foo: 1 }); // false
+$partial.test({ foo: undefined }); // true
+$partial.test({}); // true
+```
