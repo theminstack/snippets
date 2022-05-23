@@ -45,12 +45,7 @@ type Articles = [
   {
     id: number;
     url: string;
-    launches: [
-      {
-        id: number;
-        provider: string;
-      }
-    ];
+    launches: Array<{ id: number; provider: string }>;
   }
 ]
 ```
