@@ -7,21 +7,17 @@ A schema is a complex [type predicate](https://www.typescriptlang.org/docs/handb
 For example, when calling an API and deserializing the response, the response type will be `any` (unknown). You have to check the structure of the data before it's safe to use.
 
 ```ts
-const $articles = $.array(
-  $.object({
+const $articles = $.array($.object({
+  id: $.number,
+  url: $.string,
+  launches: $.array($.object({
     id: $.number,
-    url: $.string,
-    launches: $.array(
-      $.object({
-        id: $.number,
-        provider: $.string,
-      }),
-    ),
-  }),
-);
+    provider: $.string,
+  })),
+}));
 ```
 
-This creates an `$articles` schema which (partially) matches the response from https://api.spaceflightnewsapi.net/v3/articles.
+The above creates an `$articles` schema which (partially) matches the response from https://api.spaceflightnewsapi.net/v3/articles.
 
 ```ts
 const response = await fetch('https://api.spaceflightnewsapi.net/v3/articles');
@@ -41,13 +37,14 @@ type Articles = SchemaType<typeof $articles>;
 Which would give you a type equivalent to...
 
 ```ts
-type Articles = [
-  {
+type Articles = Array<{
+  id: number;
+  url: string;
+  launches: Array<{
     id: number;
-    url: string;
-    launches: Array<{ id: number; provider: string }>;
-  }
-]
+    provider: string;
+  }>;
+}>
 ```
 
 If you want to throw an error when validation fails, you can use the `parse` method instead of the `test` method.
