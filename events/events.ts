@@ -1,4 +1,4 @@
-type ToIntersection<T> = (T extends T ? (x: T) => void : never) extends (x: infer R) => void ? R : never;
+type UnionToIntersection<T> = (T extends any ? (x: T) => any : never) extends (x: infer V) => any ? V : never;
 
 type Listener<TValue = unknown> = ((value: TValue) => void) & { readonly listener?: Listener };
 
@@ -6,7 +6,7 @@ type EventsDefinition = Readonly<Record<string, unknown>>;
 
 type EventTypes<TEvents extends EventsDefinition> = Record<string, never> extends TEvents ? EventsDefinition : TEvents;
 
-type EventsEmit<TEvents extends EventsDefinition> = ToIntersection<
+type EventsEmit<TEvents extends EventsDefinition> = UnionToIntersection<
   { readonly [P in keyof TEvents]: (event: P, value: TEvents[P]) => boolean }[keyof TEvents]
 >;
 
@@ -27,7 +27,7 @@ type EventsPublish<TEvents extends EventsDefinition = {}> = {
 
 type EventsOff<TEvents extends EventsDefinition, TReturn> = (event: keyof TEvents, listener: Listener) => TReturn;
 
-type EventsOn<TEvents extends EventsDefinition, TReturn> = ToIntersection<
+type EventsOn<TEvents extends EventsDefinition, TReturn> = UnionToIntersection<
   { readonly [P in keyof TEvents]: (event: P, listener: Listener<TEvents[P]>) => TReturn }[keyof TEvents]
 >;
 

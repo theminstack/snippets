@@ -4,7 +4,7 @@ type Nullish = null | undefined | void;
 
 type NonNullish = {};
 
-type Required<TValue> = Exclude<TValue, Nullish>;
+type Mandatory<TValue> = Exclude<TValue, Nullish>;
 
 type MaybeBase<TValue> = {
   readonly [MAYBE]: Maybe<TValue>;
@@ -33,13 +33,13 @@ type MaybeBase<TValue> = {
    * returns false. Otherwise, return the current monad.
    */
   readonly filter: <TNext extends TValue = TValue>(
-    predicate: ((value: Required<TValue>) => boolean) | ((value: TValue) => value is TNext),
+    predicate: ((value: Mandatory<TValue>) => boolean) | ((value: TValue) => value is TNext),
   ) => Maybe<TNext>;
   /**
    * Get the next monad if the current monad is `ok`. Otherwise, return the
    * current `empty` monad.
    */
-  readonly map: <TNext>(next: (value: Required<TValue>) => Maybe<TNext> | Nullish | TNext) => Maybe<TNext>;
+  readonly map: <TNext>(next: (value: Mandatory<TValue>) => Maybe<TNext> | Nullish | TNext) => Maybe<TNext>;
   /**
    * True if the monad has a non-nullish value. Otherwise, false.
    *
@@ -51,12 +51,12 @@ type MaybeBase<TValue> = {
    * Otherwise, return an empty array.
    */
   // eslint-disable-next-line functional/prefer-readonly-type
-  readonly toArray: () => [] | [Required<TValue>];
+  readonly toArray: () => [] | [Mandatory<TValue>];
   /**
    * Get the non-nullish value if the monad is `ok`. Otherwise, throws the
    * `error` or a new `ReferenceError`.
    */
-  readonly value: Required<TValue>;
+  readonly value: Mandatory<TValue>;
 };
 
 type MaybeOk<TValue> = MaybeBase<TValue> & {
@@ -83,7 +83,7 @@ type MaybeNotOk<TValue> = MaybeBase<TValue> & {
  */
 type Maybe<TValue> = MaybeNotOk<TValue> | MaybeOk<TValue>;
 
-const createOk = <TValue>(value: Required<TValue>): MaybeOk<TValue> => {
+const createOk = <TValue>(value: Mandatory<TValue>): MaybeOk<TValue> => {
   const instance: MaybeOk<TValue> = {
     get [MAYBE]() {
       return instance;
@@ -139,7 +139,7 @@ const maybe = <TValue>(
     } else if (value == null) {
       return maybe.empty();
     } else {
-      return createOk(value as Required<TValue>);
+      return createOk(value as Mandatory<TValue>);
     }
   } catch (error) {
     return maybe.error(error);

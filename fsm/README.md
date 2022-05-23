@@ -43,7 +43,7 @@ puddle.state; // gas
 
 FSMs and FSM state instances are immutable. The `start()` method and all transition methods return new state instances, which must be assigned to a variable or they will be lost.
 
-In the above example, the new state is always re-assigned to the `let puddle: Water` variable. The variable type begins as type `Water` which is a union of all the state types. Typescript is smart enough to narrow the type when you use `start()`, a transition method, or check the `state` property value.
+In the above example, the new state is always re-assigned to the `let puddle: Water` variable. The variable type begins as type `Water` which is a union of all the state types. TypeScript is smart enough to narrow the type when you use `start()`, a transition method, or check the `state` property value.
 
 The above states are all value-less (`void`), but each state can have a value associated with it.
 

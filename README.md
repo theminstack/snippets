@@ -1,6 +1,6 @@
 # TinySource
 
-Completely free TS/JS one-file source code snippets _with tests_, which can be copied to **avoid extra dependencies** (contributions welcome).
+Completely free TypeScript one-file source code snippets _with tests_, which can be copied to **avoid extra dependencies** (contributions welcome).
 
 [![checks](https://badgen.net/github/checks/tinysource/tinysource)](https://github.com/tinysource/tinysource/actions/workflows/node.js.yml)
 [![coverage](https://badgen.net/coveralls/c/github/tinysource/tinysource)](https://coveralls.io/github/tinysource/tinysource)
@@ -16,8 +16,9 @@ Completely free TS/JS one-file source code snippets _with tests_, which can be c
 - [react-decorator](react-decorator) - Decorate non-empty DOM content with a wrapper.
 - [react-use-boolean](react-use-boolean) - Boolean React states with helpful setters.
 - [react-use-subject](react-use-subject) - Subjects as sharable, atomic, React states.
-- [subject](subject) - Subscribable values.
-- [subject-selector](subject-selector) - Subscribable values computed from other subjects.
+- [schema](schema) - Complex runtime type checking.
+- [subject](subject) - Values you can subscribe to.
+- [subject-selector](subject-selector) - Computed values you can subscribe to.
 - [throttle](throttle) - Execute as fast as possible, but no faster.
 
 ## The case for copying
