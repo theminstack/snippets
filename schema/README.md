@@ -65,7 +65,7 @@ The following basic schemas are "built-in" and can be used to compose more compl
 - `$.null` - Match `null` exactly.
 - `$.undefined` - Match `undefined` exactly.
 - `$.enum(...values)` - Any of the (primitive) `values`, matched exactly.
-- `$.function` - Any function, cast as `Function`.
+- `$.function` - Any function, cast as `(...args: unknown[]) => unknown`.
 - `$.array(schema?)` - An array with elements matching an (optional) element `schema`.
 - `$.tuple(...schemas)` - A tuple with elements matching the `schemas`.
 - `$.record(schema?)` - An indexed object with values matching an (optional) element `schema`.

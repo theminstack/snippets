@@ -48,6 +48,9 @@ type Schema<TType> = {
   readonly test: (value: unknown, options?: SchemaOptions) => value is TType;
 };
 type SchemaObject<TType> = Schema<TType> & {
+  /**
+   * Re-construct the object/record schema with all properties as optional.
+   */
   readonly partial: () => SchemaObject<Simplify<Partial<TType>>>;
 };
 
@@ -128,10 +131,10 @@ const createObject = <TPropSchemas extends Record<string, Schema<any>>, TIndexTy
     ...create(
       (value, { path, ...context }): value is Simplify<SchemaObjectType<TPropSchemas, TIndexType>> =>
         isObject(value) &&
-        Object.entries(props).every(([key, schema]) => schema.test(value[key], { path: [...path, key], ...context })) &&
+        Object.entries(props).every(([key, schema]) => schema.test(value[key], { ...context, path: [...path, key] })) &&
         (!index ||
           Object.entries(value).every(
-            ([key, value_]) => key in props || index.test(value_, { path: [...path, key], ...context }),
+            ([key, value_]) => key in props || index.test(value_, { ...context, path: [...path, key] }),
           )),
     ),
     partial: lazy(() => {
@@ -154,7 +157,9 @@ const undefined_ = create((value): value is undefined => typeof value === 'undef
 const null_ = create((value): value is null => value === null);
 const unknown = create((_value): _value is unknown => true);
 const any = unknown as Schema<any>;
-const function_ = create((value): value is Function => typeof value === 'function' || value instanceof Function);
+const function_ = create(
+  (value): value is (...args: unknown[]) => unknown => typeof value === 'function' || value instanceof Function,
+);
 
 // Non-memoized
 const instance = <TType>(constructor: new (...args: readonly any[]) => TType) =>
@@ -165,14 +170,14 @@ const array = <TType>(schema?: Schema<TType>) =>
   create(
     (value, { path, ...context }): value is TType[] =>
       Array.isArray(value) &&
-      (!schema || value.every((item, index) => schema.test(item, { path: [...path, index], ...context }))),
+      (!schema || value.every((item, index) => schema.test(item, { ...context, path: [...path, index] }))),
   );
 const tuple = <TSchemas extends readonly Schema<any>[]>(...elements: TSchemas) =>
   create(
     (value, { path, ...context }): value is SchemaTupleType<TSchemas> =>
       Array.isArray(value) &&
       elements.length === value.length &&
-      elements.every((element, index) => element.test(value[index], { path: [...path, index], ...context })),
+      elements.every((element, index) => element.test(value[index], { ...context, path: [...path, index] })),
   );
 const record = <TType>(index?: Schema<TType>) => createObject({}, index);
 const object = <TPropSchemas extends Record<string, Schema<any>>, TIndexType>(
