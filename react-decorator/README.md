@@ -2,7 +2,7 @@
 
 Decorate non-empty content.
 
-The `Decorator` component accepts a `decoration` component and children. It will only render the decoration if at least one DOM node is rendered by its children. Child DOM nodes are detected using a [MutationObserver](https://developer.mozilla.org/en-US/docs/Web/API/MutationObserver) (). This can help you avoid rendering an empty container when there's no content visible in the container.
+The `Decorator` component accepts a `decoration` component and children. It will only render the decoration if at least one DOM node is rendered by its children. Child DOM nodes are detected using a [MutationObserver](https://developer.mozilla.org/en-US/docs/Web/API/MutationObserver) (monitoring [childList](https://developer.mozilla.org/en-US/docs/Web/API/MutationObserver/observe#parameters) only). This can help you avoid rendering an empty container when there's no content visible in the container.
 
 ```tsx
 const MaybeEmpty = () => {
