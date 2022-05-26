@@ -1,7 +1,5 @@
-/* eslint-disable max-lines */
 import { limit } from './limit';
 
-// eslint-disable-next-line functional/prefer-readonly-type
 const tasks: { readonly reject: () => void; readonly resolve: () => void }[] = [];
 const task = jest
   .fn()

@@ -2,7 +2,7 @@ import { SortedList } from './sorted-list';
 
 describe('sorted-list', () => {
   test('search', () => {
-    let list = new SortedList([1, 3, 5]);
+    let list = new SortedList<number | undefined>([1, 3, 5]);
     expect(list.search(0)).toEqual([0, false]);
     expect(list.search(1)).toEqual([0, true]);
     expect(list.search(2)).toEqual([1, false]);
@@ -10,22 +10,28 @@ describe('sorted-list', () => {
     expect(list.search(4)).toEqual([2, false]);
     expect(list.search(5)).toEqual([2, true]);
     expect(list.search(6)).toEqual([3, false]);
-    list = new SortedList([1, 3]);
+
+    list = new SortedList<number | undefined>([1, 3]);
     expect(list.search(0)).toEqual([0, false]);
     expect(list.search(1)).toEqual([0, true]);
     expect(list.search(2)).toEqual([1, false]);
     expect(list.search(3)).toEqual([1, true]);
     expect(list.search(4)).toEqual([2, false]);
-    list = new SortedList([1]);
+
+    list = new SortedList<number | undefined>([1]);
     expect(list.search(0)).toEqual([0, false]);
     expect(list.search(1)).toEqual([0, true]);
     expect(list.search(2)).toEqual([1, false]);
-    list = new SortedList();
+
+    list = new SortedList<number | undefined>();
     expect(list.search(Number.NEGATIVE_INFINITY)).toEqual([0, false]);
     expect(list.search(-1)).toEqual([0, false]);
     expect(list.search(0)).toEqual([0, false]);
     expect(list.search(1)).toEqual([0, false]);
     expect(list.search(Number.POSITIVE_INFINITY)).toEqual([0, false]);
+
+    list = new SortedList<number | undefined>([1, 2, undefined], { allowDuplicates: true });
+    expect(list.search(undefined)).toEqual([2, true]);
   });
 
   test('duplicates', () => {
@@ -40,7 +46,7 @@ describe('sorted-list', () => {
   });
 
   test('no duplicates', () => {
-    const list = new SortedList([1, 1, 2, 2, 3]);
+    const list = new SortedList([1, 1, 2, 2, 2, 3]);
     expect(list.size);
     expect([...list]).toEqual([1, 2, 3]);
   });
@@ -74,6 +80,26 @@ describe('sorted-list', () => {
     ).toEqual([1, 3, 5]);
   });
 
+  test('add', () => {
+    let list = new SortedList({ allowDuplicates: true });
+    list.add(3);
+    list.add(undefined);
+    list.add(5);
+    list.add(1);
+    list.add(undefined);
+    list.add(3);
+    expect([...list]).toEqual([1, 3, 3, 5, undefined, undefined]);
+
+    list = new SortedList();
+    list.add(3);
+    list.add(undefined);
+    list.add(5);
+    list.add(1);
+    list.add(undefined);
+    list.add(3);
+    expect([...list]).toEqual([1, 3, 5, undefined]);
+  });
+
   test('at', () => {
     const list = new SortedList([0, 2, 4]);
 
@@ -95,7 +121,7 @@ describe('sorted-list', () => {
   });
 
   test('delete', () => {
-    const list = new SortedList([0, 2, 4]);
+    const list = new SortedList([0, 2, 4, undefined]);
 
     for (let index = 0, remaining = list.size; index <= 5; index++) {
       const success = list.delete(index);
@@ -107,6 +133,9 @@ describe('sorted-list', () => {
       expect(success).toBe(index % 2 === 0);
       expect(list.size).toBe(remaining);
     }
+
+    expect(list.delete(undefined)).toBe(true);
+    expect(list.delete(undefined)).toBe(false);
   });
 
   test('deleteAt', () => {
