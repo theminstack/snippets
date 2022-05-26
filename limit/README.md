@@ -61,6 +61,12 @@ limiter.active; // 1
 limiter.size; // 1
 ```
 
+Limiters can be paused on creation.
+
+```ts
+const limiter = limit(2, { paused: true });
+```
+
 Pending promises can be cleared, but any promises which have already started running will continue running.
 
 ```ts
@@ -75,13 +81,13 @@ limiter.active; // 1
 limiter.size; // 1
 ```
 
-When cleared, any promises returned by `run()` for tasks that were pending, will never resolve or reject. If you need them to reject, pass a rejection "reason" to the `clear(reason)` method.
+After clearing, tasks that were pending will never be run, and the associated promises (returned by `run()`) will never resolve or reject. If you need the promises to reject, pass a rejection "reason" to the `clear(reason)` method.
 
 ```ts
 limiter.clear(new Error('Limiter cleared'));
 ```
 
-Limiter counts can be awaited.
+Limiter counts can be awaited for more control over the `pending` task backlog growth and `active` task concurrency.
 
 ```ts
 // Resolves when the pending count is less than
@@ -99,6 +105,7 @@ await limiter.onActive(1);
 await limiter.onSize(1);
 
 // Resolves when there are no pending or active
-// tasks.
-await limiter.onIdle();
+// tasks (ie. the size is zero and the limiter
+// is completely inactive).
+await limiter.onEmpty();
 ```

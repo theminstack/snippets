@@ -86,7 +86,7 @@ describe('limit', () => {
     await expect(limiter.onPending(0)).resolves.toBe(undefined);
     await expect(limiter.onActive(0)).resolves.toBe(undefined);
     await expect(limiter.onSize(0)).resolves.toBe(undefined);
-    await expect(limiter.onIdle()).resolves.toBe(undefined);
+    await expect(limiter.onEmpty()).resolves.toBe(undefined);
 
     void limiter.run(task);
     void limiter.run(task);
@@ -116,16 +116,16 @@ describe('limit', () => {
     const onPending = jest.fn();
     const onActive = jest.fn();
     const onSize = jest.fn();
-    const onIdle = jest.fn();
+    const onEmpty = jest.fn();
     void limiter.onPending(0).then(onPending);
     void limiter.onActive(1).then(onActive);
     void limiter.onSize(2).then(onSize);
-    void limiter.onIdle().then(onIdle);
+    void limiter.onEmpty().then(onEmpty);
     await nextTick();
     expect(onPending).not.toHaveBeenCalled();
     expect(onActive).not.toHaveBeenCalled();
     expect(onSize).not.toHaveBeenCalled();
-    expect(onIdle).not.toHaveBeenCalled();
+    expect(onEmpty).not.toHaveBeenCalled();
 
     limiter.pause();
     tasks[1].resolve();
@@ -135,7 +135,7 @@ describe('limit', () => {
     expect(onPending).not.toHaveBeenCalled();
     expect(onActive).not.toHaveBeenCalled();
     expect(onSize).toHaveBeenCalled();
-    expect(onIdle).not.toHaveBeenCalled();
+    expect(onEmpty).not.toHaveBeenCalled();
 
     limiter.resume();
     await nextTick();
@@ -143,7 +143,7 @@ describe('limit', () => {
     expect(limiter.active).toBe(2);
     expect(onPending).toHaveBeenCalled();
     expect(onActive).not.toHaveBeenCalled();
-    expect(onIdle).not.toHaveBeenCalled();
+    expect(onEmpty).not.toHaveBeenCalled();
 
     limiter.pause();
     tasks[2].resolve();
@@ -151,14 +151,14 @@ describe('limit', () => {
     expect(limiter.pending).toBe(0);
     expect(limiter.active).toBe(1);
     expect(onActive).toHaveBeenCalled();
-    expect(onIdle).not.toHaveBeenCalled();
+    expect(onEmpty).not.toHaveBeenCalled();
 
     limiter.resume();
     tasks[3].resolve();
     await nextTick();
     expect(limiter.pending).toBe(0);
     expect(limiter.active).toBe(0);
-    expect(onIdle).toHaveBeenCalled();
+    expect(onEmpty).toHaveBeenCalled();
   });
 
   test('clear', async () => {

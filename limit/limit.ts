@@ -18,9 +18,9 @@ type Limiter = {
   readonly active: number;
   /**
    * Remove all pending tasks without running them. If a `reason` is given,
-   * promises returned for the pending tasks will be rejected. Otherwise,
-   * pending task promises will never resolve or reject. Active tasks are not
-   * affected.
+   * promises associated with the pending tasks will be rejected with the
+   * reason. Otherwise, pending task promises will never resolve or reject.
+   * Active tasks are not affected.
    */
   readonly clear: (reason?: unknown) => void;
   /**
@@ -38,9 +38,12 @@ type Limiter = {
   readonly onActive: (count: number) => Promise<void>;
   /**
    * Returns a promise which resolves when there are no pending or active
-   * tasks.
+   * tasks (ie. the `size` is zero and the limiter is completely inactive).
+   *
+   * This is slightly more efficient than using `onSize(0)`, because it can
+   * await `Promise.all` instead of `Promise.race` on the task queue.
    */
-  readonly onIdle: () => Promise<void>;
+  readonly onEmpty: () => Promise<void>;
   /**
    * Returns a promise which resolves when the pending count is less than or
    * equal to the `count`.
@@ -142,7 +145,7 @@ const limit = (concurrency: number, { sequential = false, paused = false }: Limi
         await Promise.race([...active, update.promise]);
       }
     },
-    onIdle: async () => {
+    onEmpty: async () => {
       while (pending.length + active.size > 0) {
         await Promise.race([Promise.all(active), update.promise]);
       }
