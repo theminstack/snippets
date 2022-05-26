@@ -35,7 +35,7 @@ const defaultCompare = (a_: any, b_: any): number => {
 const list = new SortedList<string>(defaultCompare);
 ```
 
-By default, duplicate values (ie. equal according to the compare function) are not added. If you want to allow duplicates in the list, then set the `allowDuplicates` option.
+By default, duplicate values (ie. equal according to the compare function) are not added. If you want to allow duplicates in the list, then set the `allowDuplicates` option. If duplicates are allowed, duplicate values are added _before_ other duplicates. This results in a LIFO behavior for duplicate values due to `delete()` always removing the _first_ duplicate.
 
 ```ts
 new SortedList<string>({ allowDuplicates: true });
@@ -55,7 +55,7 @@ new SortedList([1, 2, 3], options);
 
 ## Methods
 
-- `add(value)` - Insert the `value` in order (after duplicates if they exist).
+- `add(value)` - Insert the `value` in order (before duplicates if they exist).
 - `at(index)` - Get the value at the `index`.
 - `has(value)` - Returns true if the `value` is in the list.
 - `delete(value)` - Remove the `value` (only the first if duplicates exist).

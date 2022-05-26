@@ -1,7 +1,13 @@
 type SortedListCompare<TType = any> = (a: TType, b: TType) => number;
 
 type SortedListOptions<TType> = {
+  /**
+   * Add duplicates to the list instead of ignoring them.
+   */
   readonly allowDuplicates?: boolean;
+  /**
+   * Override the default compare by string value implementation.
+   */
   readonly compare?: SortedListCompare<TType>;
 };
 
@@ -16,10 +22,10 @@ class SortedList<TType> {
     return a < b ? -1 : a > b ? 1 : 0;
   };
 
-  // eslint-disable-next-line functional/prefer-readonly-type
-  readonly #values: TType[] = [];
   readonly #compare: (a: TType, b: TType) => number;
   readonly #allowDuplicates: boolean;
+  // eslint-disable-next-line functional/prefer-readonly-type
+  readonly #values: TType[];
 
   /**
    * Construct a binary sorted list which is initially empty.
@@ -44,10 +50,11 @@ class SortedList<TType> {
     this.#compare = (a, b) =>
       typeof b === 'undefined' ? (typeof a === 'undefined' ? 0 : -1) : typeof a === 'undefined' ? 1 : compare(a, b);
     this.#allowDuplicates = allowDuplicates;
-
-    for (const value of values) {
-      this.add(value);
-    }
+    this.#values = this.#allowDuplicates
+      ? [...values].sort(compare)
+      : [...values]
+          .sort(compare)
+          .filter((value, index, array) => index === 0 || this.#compare(value, array[index - 1]) !== 0);
   }
 
   /**
@@ -58,19 +65,12 @@ class SortedList<TType> {
   }
 
   /**
-   * Insert the `value` in order (after duplicates if they exist).
+   * Insert the `value` in order (before duplicates if they exist).
    */
   public add(value: TType): this {
-    let [index, isMatch] = this.search(value);
+    const [index, isMatch] = this.search(value);
 
     if (!isMatch || this.#allowDuplicates) {
-      if (typeof value !== 'undefined') {
-        while (isMatch) {
-          index += 1;
-          isMatch = this.#compare(value, this.#values[index]) === 0;
-        }
-      }
-
       this.#values.splice(index, 0, value);
     }
 
@@ -159,7 +159,10 @@ class SortedList<TType> {
       }
     }
 
-    return [min, result === 0];
+    // If the search value is undefined, it can look like an exact match with
+    // the index off the end of the list, which is incorrect. So, isMatch
+    // (result === 0) is only true if the index (min) is less than list length.
+    return [min, result === 0 && min < this.#values.length];
   }
 
   /**

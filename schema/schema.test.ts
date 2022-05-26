@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-empty-function */
 import { type Schema, type SchemaObject, $ } from './schema';
 
 describe('schema', () => {
