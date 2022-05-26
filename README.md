@@ -12,6 +12,7 @@ Completely free TypeScript one-file source code snippets _with tests_, which can
 - [events](events) - Named events with publication and subscription.
 - [fsm](fsm) - Finite state machine.
 - [hash-djb2a](hash-djb2a) - Fast and good string hash function.
+- [limit](limit) - Run asynchronous tasks with limited concurrency.
 - [maybe](maybe) - Functionally represent and manipulate possibly missing/error values.
 - [react-decorator](react-decorator) - Decorate non-empty DOM content with a wrapper.
 - [react-use-boolean](react-use-boolean) - Boolean React states with helpful setters.
