@@ -43,16 +43,14 @@ type SmartPartial<T> = Partial<Pick<T, OptionalKeys<T>>> & Pick<T, RequiredKeys<
 // eslint-disable-next-line functional/prefer-readonly-type
 type Simplify<T> = T extends Record<string, unknown> ? { [P in keyof T]: T[P] } : T;
 
-type _OverloadUnion<TOverload, TPartialOverload = unknown> = TOverload extends (...args: infer TArgs) => infer TReturn
+// eslint-disable-next-line @typescript-eslint/sort-type-union-intersection-members
+type _OverloadUnion<TOverload, TPartialOverload = unknown> = TPartialOverload & TOverload extends (
+  ...args: infer TArgs
+) => infer TReturn
   ? TPartialOverload extends TOverload
     ? never
     :
-        | _OverloadUnion<
-            // eslint-disable-next-line @typescript-eslint/sort-type-union-intersection-members
-            TPartialOverload & TOverload,
-            // eslint-disable-next-line @typescript-eslint/sort-type-union-intersection-members
-            TPartialOverload & ((...args: TArgs) => TReturn) & Pick<TOverload, keyof TOverload>
-          >
+        | _OverloadUnion<TOverload, Pick<TOverload, keyof TOverload> & TPartialOverload & ((...args: TArgs) => TReturn)>
         | ((...args: TArgs) => TReturn)
   : never;
 
