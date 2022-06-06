@@ -34,6 +34,8 @@ type RequiredKeys<T> = { readonly [P in keyof T]: undefined extends T[P] ? never
 type SmartPartial<T> = Partial<Pick<T, OptionalKeys<T>>> & Pick<T, RequiredKeys<T>>;
 
 /**
+ * _Developer Experience_
+ *
  * If two or more objects are intersected (`{ foo: string } & { bar: string }`),
  * simplify the type to a single object with all the properties
  * (`{ foo: string; bar: string }`).
@@ -41,11 +43,41 @@ type SmartPartial<T> = Partial<Pick<T, OptionalKeys<T>>> & Pick<T, RequiredKeys<
 // eslint-disable-next-line functional/prefer-readonly-type
 type Simplify<T> = T extends Record<string, unknown> ? { [P in keyof T]: T[P] } : T;
 
+type _OverloadUnion<TOverload, TPartialOverload = unknown> = TOverload extends (...args: infer TArgs) => infer TReturn
+  ? TPartialOverload extends TOverload
+    ? never
+    :
+        | _OverloadUnion<
+            // eslint-disable-next-line @typescript-eslint/sort-type-union-intersection-members
+            TPartialOverload & TOverload,
+            // eslint-disable-next-line @typescript-eslint/sort-type-union-intersection-members
+            TPartialOverload & ((...args: TArgs) => TReturn) & Pick<TOverload, keyof TOverload>
+          >
+        | ((...args: TArgs) => TReturn)
+  : never;
+
+/**
+ * Convert a function overload (aka: an intersection of function signatures)
+ * into a union of the signatures.
+ *
+ * ```ts
+ * type U = OverloadUnion<(() => 1) & ((a: 2) => 2)>;
+ * // type U = (() => 1) | ((a: 2) => 2))
+ * ```
+ */
+// eslint-disable-next-line functional/prefer-readonly-type
+type OverloadUnion<TOverload extends (...args: any[]) => any> = Exclude<
+  // eslint-disable-next-line @typescript-eslint/sort-type-union-intersection-members
+  _OverloadUnion<(() => never) & TOverload>,
+  TOverload extends () => never ? never : () => never
+>;
+
 export type {
   Mandatory,
   NonNullish,
   Nullish,
   OptionalKeys,
+  OverloadUnion,
   Primitive,
   RequiredKeys,
   Simplify,
