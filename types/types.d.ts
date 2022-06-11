@@ -16,22 +16,43 @@ type NonNullish = {};
 type Mandatory<TValue> = Exclude<TValue, Nullish>;
 
 /**
+ * Strings which can be used with `typeof` operator.
+ */
+type TypeOfString = 'bigint' | 'boolean' | 'function' | 'number' | 'object' | 'string' | 'symbol' | 'undefined';
+
+/**
+ * Infer the `typeof` type from a `typeof` string.
+ */
+type TypeOfType<TString> = TString extends 'string'
+  ? string
+  : TString extends 'number'
+  ? number
+  : TString extends 'boolean'
+  ? boolean
+  : TString extends 'object'
+  ? object
+  : TString extends 'function'
+  ? Function
+  : TString extends 'bigint'
+  ? bigint
+  : TString extends 'symbol'
+  ? symbol
+  : TString extends 'undefined'
+  ? undefined
+  : unknown;
+
+/**
  * Convert a union type (`|`) to an intersection type (`&`).
  */
 type UnionToIntersection<T> = (T extends any ? (x: T) => any : never) extends (x: infer V) => any ? V : never;
 
 /**
- * Get the keys of an object which allow undefined value assignment.
- */
-type OptionalKeys<T> = { readonly [P in keyof T]: undefined extends T[P] ? P : never }[keyof T];
-/**
- * Get the keys of an object which do not allow undefined value assignment.
- */
-type RequiredKeys<T> = { readonly [P in keyof T]: undefined extends T[P] ? never : P }[keyof T];
-/**
  * Make optional the keys of an object which allow undefined value assignment.
  */
-type SmartPartial<T> = Partial<Pick<T, OptionalKeys<T>>> & Pick<T, RequiredKeys<T>>;
+type SmartPartial<T> = Simplify<
+  // eslint-disable-next-line functional/prefer-readonly-type
+  UnionToIntersection<{ [P in keyof T]: undefined extends T[P] ? { [K in P]?: T[P] } : { [K in P]: T[P] } }[keyof T]>
+>;
 
 /**
  * _Developer Experience_
@@ -74,11 +95,11 @@ export type {
   Mandatory,
   NonNullish,
   Nullish,
-  OptionalKeys,
   OverloadUnion,
   Primitive,
-  RequiredKeys,
   Simplify,
   SmartPartial,
+  TypeOfString,
+  TypeOfType,
   UnionToIntersection,
 };

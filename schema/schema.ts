@@ -2,9 +2,10 @@ type Primitive = bigint | boolean | number | string | symbol | null | undefined;
 
 type UnionToIntersection<T> = (T extends any ? (x: T) => any : never) extends (x: infer V) => any ? V : never;
 
-type OptionalKeys<T> = { readonly [P in keyof T]: undefined extends T[P] ? P : never }[keyof T];
-type RequiredKeys<T> = { readonly [P in keyof T]: undefined extends T[P] ? never : P }[keyof T];
-type SmartPartial<T> = Partial<Pick<T, OptionalKeys<T>>> & Pick<T, RequiredKeys<T>>;
+type SmartPartial<T> = Simplify<
+  // eslint-disable-next-line functional/prefer-readonly-type
+  UnionToIntersection<{ [P in keyof T]: undefined extends T[P] ? { [K in P]?: T[P] } : { [K in P]: T[P] } }[keyof T]>
+>;
 
 // eslint-disable-next-line functional/prefer-readonly-type
 type Simplify<T> = T extends Record<string, unknown> ? { [P in keyof T]: T[P] } : T;
@@ -15,7 +16,9 @@ type Simplify<T> = T extends Record<string, unknown> ? { [P in keyof T]: T[P] } 
 type SchemaType<TSchema> = TSchema extends Schema<infer TType> ? TType : never;
 // eslint-disable-next-line functional/prefer-readonly-type
 type SchemaTupleType<TSchemas> = { [P in keyof TSchemas]: SchemaType<TSchemas[P]> };
-type SchemaObjectType<TSchemas, TIndexType> = Record<string, TIndexType> & SmartPartial<SchemaTupleType<TSchemas>>;
+type SchemaObjectType<TSchemas, TIndexType> = Simplify<
+  Record<string, TIndexType> & SmartPartial<SchemaTupleType<TSchemas>>
+>;
 
 type SchemaOptions = {
   readonly onInvalid?: (reason: string) => void;
@@ -126,10 +129,10 @@ const create = <TType>(test: (value: unknown, context: SchemaContext) => value i
 const createObject = <TPropSchemas extends Record<string, Schema<any>>, TIndexType>(
   props: TPropSchemas,
   index: Schema<TIndexType> | undefined,
-): SchemaObject<Simplify<SchemaObjectType<TPropSchemas, TIndexType>>> => {
-  const objectSchema: SchemaObject<Simplify<SchemaObjectType<TPropSchemas, TIndexType>>> = {
+): SchemaObject<SchemaObjectType<TPropSchemas, TIndexType>> => {
+  const objectSchema: SchemaObject<SchemaObjectType<TPropSchemas, TIndexType>> = {
     ...create(
-      (value, { path, ...context }): value is Simplify<SchemaObjectType<TPropSchemas, TIndexType>> =>
+      (value, { path, ...context }): value is SchemaObjectType<TPropSchemas, TIndexType> =>
         isObject(value) &&
         Object.entries(props).every(([key, schema]) => schema.test(value[key], { ...context, path: [...path, key] })) &&
         (!index ||
