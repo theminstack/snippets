@@ -1,5 +1,5 @@
-import { act, renderHook } from '@testing-library/react-hooks';
-import { type FC } from 'react';
+import { act, renderHook } from '@testing-library/react';
+import { type FC, type PropsWithChildren } from 'react';
 
 import { type SubjectLike, createSubjectContext, useSubject } from './use-subject';
 
@@ -65,7 +65,7 @@ describe('react-use-subject', () => {
   test('createSubjectContext with context', () => {
     const [useTest, TestContext] = createSubjectContext(1);
     const subject = createMockSubject({ next: jest.fn() });
-    const wrapper: FC = ({ children }) => {
+    const wrapper: FC<PropsWithChildren> = ({ children }) => {
       return <TestContext.Provider value={subject}>{children}</TestContext.Provider>;
     };
     const { result } = renderHook(useTest, { wrapper });
