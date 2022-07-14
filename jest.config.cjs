@@ -18,6 +18,6 @@ module.exports = {
   restoreMocks: true,
   roots: ['<rootDir>'],
   testEnvironment: 'jsdom',
-  transformIgnorePatterns: [],
+  transformIgnorePatterns: ['/node_modules/core-js/'],
   verbose: true,
 };
