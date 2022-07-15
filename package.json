@@ -29,7 +29,7 @@
     "react": "^18.2.0"
   },
   "engines": {
-    "node": ">=16",
+    "node": ">=18",
     "npm": ">=8",
     "yarn": "please-use-npm",
     "pnpm": "please-use-npm"
