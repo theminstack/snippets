@@ -2,8 +2,8 @@
 
 Completely free TypeScript one-file source code snippets _with tests_, which can be copied to **avoid extra dependencies** (contributions welcome).
 
-[![checks](https://badgen.net/github/checks/tinysource/tinysource)](https://github.com/tinysource/tinysource/actions/workflows/node.js.yml)
-[![coverage](https://badgen.net/coveralls/c/github/tinysource/tinysource)](https://coveralls.io/github/tinysource/tinysource)
+[![build](https://github.com/tinysource/tinysource/actions/workflows/node.js.yml/badge.svg)](https://github.com/tinysource/tinysource/actions/workflows/node.js.yml)
+[![codecov](https://codecov.io/gh/tinysource/tinysource/branch/main/graph/badge.svg?token=E2VYI8XJLB)](https://codecov.io/gh/tinysource/tinysource)
 
 ## Snippets
 
@@ -15,6 +15,7 @@ Completely free TypeScript one-file source code snippets _with tests_, which can
 - [limit](limit) - Run asynchronous tasks with limited concurrency.
 - [maybe](maybe) - Functionally represent and manipulate possibly missing/error values.
 - [react-decorator](react-decorator) - Decorate non-empty DOM content with a wrapper.
+- [react-fill-window](react-fill-window) - Vertically fill the browser window.
 - [react-use-boolean](react-use-boolean) - Boolean React states with helpful setters.
 - [react-use-subject](react-use-subject) - Subjects as sharable, atomic, React states.
 - [schema](schema) - Complex runtime type checking.

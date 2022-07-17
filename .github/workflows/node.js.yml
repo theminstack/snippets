@@ -24,13 +24,22 @@ jobs:
           node-version: ${{ matrix.node-version }}
           cache: 'npm'
 
-      - name: NPM Restore and Test
-        run: |
-          npm ci
-          npm test
+      - name: Restore
+        run: npm ci
 
-      - name: Coveralls GitHub Action
-        uses: coverallsapp/github-action@1.1.3
+      - name: Test
+        run: npm test
+
+      - name: Publish (CodeCov)
+        uses: codecov/codecov-action@v3
         with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-          path-to-lcov: ./.coverage/lcov.info
+          # token: ${{ secrets.CODECOV_TOKEN }}
+          files: ./.coverage/lcov.info
+          fail_ci_if_error: true
+          verbose: true
+
+      # - name: Coveralls GitHub Action
+      #   uses: coverallsapp/github-action@1.1.3
+      #   with:
+      #     github-token: ${{ secrets.GITHUB_TOKEN }}
+      #     path-to-lcov: ./.coverage/lcov.info
