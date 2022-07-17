@@ -1,4 +1,4 @@
-# Decorator
+# React decorator
 
 Decorate non-empty content.
 
