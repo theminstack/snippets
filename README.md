@@ -2,7 +2,7 @@
 
 Completely free TypeScript one-file source code snippets _with tests_, which can be copied to **avoid extra dependencies** (contributions welcome).
 
-[![build](https://github.com/tinysource/tinysource/actions/workflows/node.js.yml/badge.svg)](https://github.com/tinysource/tinysource/actions/workflows/node.js.yml)
+[![tests](https://github.com/tinysource/tinysource/actions/workflows/tests.yml/badge.svg)](https://github.com/tinysource/tinysource/actions/workflows/tests.yml)
 [![codecov](https://codecov.io/gh/tinysource/tinysource/branch/main/graph/badge.svg?token=E2VYI8XJLB)](https://codecov.io/gh/tinysource/tinysource)
 
 ## Snippets
