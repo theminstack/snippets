@@ -23,6 +23,7 @@ Completely free TypeScript one-file source code snippets _with tests_, which can
 - [subject](subject) - Values you can subscribe to.
 - [subject-selector](subject-selector) - Computed values you can subscribe to.
 - [throttle](throttle) - Execute as fast as possible, but no faster.
+- [to-array](to-array) - Coerce a value to an array.
 
 ## The case for copying
 
