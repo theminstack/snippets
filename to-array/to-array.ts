@@ -1,9 +1,7 @@
-type ToArray = {
-  // eslint-disable-next-line functional/prefer-readonly-type
-  <TValue extends string>(value: TValue): TValue[];
-  // eslint-disable-next-line functional/prefer-readonly-type
-  <TValue>(value: ArrayLike<TValue> | Iterable<TValue> | TValue): TValue[];
-};
+type ToArrayResult<TValue> = any extends any
+  ? // eslint-disable-next-line functional/prefer-readonly-type
+    (TValue extends Function | string ? TValue : TValue extends readonly (infer TElement)[] ? TElement : TValue)[]
+  : never;
 
 /**
  * A multi-value is an array-like or iterable value, _excluding_ strings and
@@ -32,8 +30,8 @@ const isMultiValue = <TValue>(
  * have a single string or function become the only element in the resulting
  * array.
  */
-const toArray: ToArray = <TValue>(value: ArrayLike<TValue> | Iterable<TValue> | TValue): TValue[] => {
-  return isMultiValue(value) ? Array.from(value) : [value];
+const toArray = <TValue>(value: TValue): ToArrayResult<TValue> => {
+  return (isMultiValue(value) ? Array.from(value) : [value]) as ToArrayResult<TValue>;
 };
 
 export { toArray };

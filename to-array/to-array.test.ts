@@ -45,4 +45,11 @@ describe('toArray', () => {
       expect(toArray(value)).toEqual(expected);
     });
   });
+
+  test('mixed types', () => {
+    const value = 1 as string[] | number;
+    const array: (number | string)[] = toArray(value);
+
+    expect(array).toEqual([1]);
+  });
 });
