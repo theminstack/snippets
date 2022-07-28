@@ -24,7 +24,7 @@ const isMultiValue = <TValue>(
 };
 
 /**
- * Coerce a value to an array with special handling for strings. Single values will become a single value array.
+ * Coerce a value to an array. Single values will become a single value array.
  * All entries in iterable and array-like values will be copied to a new array.
  *
  * Strings and functions both have a `length` property, which makes them seem
