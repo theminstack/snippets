@@ -10,12 +10,6 @@ Create a limiter with a maximum concurrency (eg. 2).
 const limiter = createLimiter(2);
 ```
 
-If necessary, the maximum concurrency of a limiter can be accessed later.
-
-```ts
-limiter.concurrency; // 2
-```
-
 Execute asynchronous tasks and await the returned promises as usual.
 
 ```ts
@@ -85,27 +79,4 @@ After clearing, tasks that were pending will never be run, and the associated pr
 
 ```ts
 limiter.clear(new Error('Limiter cleared'));
-```
-
-Limiter counts can be awaited for more control over the `pending` task backlog growth and `active` task concurrency.
-
-```ts
-// Resolves when the pending count is less than
-// or equal to the value.
-await limiter.onPending(1);
-
-// Resolves when there are no pending tasks,
-// and the active count is less than or equal
-// to the value.
-await limiter.onActive(1);
-
-// Resolves when the incomplete task count
-// (pending + active) is less than or equal to
-// the value.
-await limiter.onSize(1);
-
-// Resolves when there are no pending or active
-// tasks (ie. the size is zero and the limiter
-// is completely inactive).
-await limiter.onEmpty();
 ```
