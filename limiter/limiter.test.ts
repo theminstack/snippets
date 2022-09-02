@@ -1,4 +1,4 @@
-import { limit } from './limit';
+import { createLimiter } from './limiter.js';
 
 const tasks: { readonly reject: () => void; readonly resolve: () => void }[] = [];
 const task = jest
@@ -16,12 +16,11 @@ beforeEach(() => {
 
 describe('limit', () => {
   test('non-sequential', async () => {
-    const limiter = limit(2);
+    const limiter = createLimiter(2);
     const a = limiter.run(task, 'a');
     const b = limiter.run(task, 'b');
     const c = limiter.run(task, 'c');
     const d = limiter.run(task, 'd');
-    expect(limiter.concurrency).toBe(2);
     expect(limiter.pending).toBe(2);
     expect(limiter.active).toBe(2);
     expect(limiter.size).toBe(4);
@@ -53,38 +52,25 @@ describe('limit', () => {
   });
 
   test('sequential', async () => {
-    const limiter = limit(2, { sequential: true });
-    const a = limiter.run(task);
-    const b = limiter.run(task);
-    const c = limiter.run(task);
+    const limiter = createLimiter(2, { sequential: true });
+    const order: string[] = [];
+    const a = limiter.run(task).then(() => order.push('a'));
+    const b = limiter.run(task).then(() => order.push('b'));
+    const c = limiter.run(task).then(() => order.push('c'));
 
     await nextTick();
     tasks[1].resolve();
-    await b;
     await nextTick();
-    expect(limiter.pending).toBe(1);
-    expect(limiter.active).toBe(2);
-
-    tasks[0].resolve();
-    await a;
-    await nextTick();
-    expect(limiter.pending).toBe(0);
-    expect(limiter.active).toBe(1);
-
     tasks[2].resolve();
-    await c;
     await nextTick();
-    expect(limiter.pending).toBe(0);
-    expect(limiter.active).toBe(0);
+    tasks[0].resolve();
+    await Promise.allSettled([a, b, c]);
+    expect(order).toStrictEqual(['a', 'b', 'c']);
   });
 
   test('states', async () => {
-    const limiter = limit(2, { paused: true });
+    const limiter = createLimiter(2, { paused: true });
     expect(limiter.isPaused).toBe(true);
-    await expect(limiter.onPending(0)).resolves.toBe(undefined);
-    await expect(limiter.onActive(0)).resolves.toBe(undefined);
-    await expect(limiter.onSize(0)).resolves.toBe(undefined);
-    await expect(limiter.onEmpty()).resolves.toBe(undefined);
 
     void limiter.run(task);
     void limiter.run(task);
@@ -111,68 +97,41 @@ describe('limit', () => {
     expect(limiter.pending).toBe(1);
     expect(limiter.active).toBe(2);
 
-    const onPending = jest.fn();
-    const onActive = jest.fn();
-    const onSize = jest.fn();
-    const onEmpty = jest.fn();
-    void limiter.onPending(0).then(onPending);
-    void limiter.onActive(1).then(onActive);
-    void limiter.onSize(2).then(onSize);
-    void limiter.onEmpty().then(onEmpty);
-    await nextTick();
-    expect(onPending).not.toHaveBeenCalled();
-    expect(onActive).not.toHaveBeenCalled();
-    expect(onSize).not.toHaveBeenCalled();
-    expect(onEmpty).not.toHaveBeenCalled();
-
     limiter.pause();
     tasks[1].resolve();
     await nextTick();
     expect(limiter.pending).toBe(1);
     expect(limiter.active).toBe(1);
-    expect(onPending).not.toHaveBeenCalled();
-    expect(onActive).not.toHaveBeenCalled();
-    expect(onSize).toHaveBeenCalled();
-    expect(onEmpty).not.toHaveBeenCalled();
 
     limiter.resume();
     await nextTick();
     expect(limiter.pending).toBe(0);
     expect(limiter.active).toBe(2);
-    expect(onPending).toHaveBeenCalled();
-    expect(onActive).not.toHaveBeenCalled();
-    expect(onEmpty).not.toHaveBeenCalled();
 
     limiter.pause();
     tasks[2].resolve();
     await nextTick();
     expect(limiter.pending).toBe(0);
     expect(limiter.active).toBe(1);
-    expect(onActive).toHaveBeenCalled();
-    expect(onEmpty).not.toHaveBeenCalled();
 
     limiter.resume();
     tasks[3].resolve();
     await nextTick();
     expect(limiter.pending).toBe(0);
     expect(limiter.active).toBe(0);
-    expect(onEmpty).toHaveBeenCalled();
   });
 
   test('clear', async () => {
-    const limiter = limit(1);
+    const limiter = createLimiter(1);
     void limiter.run(task);
     const a = limiter.run(task);
     expect(limiter.pending).toBe(1);
     expect(limiter.active).toBe(1);
 
-    const onPending = jest.fn();
-    void limiter.onPending(0).then(onPending);
     limiter.clear();
     expect(limiter.pending).toBe(0);
     expect(limiter.active).toBe(1);
     await nextTick();
-    expect(onPending).toHaveBeenCalled();
 
     tasks[0].resolve();
     await nextTick();

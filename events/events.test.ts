@@ -1,4 +1,4 @@
-import { createEvents } from './events';
+import { createEvents } from './events.js';
 
 describe('events', () => {
   test('emit returns false if no listeners are registered', () => {

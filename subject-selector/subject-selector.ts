@@ -134,7 +134,9 @@ const createSubjectSelector = <TValue>(compute: SubjectSelectorCompute<TValue>):
   update();
 
   return {
-    subscribe: (next, { immediate = false } = {}) => {
+    subscribe: (next, options = {}) => {
+      const { immediate = false } = options;
+
       let unsubscribe: () => void;
 
       if (dependencies.size > 0) {

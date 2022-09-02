@@ -1,4 +1,4 @@
-import { maybe } from './maybe';
+import { maybe } from './maybe.js';
 
 describe('maybe', () => {
   test('empty', () => {

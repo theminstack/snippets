@@ -33,7 +33,9 @@ type HashOptions = {
  * hashing algorithm (sometimes referred to as DJB2a), originally written by
  * [Dan Bernstein](https://en.wikipedia.org/wiki/Daniel_J._Bernstein).
  */
-const hash = (source: string, { seed = 5381 }: HashOptions = {}): HashValue => {
+const hash = (source: string, options: HashOptions = {}): HashValue => {
+  const { seed = 5381 } = options;
+
   let current = seed;
 
   for (let index = 0, max = source.length; index < max; ++index) {

@@ -1,4 +1,4 @@
-import { SortedList } from './sorted-list';
+import { SortedList } from './sorted-list.js';
 
 describe('sorted-list', () => {
   test('search', () => {

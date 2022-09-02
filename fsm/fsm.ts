@@ -109,7 +109,8 @@ const createFsm = <TStates extends FsmStatesDefinition = {}>(): Fsm<TStates> => 
 
         return createFsmState(transitions, state, value);
       },
-      transition: (action, { from, to }): Fsm => {
+      transition: (action, edge): Fsm => {
+        const { from, to } = edge;
         return transition(edges[from] && action in edges[from] ? edges : { ...edges, [from]: { [action]: to } });
       },
     } as Fsm;

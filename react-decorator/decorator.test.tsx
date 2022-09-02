@@ -1,9 +1,9 @@
 import { act, render } from '@testing-library/react';
-import { type ReactNode, type VFC } from 'react';
+import { type FC, type ReactNode } from 'react';
 
-import { Decorator } from './decorator';
+import { Decorator } from './decorator.js';
 
-const Decoration: VFC<{ readonly children?: ReactNode; readonly id?: string }> = ({ id, children }) => {
+const Decoration: FC<{ readonly children?: ReactNode; readonly id?: string }> = ({ id, children }) => {
   return (
     <div id={id} className="decoration">
       {children}

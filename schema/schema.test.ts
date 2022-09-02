@@ -1,4 +1,4 @@
-import { type Schema, type SchemaObject, $ } from './schema';
+import { type Schema, type SchemaObject, $ } from './schema.js';
 
 describe('schema', () => {
   const basicCases: Record<string, [Schema<any>, any[], any[]]> = {

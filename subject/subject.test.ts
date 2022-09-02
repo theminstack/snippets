@@ -1,4 +1,4 @@
-import { createSubject } from './subject';
+import { createSubject } from './subject.js';
 
 test('subject', () => {
   const subject = createSubject('first-value');
