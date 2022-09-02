@@ -1,4 +1,4 @@
-# Limit
+# Limiter
 
 Run asynchronous tasks with limited concurrency.
 
@@ -7,7 +7,7 @@ A limiter only allows a specific number of asynchronous tasks to be run in paral
 Create a limiter with a maximum concurrency (eg. 2).
 
 ```ts
-const limiter = limit(2);
+const limiter = createLimiter(2);
 ```
 
 If necessary, the maximum concurrency of a limiter can be accessed later.
@@ -34,7 +34,7 @@ Functionally, this is the same pattern with and without the limiter. If the fetc
 The limiter can also be configured to resolve task promises sequentially (tasks are always started sequentially), in the order that `run()` is called. This might reduce concurrency if an earlier task takes longer than a later task, due to the later task's resolution being delayed until the earlier task is resolved. But, the maximum concurrency will still be enforced.
 
 ```ts
-const limiter = limit(2, { sequential: true });
+const limiter = createLimiter(2, { sequential: true });
 ```
 
 Limiters can be paused and resumed. While paused, active tasks can resolve, and new pending tasks can be added, but no pending tasks will be started until the limiter is resumed.
@@ -64,7 +64,7 @@ limiter.size; // 1
 Limiters can be paused on creation.
 
 ```ts
-const limiter = limit(2, { paused: true });
+const limiter = createLimiter(2, { paused: true });
 ```
 
 Pending promises can be cleared, but any promises which have already started running will continue running.

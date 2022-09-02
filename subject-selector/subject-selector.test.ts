@@ -1,5 +1,5 @@
-import { createSubject } from '../subject/subject';
-import { createSubjectSelector } from './subject-selector';
+import { createSubject } from '../subject/subject.js';
+import { createSubjectSelector } from './subject-selector.js';
 
 test('subject-selector', () => {
   const a = createSubject(1);

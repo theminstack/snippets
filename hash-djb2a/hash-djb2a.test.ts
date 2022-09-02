@@ -1,4 +1,4 @@
-import { hash } from './hash-djb2a';
+import { hash } from './hash-djb2a.js';
 
 test('hash-djb2a', () => {
   expect(hash('').value).toBe(5381);

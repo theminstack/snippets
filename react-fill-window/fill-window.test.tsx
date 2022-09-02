@@ -1,6 +1,6 @@
 import { act, render, renderHook } from '@testing-library/react';
 
-import { FillWindow, useWindowInnerHeight } from './fill-window';
+import { FillWindow, useWindowInnerHeight } from './fill-window.js';
 
 test('useWindowInnerHeight', () => {
   Object.assign(window, { innerHeight: 100 });

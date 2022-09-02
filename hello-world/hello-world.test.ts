@@ -1,4 +1,4 @@
-import { hello } from './hello-world';
+import { hello } from './hello-world.js';
 
 describe('hello-world', () => {
   ['world', 'jane', 'john'].forEach((who) => {

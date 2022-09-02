@@ -1,3 +1,4 @@
+/* eslint max-lines: ["warn", 220] */
 type Primitive = bigint | boolean | number | string | symbol | null | undefined;
 
 type UnionToIntersection<T> = (T extends any ? (x: T) => any : never) extends (x: infer V) => any ? V : never;
@@ -83,10 +84,11 @@ const create = <TType>(test: (value: unknown, context: SchemaContext) => value i
 
       return value as TType;
     },
-    test: (value, { onInvalid, path = [] } = {}): value is TType => {
+    test: (value, options = {}): value is TType => {
       let valid = true;
       let pathString: string | undefined;
 
+      const { onInvalid, path = [] } = options;
       const context: SchemaContext = {
         onInvalid: (reason) => {
           valid = false;
@@ -112,7 +114,6 @@ const create = <TType>(test: (value: unknown, context: SchemaContext) => value i
           },
         }),
       };
-
       const success = test(value, context);
 
       if (!success && valid) {
@@ -131,15 +132,18 @@ const createObject = <TPropSchemas extends Record<string, Schema<any>>, TIndexTy
   index: Schema<TIndexType> | undefined,
 ): SchemaObject<SchemaObjectType<TPropSchemas, TIndexType>> => {
   const objectSchema: SchemaObject<SchemaObjectType<TPropSchemas, TIndexType>> = {
-    ...create(
-      (value, { path, ...context }): value is SchemaObjectType<TPropSchemas, TIndexType> =>
+    ...create((value, context): value is SchemaObjectType<TPropSchemas, TIndexType> => {
+      return (
         isObject(value) &&
-        Object.entries(props).every(([key, schema]) => schema.test(value[key], { ...context, path: [...path, key] })) &&
+        Object.entries(props).every(([key, schema]) =>
+          schema.test(value[key], { ...context, path: [...context.path, key] }),
+        ) &&
         (!index ||
           Object.entries(value).every(
-            ([key, value_]) => key in props || index.test(value_, { ...context, path: [...path, key] }),
-          )),
-    ),
+            ([key, value_]) => key in props || index.test(value_, { ...context, path: [...context.path, key] }),
+          ))
+      );
+    }),
     partial: lazy(() => {
       const partialProps: Record<string, Schema<any>> = {};
       Object.entries(props).forEach(([key, schema]) => (partialProps[key] = schema.optional()));
@@ -171,16 +175,16 @@ const enum_ = <TType extends readonly [Primitive, ...(readonly Primitive[])]>(..
   create((value): value is TType[number] => values.includes(value as never));
 const array = <TType>(schema?: Schema<TType>) =>
   create(
-    (value, { path, ...context }): value is TType[] =>
+    (value, context): value is TType[] =>
       Array.isArray(value) &&
-      (!schema || value.every((item, index) => schema.test(item, { ...context, path: [...path, index] }))),
+      (!schema || value.every((item, index) => schema.test(item, { ...context, path: [...context.path, index] }))),
   );
 const tuple = <TSchemas extends readonly Schema<any>[]>(...elements: TSchemas) =>
   create(
-    (value, { path, ...context }): value is SchemaTupleType<TSchemas> =>
+    (value, context): value is SchemaTupleType<TSchemas> =>
       Array.isArray(value) &&
       elements.length === value.length &&
-      elements.every((element, index) => element.test(value[index], { ...context, path: [...path, index] })),
+      elements.every((element, index) => element.test(value[index], { ...context, path: [...context.path, index] })),
   );
 const record = <TType>(index?: Schema<TType>) => createObject({}, index);
 const object = <TPropSchemas extends Record<string, Schema<any>>, TIndexType>(

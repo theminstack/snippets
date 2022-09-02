@@ -1,6 +1,6 @@
 import { inspect } from 'node:util';
 
-import { toArray } from './to-array';
+import { toArray } from './to-array.js';
 
 const fn = () => undefined;
 
