@@ -18,6 +18,7 @@ Completely free TypeScript one-file source code snippets _with tests_, which can
 - [react-fill-window](react-fill-window) - Vertically fill the browser window.
 - [react-use-boolean](react-use-boolean) - Boolean React states with helpful setters.
 - [react-use-subject](react-use-subject) - Subjects as sharable, atomic, React states.
+- [read-stream](read-stream) - Read all data from a stream.
 - [schema](schema) - Complex runtime type checking.
 - [sorted-list](sorted-list) - Always sorted list with binary searching.
 - [subject](subject) - Values you can subscribe to.
