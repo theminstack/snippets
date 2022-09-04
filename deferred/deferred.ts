@@ -19,7 +19,7 @@ type Deferred<TArgs extends readonly unknown[]> = {
  * deferred wrapper is always called before the timeout expires, the wrapped
  * function may never be called!**
  */
-const defer = <TArgs extends readonly unknown[] = readonly []>(
+const createDeferred = <TArgs extends readonly unknown[] = readonly []>(
   timeout: number,
   callback: (...args: TArgs) => void,
 ): Deferred<TArgs> => {
@@ -58,4 +58,4 @@ const defer = <TArgs extends readonly unknown[] = readonly []>(
   return deferred;
 };
 
-export { defer };
+export { createDeferred };

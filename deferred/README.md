@@ -1,4 +1,4 @@
-# Defer
+# Deferred
 
 Delay execution until idle.
 
@@ -7,7 +7,7 @@ When a deferred wrapper is called, execution is scheduled after a given amount o
 For example, performing auto complete as text is typed into a textbox. It's probably not a good idea to do the auto completion for every typed character. Instead, wait until no new text has been entered for a while, and then suggest completions.
 
 ```tsx
-const onChange = defer(1000, (e: ChangeEvent<HTMLInputElement>) => {
+const onChange = createDeferred(1000, (e: ChangeEvent<HTMLInputElement>) => {
   suggest(e.value);
 });
 

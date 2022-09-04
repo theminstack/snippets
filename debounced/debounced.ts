@@ -5,7 +5,7 @@
  * @param timeout Debounce timeout in milliseconds
  * @param callback Wrapped callback
  */
-const debounce = <TReturn, TArgs extends readonly unknown[] = readonly []>(
+const createDebounced = <TReturn, TArgs extends readonly unknown[] = readonly []>(
   timeout: number,
   callback: (...args: TArgs) => TReturn,
 ): ((...args: TArgs) => TReturn) => {
@@ -23,4 +23,4 @@ const debounce = <TReturn, TArgs extends readonly unknown[] = readonly []>(
   };
 };
 
-export { debounce };
+export { createDebounced };

@@ -7,8 +7,8 @@ Completely free TypeScript one-file source code snippets _with tests_, which can
 
 ## Snippets
 
-- [debounce](debounce) - Ignore repeating calls that happen too fast.
-- [defer](defer) - Delay execution until idle.
+- [debounced](debounced) - Ignore repeating calls that happen too fast.
+- [deferred](deferred) - Delay execution until idle.
 - [events](events) - Named events with publication and subscription.
 - [fsm](fsm) - Finite state machine.
 - [hash-djb2a](hash-djb2a) - Fast and good string hash function.
@@ -23,7 +23,7 @@ Completely free TypeScript one-file source code snippets _with tests_, which can
 - [sorted-list](sorted-list) - Always sorted list with binary searching.
 - [subject](subject) - Values you can subscribe to.
 - [subject-selector](subject-selector) - Computed values you can subscribe to.
-- [throttle](throttle) - Execute as fast as possible, but no faster.
+- [throttled](throttled) - Execute as fast as possible, but no faster.
 - [to-array](to-array) - Coerce a value to an array.
 
 ## The case for copying

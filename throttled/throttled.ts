@@ -34,7 +34,7 @@ type Throttled<TArgs extends readonly unknown[]> = {
  * throttled wrapper is called while a call is already scheduled, the
  * scheduled arguments are updated, but the scheduled time remains the same.
  */
-const throttle = <TArgs extends readonly unknown[]>(
+const createThrottled = <TArgs extends readonly unknown[]>(
   timeout: number,
   callback: (...args: TArgs) => void,
 ): Throttled<TArgs> => {
@@ -87,4 +87,4 @@ const throttle = <TArgs extends readonly unknown[]>(
   return throttled;
 };
 
-export { throttle };
+export { createThrottled };

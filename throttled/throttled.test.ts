@@ -1,9 +1,9 @@
-import { throttle } from './throttle.js';
+import { createThrottled } from './throttled.js';
 
-test('throttle', () => {
+test('throttled', () => {
   jest.useFakeTimers();
   const callback = jest.fn();
-  const throttled = throttle(100, callback);
+  const throttled = createThrottled(100, callback);
   throttled(1);
   expect(callback).toHaveBeenCalledTimes(1);
   expect(callback).toHaveBeenLastCalledWith(1);

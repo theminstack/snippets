@@ -1,9 +1,9 @@
-import { defer } from './defer.js';
+import { createDeferred } from './deferred.js';
 
-test('defer', () => {
+test('deferred', () => {
   jest.useFakeTimers();
   const callback = jest.fn();
-  const deferred = defer(1000, callback);
+  const deferred = createDeferred(1000, callback);
   deferred(1);
   expect(callback).not.toHaveBeenCalled();
   deferred(2);

@@ -1,9 +1,9 @@
-import { debounce } from './debounce.js';
+import { createDebounced } from './debounced.js';
 
-test('debounce', () => {
+test('debounced', () => {
   jest.useFakeTimers();
   const callback = jest.fn();
-  const debounced = debounce(250, callback);
+  const debounced = createDebounced(250, callback);
   debounced(1);
   expect(callback).toHaveBeenCalledTimes(1);
   expect(callback).toHaveBeenLastCalledWith(1);
