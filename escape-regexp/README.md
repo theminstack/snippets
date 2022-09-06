@@ -4,6 +4,6 @@ Escape all regular expression special/meta characters in a string so that they m
 
 ```ts
 const literal = escapeRegExp('.*'); // "\\.\\*"
-const rx = new RegExp(`^${literal}$`);
+const rx = new RegExp(`^${literal}$`, 'u');
 rx.test('.*'); // true
 ```
