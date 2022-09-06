@@ -9,6 +9,7 @@ Completely free TypeScript one-file source code snippets _with tests_, which can
 
 - [debounced](debounced) - Ignore repeating calls that happen too fast.
 - [deferred](deferred) - Delay execution until idle.
+- [escape-regexp](escape-regexp) - Escape all regular expression special/meta characters
 - [events](events) - Named events with publication and subscription.
 - [fsm](fsm) - Finite state machine.
 - [hash-djb2a](hash-djb2a) - Fast and good string hash function.
