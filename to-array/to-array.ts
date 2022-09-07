@@ -9,20 +9,12 @@
  */
 const toArray = <TValue>(
   value: TValue,
-): (TValue extends Function | string
-  ? TValue
-  : TValue extends ArrayLike<infer TElement> | Iterable<infer TElement>
-  ? TElement
-  : TValue)[] => {
-  if (
-    typeof value === 'object' &&
+): (TValue extends ArrayLike<infer TElement> | Iterable<infer TElement> ? TElement : TValue)[] => {
+  return typeof value === 'object' &&
     value != null &&
     (Symbol.iterator in value || typeof (value as any).length === 'number')
-  ) {
-    return Array.from(value as any);
-  }
-
-  return [value as any];
+    ? Array.from(value as any)
+    : [value as any];
 };
 
 export { toArray };
