@@ -1,9 +1,9 @@
 // Modern code (to be polyfilled) and explicit ambient types.
 {
   "compilerOptions": {
-    "module": "NodeNext",
-    "target": "ES2022",
-    "lib": ["ES2022", "DOM"],
+    "module": "CommonJS",
+    "target": "ES2020",
+    "lib": ["ES2020", "DOM"],
     "types": ["jest", "node"],
     "strict": true,
     "skipLibCheck": true,
@@ -14,7 +14,9 @@
     "downlevelIteration": true,
     "useDefineForClassFields": true,
     "jsx": "react-jsx",
-    "noEmit": true,
+    "sourceMap": true,
+    "declaration": true,
+    "outDir": ".build",
   },
   "include": ["*/**/*.ts", "*/**/*.tsx"],
   "exclude": ["**/node_modules", "**/.*"]

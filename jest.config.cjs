@@ -3,13 +3,15 @@
  * https://jestjs.io/docs/configuration
  */
 
+const ignorePatterns = ['/node_modules/', '/\\.', '/_', '/index\\.tsx?$', '\\.d\\.ts$'];
+
 /** @type {import('@jest/types').Config.InitialOptions} */
 module.exports = {
   bail: 0,
   collectCoverage: true,
   collectCoverageFrom: ['**/*.{ts,tsx}'],
   coverageDirectory: '.coverage',
-  coveragePathIgnorePatterns: ['/node_modules/', '/\\.', '/_', '/index\\.tsx?$', '\\.d\\.ts$'],
+  coveragePathIgnorePatterns: ignorePatterns,
   coverageProvider: 'v8',
   coverageReporters: ['text-summary', 'html-spa', 'lcov'],
   coverageThreshold: { global: { branches: 80, functions: 80, lines: 80, statements: 80 } },
@@ -26,6 +28,7 @@ module.exports = {
   roots: ['<rootDir>'],
   setupFilesAfterEnv: [],
   testEnvironment: 'jsdom',
+  testPathIgnorePatterns: ignorePatterns,
   transformIgnorePatterns: ['/node_modules/core-js/'],
   verbose: true,
 };

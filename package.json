@@ -3,7 +3,7 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "test": "tsc --noEmit && eslint . --max-warnings=0 && jest --no-cache",
+    "test": "tsc && eslint . --max-warnings=0 && jest --no-cache",
     "modernize": "npx npm-check-updates -i --format group"
   },
   "devDependencies": {
