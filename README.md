@@ -66,7 +66,10 @@ There are some simple rules of thumb for code that is easy and helpful to copy i
 - One test file (Jest compatible in this repo)
 - Free and unencumbered in the public domain (eg. under the [CC0-1.0](https://creativecommons.org/publicdomain/zero/1.0/legalcode.txt) license)
 
-It is acceptable to split your types and source into two files. Types sometimes take up a lot of lines, but contribute no actual bundle size. It's also an organization that is common in the wild.
+It is acceptable to split your source and types into two files, for the following reasons.
+
+- Types sometimes take up a lot of lines, but contribute no actual bundle size. - It's an organization that is common in the wild.
+- It can more accurately reflect complexity.
 
 ## Contributing to this repository
 
