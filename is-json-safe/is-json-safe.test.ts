@@ -35,4 +35,9 @@ describe('is-json-safe', () => {
     expect(isJsonSafe(Object.assign([], { foo: true }))).toBe(false);
     expect(isJsonSafe(Object.defineProperty([], Symbol(), { value: true }))).toBe(false);
   });
+
+  test('no: object or array with non-enumerable properties', () => {
+    expect(isJsonSafe(Object.defineProperty({}, 'foo', { enumerable: false, value: true }))).toBe(false);
+    expect(isJsonSafe(Object.defineProperty([], 'foo', { enumerable: false, value: true }))).toBe(false);
+  });
 });
