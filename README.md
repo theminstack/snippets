@@ -62,8 +62,11 @@ There are some simple rules of thumb for code that is easy and helpful to copy i
 - No runtime dependencies
   - With the exception of a single _popular_ framework, if the snippet is specifically designed for that framework (eg. React)
 - One reasonably sized source file (~150 lines)
+- One reasonably sized _types_ file (~150 lines)
 - One test file (Jest compatible in this repo)
 - Free and unencumbered in the public domain (eg. under the [CC0-1.0](https://creativecommons.org/publicdomain/zero/1.0/legalcode.txt) license)
+
+It is acceptable to split your types and source into two files. Types sometimes take up a lot of lines, but contribute no actual bundle size. It's also an organization that is common in the wild.
 
 ## Contributing to this repository
 
@@ -72,10 +75,11 @@ By contributing code to this repository, you agree to release it into the public
 If you agree, then...
 
 - Fork the repository
-- Add a new directory containing three files:
+- Add a new directory containing three (or four with types) files:
   - A source file (eg. `foo/foo.ts`)
     - Add docblock comments to all exports
     - Please use [kebab-case](https://en.wiktionary.org/wiki/kebab_case) for directory and file names
+  - An (optional) types file matching the source file (eg. `foo/foo.types.ts`)
   - A test file matching the source file (eg. `foo/foo.test.ts`)
   - A readme file (eg. `foo/README.md`)
     - Describe what the snippet for
