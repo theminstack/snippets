@@ -1,9 +1,9 @@
 // Modern code (to be polyfilled) and explicit ambient types.
 {
   "compilerOptions": {
-    "module": "CommonJS",
-    "target": "ES2020",
-    "lib": ["ES2020", "DOM"],
+    "module": "NodeNext",
+    "target": "ES2022",
+    "lib": ["ES2022", "DOM"],
     "types": ["jest", "node"],
     "strict": true,
     "skipLibCheck": true,
