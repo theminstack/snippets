@@ -19,8 +19,9 @@ Completely free TypeScript one-file source code snippets _with tests_, which can
 - [react-decorator](react-decorator) - Decorate non-empty DOM content with a wrapper.
 - [react-fill-window](react-fill-window) - Vertically fill the browser window.
 - [react-use-boolean](react-use-boolean) - Boolean React states with helpful setters.
+- [react-use-mutation](react-use-mutation) - Minimal asynchronous create/update/delete hook.
+- [react-use-query](react-use-query) - Minimal asynchronous data read hook.
 - [react-use-subject](react-use-subject) - Subjects as sharable, atomic, React states.
-- [react-use-query](react-use-query) - Minimal asynchronous data fetching hook.
 - [read-stream](read-stream) - Read all data from a stream.
 - [schema](schema) - Complex runtime type checking.
 - [sorted-list](sorted-list) - Always sorted list with binary searching.
