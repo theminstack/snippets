@@ -1,6 +1,6 @@
 # React query hook
 
-Minimal asynchronous data fetching hook.
+Minimal asynchronous data read hook.
 
 This hook is suitable for [safe](https://developer.mozilla.org/en-US/docs/Glossary/Safe/HTTP) operations which should not have any side effects (eg. GET, HEAD, OPTIONS, and TRACE requests)
 
@@ -18,6 +18,9 @@ It includes:
   - `refetchInterval`
   - `refetchOnReconnect`
   - `refetchOnWindowFocus`
+- Simplified query function context
+  - `queryKey`
+  - `signal`
 
 It does _not_ include:
 
@@ -26,7 +29,7 @@ It does _not_ include:
 
 Retrying is useful, but there's no reason to build it in to a query hook. Just retry in the query function as needed.
 
-In-memory caching (vs browser caching) is overrated. Consider leveraging browser caching, or hoisting a query if its state needs to be shared across separate parts of an app. Not including caching in the query hook avoids the need for a `QueryClient` context, which simplifies setup and testing.
+In-memory caching (vs browser caching) is overrated. Consider leveraging browser caching, or hoisting a query if its state needs to be shared or persisted. Not including caching in the query hook avoids the need for a `QueryClient` context, which simplifies setup and testing.
 
 The `useQuery` hook can be used directly in components, but generally you should wrap it in a custom hook.
 
@@ -41,11 +44,11 @@ const useResource = (id: string): QueryResult<Resource> => {
     // used whenever a refetch occurs. The query receives a context object
     // which includes an AbortSignal (ctx.signal), and the query key array
     // (ctx.queryKey).
-    async (ctx) => {
-      const response = await fetch('https://...', { signal: ctx.signal });
+    async (context) => {
+      const response = await fetch('https://...', { signal: context.signal });
 
       if (!response.ok) {
-        throw new Error(`Request failed (status: ${response.status}, key: ${JSON.stringify(ctx.key)})`);
+        throw new Error(`Request failed (status: ${response.status}, key: ${JSON.stringify(context.key)})`);
       }
 
       return response.json();

@@ -73,24 +73,29 @@ const useStableQueryKey = <TKey extends readonly unknown[]>(queryKey: TKey): TKe
 };
 
 /**
- * A minimal asynchronous data fetching hook.
+ * A minimal asynchronous data read hook.
  *
- * Inspired by (and API compatible with) the React Query
+ * This hook is suitable for
+ * [safe](https://developer.mozilla.org/en-US/docs/Glossary/Safe/HTTP)
+ * operations which should not have any side effects (eg. GET, HEAD, OPTIONS,
+ * and TRACE requests)
+ *
+ * Inspired by (and API compatible with) React Query's
  * [useQuery](https://tanstack.com/query/v4/docs/reference/useQuery) hook.
  *
- * Includes the following React Query `useQuery` options:
+ * Implements the following React Query `useQuery` options:
  * - `enabled`
  * - `refetchInterval`
  * - `refetchOnReconnect`
  * - `refetchOnWindowFocus`
  *
- * Includes the following React Query `useQuery` response properties:
+ * Implements the following React Query `useQuery` response properties:
  * - `data`
  * - `error`
  * - `isFetching`
  * - `refetch()`
  *
- * Includes the following React Query `queryFn` context properties:
+ * Implements the following React Query `queryFn` context properties:
  * - `queryKey`
  * - `signal`
  */
@@ -181,7 +186,7 @@ const useQuery = <TData, TKey extends readonly unknown[]>(
     }
   }, [enabled, refetchOnWindowFocus, refetch]);
 
-  // Abort on unmount
+  // Abort active query and prevent state changes after unmount
   useEffect(() => {
     return () => abortControllerRef.current.abort();
   }, []);
