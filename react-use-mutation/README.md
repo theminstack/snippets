@@ -66,7 +66,7 @@ const Component = (props: Props): JSX.Element => {
       {isLoading && <Saving />}
       {error && <Error error={error} />}
       {data && <Success data={data} />}
-      <CreateResourceForm enabled={!isLoading} onSave={onSave}>
+      <CreateResourceForm enabled={!isLoading} onSave={onSave} />
     </div>
   )
 };
