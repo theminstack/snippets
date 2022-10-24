@@ -23,7 +23,4 @@ module.exports = {
     },
   ],
   root: true,
-  rules: {
-    'destructure-object/no-rename': 'off',
-  },
 };
