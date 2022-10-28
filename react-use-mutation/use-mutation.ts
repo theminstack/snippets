@@ -1,5 +1,22 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 
+type MutationOptions<TData, TVariables, TContext> = {
+  /**
+   * Callback invoked before the mutation function. The returned value is
+   * passed to `onSettled` as a context.
+   */
+  readonly onMutate?: (variables: TVariables) => Promise<TContext | void> | TContext | void;
+  /**
+   * Callback invoked when a mutation completes.
+   */
+  readonly onSettled?: (
+    data: TData | undefined,
+    error: unknown,
+    variables: TVariables,
+    context?: unknown,
+  ) => Promise<void> | void;
+};
+
 type MutationResult<TData, TVariables> = {
   /**
    * Most recent successful mutation data. Cleared when a new mutation begins.
@@ -23,6 +40,10 @@ type MutationResult<TData, TVariables> = {
    * reflected in the mutation result.
    */
   readonly mutate: undefined extends TVariables ? (variables?: TVariables) => void : (variables: TVariables) => void;
+  /**
+   * Reset the response `data` and `error` values to undefined.
+   */
+  readonly reset: () => void;
 };
 
 type MutationFn<TData = unknown, TVariables = undefined> = (variables: TVariables) => Promise<TData>;
@@ -44,14 +65,18 @@ type MutationFn<TData = unknown, TVariables = undefined> = (variables: TVariable
  * - `isLoading`
  * - `mutate()`
  */
-const useMutation = <TData, TVariables>(
+const useMutation = <TData, TVariables, TContext>(
   mutationFn: MutationFn<TData, TVariables>,
+  options: MutationOptions<TData, TVariables, TContext> = {},
 ): MutationResult<TData, TVariables> => {
+  const { onMutate = () => undefined as TContext, onSettled } = options;
   const [data, setData] = useState<TData | undefined>();
   const [error, setError] = useState<unknown>();
   const [isLoading, setIsLoading] = useState(false);
 
   const mutationFnRef = useRef(mutationFn);
+  const onMutateRef = useRef(onMutate);
+  const onSettledRef = useRef(onSettled);
   const abortControllerRef = useRef(new AbortController());
 
   const mutate = useCallback((variables: TVariables = undefined as TVariables) => {
@@ -67,12 +92,27 @@ const useMutation = <TData, TVariables>(
     setIsLoading(true);
     setData(undefined);
     setError(undefined);
-    mutationFnRef
-      .current(variables)
-      .then((newData) => {
+
+    let context: TContext | undefined | void;
+
+    Promise.resolve()
+      .then(async () => {
+        context = await onMutateRef.current(variables);
+      })
+      .then(() => {
+        return mutationFnRef.current(variables);
+      })
+      .then(async (newData) => {
         if (!signal.aborted) {
+          await onSettledRef.current?.(newData, undefined, variables, context);
           setData(newData);
           setIsLoading(false);
+        }
+      })
+      .catch(async (newError) => {
+        if (!signal.aborted) {
+          await onSettledRef.current?.(undefined, newError, variables, context);
+          return Promise.reject(newError);
         }
       })
       .catch((newError) => {
@@ -83,9 +123,16 @@ const useMutation = <TData, TVariables>(
       });
   }, []) as undefined extends TVariables ? (variables?: TVariables) => void : (variables: TVariables) => void;
 
+  const reset = useCallback(() => {
+    setData(undefined);
+    setError(undefined);
+  }, []);
+
   // Keep mutation function evergreen
   useEffect(() => {
+    onMutateRef.current = onMutate;
     mutationFnRef.current = mutationFn;
+    onSettledRef.current = onSettled;
   });
 
   // Prevent state changes after unmount.
@@ -93,7 +140,7 @@ const useMutation = <TData, TVariables>(
     return () => abortControllerRef.current.abort();
   }, []);
 
-  return { data, error, isLoading, mutate };
+  return { data, error, isLoading, mutate, reset };
 };
 
 export type { MutationFn, MutationResult };
