@@ -143,12 +143,12 @@ const useQuery = <TData, TKey extends readonly unknown[]>(
         }
       })
       .finally(() => {
-        if (!signal.aborted && refetchIntervalRef.current > 0) {
+        if (enabled && !signal.aborted && refetchIntervalRef.current > 0) {
           const timeout = setTimeout(refetch, refetchIntervalRef.current);
           signal.addEventListener('abort', () => clearTimeout(timeout));
         }
       });
-  }, [stableQueryKey]);
+  }, [enabled, stableQueryKey]);
 
   // Keep query function (and related options) evergreen
   useEffect(() => {
