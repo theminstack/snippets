@@ -22,7 +22,8 @@
 				"markdown.extension.toc.levels": "2..4",
 				"github.codespaces.devcontainerChangedNotificationStyle": "none",
 				"git.autofetch": true,
-				"hide-node-modules.enable": true
+				"hide-node-modules.enable": true,
+				"jest.autoRun": "off"
 			},
 			"extensions": [
 				"dbaeumer.vscode-eslint",
@@ -35,7 +36,6 @@
 				"styled-components.vscode-styled-components",
 				"DigitalBrainstem.javascript-ejs-support",
 				"Compulim.indent4to2",
-				"firsttris.vscode-jest-runner",
 				"christian-kohler.npm-intellisense",
 				"jasonnutter.search-node-modules",
 				"richie5um2.vscode-sort-json",
@@ -44,7 +44,9 @@
 				"chrisbibby.hide-node-modules",
 				"ozaki.markdown-github-dark",
 				"eamodio.gitlens",
-				"fabiospampinato.vscode-open-in-github"
+				"fabiospampinato.vscode-open-in-github",
+				"Orta.vscode-jest",
+				"ritwickdey.LiveServer"
 			]
 		}
 	}
