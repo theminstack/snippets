@@ -109,3 +109,4 @@ dist
 !.eslintrc.cjs
 !.prettierrc.cjs
 !.github
+!.devcontainer

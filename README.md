@@ -5,6 +5,8 @@ Completely free TypeScript one-file source code snippets _with tests_, which can
 [![tests](https://github.com/tinysource/tinysource/actions/workflows/tests.yml/badge.svg)](https://github.com/tinysource/tinysource/actions/workflows/tests.yml)
 [![codecov](https://codecov.io/gh/tinysource/tinysource/branch/main/graph/badge.svg?token=E2VYI8XJLB)](https://codecov.io/gh/tinysource/tinysource)
 
+[![Open in GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://github.com/codespaces/new?hide_repo_select=true&ref=main&repo=488355959)
+
 ## Snippets
 
 - [debounced](debounced) - Ignore repeating calls that happen too fast.
