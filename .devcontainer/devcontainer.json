@@ -8,6 +8,7 @@
 		"vscode": {
 			"settings": {
 				"files.autoSave": "afterDelay",
+				"files.eol": "\n",
 				"extensions.ignoreRecommendations": true,
 				"extensions.closeExtensionDetailsOnViewChange": true,
 				"workbench.colorTheme": "Default Dark+",
