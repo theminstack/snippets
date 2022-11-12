@@ -4,6 +4,7 @@
 		"dockerfile": "Dockerfile"
 	},
 	"postCreateCommand": "pacman-key --init",
+	"postStartCommand": "npm i",
 	"customizations": {
 		"vscode": {
 			"settings": {
