@@ -31,6 +31,15 @@ type QueryOptions = {
   readonly refetchOnWindowFocus?: boolean;
 };
 
+type QueryRefetchOptions = {
+  /**
+   * Per default, a currently running request will be cancelled before a new
+   * request is made. When set to false, no refetch will be made if there is
+   * already a request running.
+   */
+  cancelRefetch?: boolean;
+};
+
 type QueryResult<TData> = {
   /**
    * Most recent successful query data. Only cleared if the query key changes.
@@ -50,7 +59,7 @@ type QueryResult<TData> = {
    * Immediately cause the query to be refetched, even if the query is not
    * currently enabled.
    */
-  readonly refetch: () => void;
+  readonly refetch: (options?: QueryRefetchOptions) => void;
 };
 
 type QueryFn<TData = unknown, TKey extends readonly unknown[] = readonly unknown[]> = (
@@ -113,47 +122,45 @@ const useQuery = <TData, TKey extends readonly unknown[]>(
   const [isFetching, setIsFetching] = useState(false);
 
   const queryFnRef = useRef(queryFn);
-  const refetchIntervalRef = useRef(refetchInterval);
-  const abortControllerRef = useRef(new AbortController());
+  const abortControllerRef = useRef<AbortController | undefined>();
 
-  const refetch = useCallback(() => {
-    if (abortControllerRef.current.signal.aborted) {
-      return;
-    }
+  const refetch = useCallback(
+    ({ cancelRefetch = true }: QueryRefetchOptions = {}) => {
+      if (!cancelRefetch && abortControllerRef.current && !abortControllerRef.current.signal.aborted) {
+        return;
+      }
 
-    abortControllerRef.current.abort();
-    abortControllerRef.current = new AbortController();
+      const controller = new AbortController();
 
-    const signal = abortControllerRef.current.signal;
+      abortControllerRef.current?.abort();
+      abortControllerRef.current = controller;
+      setIsFetching(true);
+      queryFnRef
+        .current({ queryKey: stableQueryKey, signal: controller.signal })
+        .finally(() => {
+          if (controller === abortControllerRef.current) {
+            abortControllerRef.current = undefined;
+          }
+        })
+        .then((newData) => {
+          if (!controller.signal.aborted) {
+            setData(newData);
+            setError(undefined);
+            setIsFetching(false);
+          }
+        })
+        .catch((newError) => {
+          if (!controller.signal.aborted) {
+            setError(newError);
+            setIsFetching(false);
+          }
+        });
+    },
+    [stableQueryKey],
+  );
 
-    setIsFetching(true);
-    queryFnRef
-      .current({ queryKey: stableQueryKey, signal })
-      .then((newData) => {
-        if (!signal.aborted) {
-          setData(newData);
-          setError(undefined);
-          setIsFetching(false);
-        }
-      })
-      .catch((newError) => {
-        if (!signal.aborted) {
-          setError(newError);
-          setIsFetching(false);
-        }
-      })
-      .finally(() => {
-        if (enabled && !signal.aborted && refetchIntervalRef.current > 0) {
-          const timeout = setTimeout(refetch, refetchIntervalRef.current);
-          signal.addEventListener('abort', () => clearTimeout(timeout));
-        }
-      });
-  }, [enabled, stableQueryKey]);
-
-  // Keep query function (and related options) evergreen
   useEffect(() => {
     queryFnRef.current = queryFn;
-    refetchIntervalRef.current = refetchInterval;
   });
 
   // Clear data and error if the key changes
@@ -167,28 +174,39 @@ const useQuery = <TData, TKey extends readonly unknown[]>(
     if (enabled) {
       refetch();
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [enabled, refetch]);
+
+  // Fetch on interval if set.
+  useEffect(() => {
+    if (enabled && refetchInterval > 0) {
+      const interval = setInterval(() => refetch({ cancelRefetch: false }), refetchInterval);
+      return () => clearInterval(interval);
+    }
+  }, [enabled, refetch, refetchInterval]);
 
   // Fetch on reconnect
   useEffect(() => {
     if (enabled && refetchOnReconnect) {
-      window.addEventListener('online', refetch);
-      return () => window.removeEventListener('online', refetch);
+      const onOnline = () => refetch({ cancelRefetch: false });
+      window.addEventListener('online', onOnline);
+      return () => window.removeEventListener('online', onOnline);
     }
   }, [enabled, refetchOnReconnect, refetch]);
 
   // Fetch on window focus
   useEffect(() => {
     if (enabled && refetchOnWindowFocus) {
-      window.addEventListener('focus', refetch);
-      return () => window.removeEventListener('focus', refetch);
+      const onFocus = () => refetch({ cancelRefetch: false });
+      window.addEventListener('focus', onFocus);
+      return () => window.removeEventListener('focus', onFocus);
     }
   }, [enabled, refetchOnWindowFocus, refetch]);
 
   // Abort active query and prevent state changes after unmount
   useEffect(() => {
-    return () => abortControllerRef.current.abort();
+    return () => {
+      abortControllerRef.current?.abort();
+    };
   }, []);
 
   return { data, error, isFetching, refetch };

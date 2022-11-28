@@ -143,9 +143,17 @@ describe('useQuery', () => {
     const { result, rerender } = renderHook((options: QueryOptions) => useQuery([], queryFnMock, options));
 
     expect(queryFnMock).toHaveBeenCalledTimes(1);
+    await waitFor(() => expect(result.current.isFetching).toEqual(false));
 
     act(() => void fireEvent(window, new Event('online')));
     expect(queryFnMock).toHaveBeenCalledTimes(2);
+
+    // Not when already fetching.
+    act(() => void fireEvent(window, new Event('online')));
+    expect(queryFnMock).toHaveBeenCalledTimes(2);
+
+    // Not when disabled
+    await waitFor(() => expect(result.current.isFetching).toEqual(false));
 
     // Not when disabled
     rerender({ refetchOnReconnect: false });
@@ -159,11 +167,17 @@ describe('useQuery', () => {
     const { result, rerender } = renderHook((options: QueryOptions) => useQuery([], queryFnMock, options));
 
     expect(queryFnMock).toHaveBeenCalledTimes(1);
+    await waitFor(() => expect(result.current.isFetching).toEqual(false));
 
     act(() => void fireEvent(window, new Event('focus')));
     expect(queryFnMock).toHaveBeenCalledTimes(2);
 
+    // Not when already fetching.
+    act(() => void fireEvent(window, new Event('focus')));
+    expect(queryFnMock).toHaveBeenCalledTimes(2);
+
     // Not when disabled
+    await waitFor(() => expect(result.current.isFetching).toEqual(false));
     rerender({ refetchOnWindowFocus: false });
     act(() => void fireEvent(window, new Event('focus')));
     expect(queryFnMock).toHaveBeenCalledTimes(2);
@@ -180,6 +194,10 @@ describe('useQuery', () => {
     act(() => result.current.refetch());
     expect(queryFnMock).toHaveBeenCalledTimes(2);
     expect(queryFnMock.mock.calls.at(-2)?.[0].signal.aborted).toEqual(true);
+
+    // NOT on manual refetch with cancelRefetch set to false.
+    act(() => result.current.refetch({ cancelRefetch: false }));
+    expect(queryFnMock).toHaveBeenCalledTimes(2);
 
     // Key change refetch
     rerender(['b']);
@@ -207,13 +225,22 @@ describe('useQuery', () => {
     await waitFor(() => expect(result.current.isFetching).toEqual(false));
   });
 
-  it('should ignore refetch after unmount', async () => {
+  it('should abort fetch on unmount', async () => {
+    const { unmount } = renderHook(() => useQuery(['a'], queryFnMock));
+
+    expect(queryFnMock).toHaveBeenCalledTimes(1);
+    unmount();
+    expect(queryFnMock.mock.calls.at(-1)?.[0].signal.aborted).toEqual(true);
+  });
+
+  it('should unmount without error when no query is running', async () => {
+    jest.useRealTimers();
     const { result, unmount } = renderHook(() => useQuery(['a'], queryFnMock));
 
+    await waitFor(() => expect(result.current.isFetching).toEqual(false));
     expect(queryFnMock).toHaveBeenCalledTimes(1);
-
+    expect(queryFnMock.mock.calls.at(-1)?.[0].signal.aborted).toEqual(false);
     unmount();
-    result.current.refetch();
-    expect(queryFnMock).toHaveBeenCalledTimes(1);
+    await new Promise((resolve) => setTimeout(resolve));
   });
 });

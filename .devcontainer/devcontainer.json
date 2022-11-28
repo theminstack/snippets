@@ -1,0 +1,53 @@
+{
+	"name": "Arch Node.js v18",
+	"build": {
+		"dockerfile": "Dockerfile"
+	},
+	"postCreateCommand": "pacman-key --init",
+	"postStartCommand": "npm i",
+	"customizations": {
+		"vscode": {
+			"settings": {
+				"files.autoSave": "afterDelay",
+				"files.eol": "\n",
+				"extensions.ignoreRecommendations": true,
+				"extensions.closeExtensionDetailsOnViewChange": true,
+				"workbench.colorTheme": "Default Dark+",
+				"workbench.iconTheme": "material-icon-theme",
+				"editor.tabSize": 2,
+				"editor.defaultFormatter": "esbenp.prettier-vscode",
+				"editor.formatOnPaste": false,
+				"editor.formatOnType": false,
+				"editor.formatOnSave": false,
+				"terminal.integrated.scrollback": 10000,
+				"markdown.extension.toc.levels": "2..4",
+				"github.codespaces.devcontainerChangedNotificationStyle": "none",
+				"git.autofetch": true,
+				"hide-node-modules.enable": true,
+				"jest.autoRun": "off"
+			},
+			"extensions": [
+				"dbaeumer.vscode-eslint",
+				"PKief.material-icon-theme",
+				"christian-kohler.path-intellisense",
+				"streetsidesoftware.code-spell-checker",
+				"aaron-bond.better-comments",
+				"naumovs.color-highlight",
+				"styled-components.vscode-styled-components",
+				"DigitalBrainstem.javascript-ejs-support",
+				"Compulim.indent4to2",
+				"christian-kohler.npm-intellisense",
+				"jasonnutter.search-node-modules",
+				"richie5um2.vscode-sort-json",
+				"ms-azuretools.vscode-docker",
+				"esbenp.prettier-vscode",
+				"chrisbibby.hide-node-modules",
+				"ozaki.markdown-github-dark",
+				"eamodio.gitlens",
+				"fabiospampinato.vscode-open-in-github",
+				"Orta.vscode-jest",
+				"ritwickdey.LiveServer"
+			]
+		}
+	}
+}
