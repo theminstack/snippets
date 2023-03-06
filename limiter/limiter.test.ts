@@ -1,17 +1,19 @@
 import { createLimiter } from './limiter.js';
 
 const tasks: { readonly reject: () => void; readonly resolve: () => void }[] = [];
-const task = jest
-  .fn()
-  .mockImplementation(
-    (arg) =>
-      new Promise<unknown>((resolve, reject) => tasks.push({ reject: () => reject(arg), resolve: () => resolve(arg) })),
-  );
 const nextTick = () => new Promise(process.nextTick);
+let task: jest.Mock;
 
 beforeEach(() => {
   tasks.length = 0;
-  task.mockClear();
+  task = jest
+    .fn()
+    .mockImplementation(
+      (arg) =>
+        new Promise<unknown>((resolve, reject) =>
+          tasks.push({ reject: () => reject(arg), resolve: () => resolve(arg) }),
+        ),
+    );
 });
 
 describe('limit', () => {
