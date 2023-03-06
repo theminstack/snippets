@@ -13,18 +13,17 @@ const Decoration: FC<{ readonly children?: ReactNode; readonly id?: string }> = 
 
 const Empty = () => null;
 const NotEmpty = () => <div>not empty</div>;
-const RealMutationObserver = global.MutationObserver;
-const FakeMutationObserver = jest.fn().mockReturnValue({
-  disconnect: jest.fn(),
-  observe: jest.fn(),
-});
+let mutationObserverSpy: jest.SpyInstance;
 
 beforeEach(() => {
-  global.MutationObserver = FakeMutationObserver;
+  mutationObserverSpy = jest.spyOn(global, 'MutationObserver').mockReturnValue({
+    disconnect: jest.fn(),
+    observe: jest.fn(),
+  } as never);
 });
 
 afterEach(() => {
-  global.MutationObserver = RealMutationObserver;
+  mutationObserverSpy.mockRestore();
 });
 
 test('decorator', () => {
@@ -50,7 +49,7 @@ test('decorator', () => {
   );
 
   act(() => {
-    FakeMutationObserver.mock.calls.at(-1)[0]();
+    mutationObserverSpy.mock.calls.at(-1)[0]();
   });
 
   expect(container).toMatchInlineSnapshot(`
@@ -106,7 +105,7 @@ test('decorator', () => {
   );
 
   act(() => {
-    FakeMutationObserver.mock.calls.at(-1)[0]();
+    mutationObserverSpy.mock.calls.at(-1)[0]();
   });
 
   expect(container).toMatchInlineSnapshot(`
@@ -135,7 +134,7 @@ test('decorator', () => {
   );
 
   act(() => {
-    FakeMutationObserver.mock.calls.at(-1)[0]();
+    mutationObserverSpy.mock.calls.at(-1)[0]();
   });
 
   expect(container).toMatchInlineSnapshot(`

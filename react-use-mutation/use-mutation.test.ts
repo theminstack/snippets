@@ -1,4 +1,3 @@
-/* eslint-disable canonical/sort-keys */
 import { renderHook, waitFor } from '@testing-library/react';
 import { act } from 'react-dom/test-utils';
 

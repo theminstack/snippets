@@ -14,7 +14,7 @@ module.exports = {
   coveragePathIgnorePatterns: ignorePatterns,
   coverageProvider: 'v8',
   coverageReporters: ['text-summary', 'html-spa', 'lcov'],
-  coverageThreshold: { global: { branches: 80, functions: 80, lines: 80, statements: 80 } },
+  coverageThreshold: { global: { branches: 100, functions: 100, lines: 100, statements: 100 } },
   extensionsToTreatAsEsm: ['.ts', '.tsx'],
   moduleNameMapper: {
     // Remove the .js extension (required for ES Module support) from TS file imports.
