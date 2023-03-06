@@ -1,68 +1,89 @@
-type FetchResponseErrorHeaders = {
-  readonly allow?: string;
-  readonly contentRange?: string;
-  readonly proxyAuthenticate?: string;
-  readonly retryAfter?: number;
-  readonly upgrade?: string;
-  readonly wwwAuthenticate?: string;
-};
+interface HeadersLike {
+  readonly get: (key: string) => string | null;
+}
 
-type FetchResponseErrorDetails = {
-  readonly headers?: FetchResponseErrorHeaders;
-  readonly json?: unknown;
-};
-
-type ResponseLike = {
-  readonly headers: { readonly get: (name: string) => string | null };
-  readonly json: () => Promise<unknown>;
-  readonly ok: boolean;
-  readonly status: number;
+interface FetchErrorOptions {
+  readonly method?: string | null;
   readonly url: string;
+  readonly status: number;
+  readonly headers?: Record<string, string> | { readonly get: (key: string) => string | null } | null;
+  readonly id?: string | null;
+  readonly code?: string | null;
+  readonly reason?: unknown;
+}
+
+const RESPONSE_HEADER_KEYS = [
+  'allow',
+  'content-range',
+  'proxy-authenticate',
+  'retry-after',
+  'upgrade',
+  'www-authenticate',
+] as const;
+
+const isHeadersLike = (headers: HeadersLike | Record<string, string> | null | undefined): headers is HeadersLike => {
+  return headers != null && 'get' in headers && typeof headers.get === 'function';
 };
 
-const TEMPORARY_ERROR_STATUS_CODES: readonly number[] = [404, 429, 500, 502, 503, 504];
+class FetchError extends Error {
+  public name = 'FetchError';
+  /**
+   * Request method (if available).
+   */
+  public method: string | undefined;
+  /**
+   * Response or request URL.
+   */
+  public url: string;
+  /**
+   * HTTP response status code.
+   */
+  public status: number;
+  /**
+   * Response headers (limited safe set).
+   */
+  public headers: Readonly<Partial<Record<(typeof RESPONSE_HEADER_KEYS)[number], string>>>;
+  /**
+   * Request ID which is attached to log messages related to the request.
+   */
+  public id: string | undefined;
+  /**
+   * Well known error code constant.
+   */
+  public code: string;
+  /**
+   * Error that triggered this error (if any).
+   */
+  public reason: unknown;
 
-class FetchResponseError extends Error {
-  public name = 'FetchResponseError';
-  public readonly status: number;
-  public readonly url: string;
-  public readonly isTemporary: boolean;
-  public readonly headers: FetchResponseErrorHeaders;
-  public readonly json: unknown;
+  constructor({ method, url, status, headers, id, code, reason }: FetchErrorOptions) {
+    method = method?.toUpperCase() ?? undefined;
+    headers = headers ?? undefined;
+    id = id ?? undefined;
+    code = code ?? 'unknown_error';
 
-  constructor(status: number, url: string, details?: FetchResponseErrorDetails) {
-    super(`HTTP_STATUS_${status}`);
-    this.status = status;
+    super(`Failed fetching ${method ? `${method} ` : ''}${url} (${status}, ${code}${id ? `, ${id}` : ''})`);
+
+    this.method = method;
     this.url = url;
-    this.isTemporary = TEMPORARY_ERROR_STATUS_CODES.includes(status);
-    this.headers = details?.headers ?? {};
-    this.json = details?.json;
+    this.status = status;
+    this.code = code;
+    this.id = id;
+    this.reason = reason;
+
+    const allHeaders = isHeadersLike(headers) ? headers : new Headers(headers);
+    const safeHeaders: Partial<Record<(typeof RESPONSE_HEADER_KEYS)[number], string>> = {};
+
+    for (const key of RESPONSE_HEADER_KEYS) {
+      const value = allHeaders.get(key);
+
+      if (value) {
+        safeHeaders[key] = value;
+      }
+    }
+
+    this.headers = safeHeaders;
   }
 }
 
-const assertFetchResponseOk = async (res: ResponseLike): Promise<void> => {
-  if (!res.ok) {
-    let json: unknown;
-
-    try {
-      json = await res.json();
-    } catch {
-      // Ignore failures to read the response body as JSON.
-    }
-
-    throw new FetchResponseError(res.status, res.url, {
-      headers: {
-        allow: res.headers.get('allow') ?? undefined,
-        contentRange: res.headers.get('content-range') ?? undefined,
-        proxyAuthenticate: res.headers.get('proxy-authenticate') ?? undefined,
-        retryAfter: Math.max(0, Number.parseInt(res.headers.get('retry-after') ?? '', 10) >>> 0) || undefined,
-        upgrade: res.headers.get('upgrade') ?? undefined,
-        wwwAuthenticate: res.headers.get('www-authenticate') ?? undefined,
-      },
-      json,
-    });
-  }
-};
-
-export type { ResponseLike };
-export { assertFetchResponseOk, FetchResponseError };
+export { type FetchErrorOptions, FetchError };

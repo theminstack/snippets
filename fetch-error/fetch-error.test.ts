@@ -1,111 +1,104 @@
-import { STATUS_CODES } from 'node:http';
+import { FetchError } from './fetch-error.js';
 
-import { type ResponseLike, assertFetchResponseOk, FetchResponseError } from './fetch-error.js';
-
-describe('FetchResponseError', () => {
-  Object.keys(STATUS_CODES)
-    .map((key) => Number.parseInt(key, 10))
-    .filter((status) => !Number.isNaN(status))
-    .forEach((status) => {
-      const expected = [404, 429, 500, 502, 503, 504].includes(status);
-
-      it(`should set isTemporary to ${expected} for status ${status}`, () => {
-        expect(new FetchResponseError(status, '').isTemporary).toBe(expected);
-      });
-
-      it('should default headers to an empty object', () => {
-        expect(new FetchResponseError(status, '').headers).toBeInstanceOf(Object);
-      });
-
-      it('should set properties from constructor args', () => {
-        expect(
-          new FetchResponseError(500, 'https://test', {
-            headers: {
-              allow: 'ALLOW',
-              contentRange: 'CONTENT_RANGE',
-              proxyAuthenticate: 'PROXY_AUTHENTICATE',
-              retryAfter: 1234,
-              upgrade: 'UPGRADE',
-              wwwAuthenticate: 'WWW_AUTHENTICATE',
-            },
-            json: 'JSON',
-          }),
-        ).toMatchObject({
-          headers: {
-            allow: 'ALLOW',
-            contentRange: 'CONTENT_RANGE',
-            proxyAuthenticate: 'PROXY_AUTHENTICATE',
-            retryAfter: 1234,
-            upgrade: 'UPGRADE',
-            wwwAuthenticate: 'WWW_AUTHENTICATE',
-          },
-          isTemporary: true,
-          json: 'JSON',
-          message: 'HTTP_STATUS_500',
-          name: 'FetchResponseError',
-          status: 500,
-          url: 'https://test',
-        });
-      });
-    });
-});
-
-describe('assertFetchResponseOk', () => {
-  let res: ResponseLike;
-
-  beforeEach(() => {
-    res = {
-      headers: {
-        get: jest.fn().mockImplementation((name: string): string | null => {
-          return name.toLocaleLowerCase() === 'retry-after' ? '1234' : name.toUpperCase();
-        }),
-      },
-      json: jest.fn().mockResolvedValue({ error: 'CODE' }),
-      ok: false,
+describe('FetchError', () => {
+  test('minimum details', () => {
+    const error = new FetchError({
+      url: 'https://example.com',
       status: 500,
-      url: 'https://test',
-    };
-  });
+    });
 
-  it('should not assert if response.ok === true', async () => {
-    await expect(assertFetchResponseOk({ ...res, ok: true })).resolves.toBe(undefined);
-  });
-
-  it('should assert if response.ok !== true', async () => {
-    const error = (await assertFetchResponseOk(res).catch((reason) => reason)) as FetchResponseError;
-    expect(error).toBeInstanceOf(FetchResponseError);
+    expect(error).toBeInstanceOf(Error);
+    expect(error.message).toBe(`Failed fetching https://example.com (500, unknown_error)`);
     expect(error).toMatchObject({
-      headers: {
-        allow: 'ALLOW',
-        contentRange: 'CONTENT-RANGE',
-        proxyAuthenticate: 'PROXY-AUTHENTICATE',
-        retryAfter: 1234,
-        upgrade: 'UPGRADE',
-        wwwAuthenticate: 'WWW-AUTHENTICATE',
-      },
-      isTemporary: true,
-      json: { error: 'CODE' },
-      message: 'HTTP_STATUS_500',
-      name: 'FetchResponseError',
+      name: 'FetchError',
+      method: undefined,
+      url: 'https://example.com',
       status: 500,
-      url: 'https://test',
+      headers: expect.objectContaining({}),
+      id: undefined,
+      code: 'unknown_error',
+      reason: undefined,
     });
   });
 
-  it('should not fail if json parsing throws', async () => {
-    jest.mocked(res.json).mockRejectedValue(new TypeError('Invalid JSON'));
-    const error = (await assertFetchResponseOk(res).catch((reason) => reason)) as FetchResponseError;
-    expect(error).toBeInstanceOf(FetchResponseError);
-    expect(error.json).toBeUndefined();
+  test('nulled details', () => {
+    const error = new FetchError({
+      method: null,
+      url: 'https://example.com',
+      status: 500,
+      headers: null,
+      id: null,
+      code: null,
+      reason: null,
+    });
+
+    expect(error).toMatchObject({
+      name: 'FetchError',
+      method: undefined,
+      url: 'https://example.com',
+      status: 500,
+      headers: expect.objectContaining({}),
+      id: undefined,
+      code: 'unknown_error',
+      reason: null,
+    });
   });
 
-  it('should set undefined for all missing headers', async () => {
-    jest.mocked(res.headers.get).mockReturnValue(null);
-    const error = (await assertFetchResponseOk(res).catch((reason) => reason)) as FetchResponseError;
-    const headers = Object.keys(error.headers);
-    expect(headers.length).toEqual(6);
-    headers.forEach((header) => {
-      expect(error.headers[header as keyof typeof error.headers]).toBeUndefined();
+  test('all details', () => {
+    const reason = new Error('reason');
+    const error = new FetchError({
+      method: 'POST',
+      url: 'https://example.com',
+      status: 404,
+      headers: {
+        foo: 'bar',
+        ...['allow', 'content-range', 'proxy-authenticate', 'retry-after', 'upgrade', 'www-authenticate'].reduce(
+          (result, key) => ({ ...result, [key]: key.toUpperCase() }),
+          {},
+        ),
+      },
+      id: 'identifier',
+      code: 'known_error',
+      reason,
+    });
+
+    expect(error).toBeInstanceOf(Error);
+    expect(error.message).toBe(`Failed fetching POST https://example.com (404, known_error, identifier)`);
+    expect(error).toMatchObject({
+      name: 'FetchError',
+      method: 'POST',
+      url: 'https://example.com',
+      status: 404,
+      headers: expect.objectContaining({
+        ...['allow', 'content-range', 'proxy-authenticate', 'retry-after', 'upgrade', 'www-authenticate'].reduce(
+          (result, key) => ({ ...result, [key]: key.toUpperCase() }),
+          {},
+        ),
+      }),
+      id: 'identifier',
+      code: 'known_error',
+      reason,
+    });
+  });
+
+  test('headers is a Headers instance', () => {
+    const error = new FetchError({
+      url: 'https://example.com',
+      status: 500,
+      headers: new Headers({
+        foo: 'bar',
+        ...['allow', 'content-range', 'proxy-authenticate', 'retry-after', 'upgrade', 'www-authenticate'].reduce(
+          (result, key) => ({ ...result, [key]: key.toUpperCase() }),
+          {},
+        ),
+      }),
+    });
+
+    expect(error.headers).toEqual({
+      ...['allow', 'content-range', 'proxy-authenticate', 'retry-after', 'upgrade', 'www-authenticate'].reduce(
+        (result, key) => ({ ...result, [key]: key.toUpperCase() }),
+        {},
+      ),
     });
   });
 });
