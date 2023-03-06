@@ -51,17 +51,21 @@ describe('FetchResponseError', () => {
 });
 
 describe('assertFetchResponseOk', () => {
-  const res: ResponseLike = {
-    headers: {
-      get: jest.fn().mockImplementation((name: string): string | null => {
-        return name.toLocaleLowerCase() === 'retry-after' ? '1234' : name.toUpperCase();
-      }),
-    },
-    json: jest.fn().mockResolvedValue({ error: 'CODE' }),
-    ok: false,
-    status: 500,
-    url: 'https://test',
-  };
+  let res: ResponseLike;
+
+  beforeEach(() => {
+    res = {
+      headers: {
+        get: jest.fn().mockImplementation((name: string): string | null => {
+          return name.toLocaleLowerCase() === 'retry-after' ? '1234' : name.toUpperCase();
+        }),
+      },
+      json: jest.fn().mockResolvedValue({ error: 'CODE' }),
+      ok: false,
+      status: 500,
+      url: 'https://test',
+    };
+  });
 
   it('should not assert if response.ok === true', async () => {
     await expect(assertFetchResponseOk({ ...res, ok: true })).resolves.toBe(undefined);
