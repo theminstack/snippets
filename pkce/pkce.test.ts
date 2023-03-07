@@ -35,6 +35,10 @@ describe('pkce', () => {
     expect(verifier.length).toBe(43);
     expect(verifier).toMatchInlineSnapshot(`"XaOHqO5St-E5Yn-15lGL6zw_Gdz7v12F46f7BIYWW1S"`);
 
+    verifier = createPkceVerifier(44);
+    expect(verifier.length).toBe(44);
+    expect(verifier).toMatchInlineSnapshot(`"XaOHqO5St-E5Yn-15lGL6zw_Gdz7v12F46f7BIYWW1SC"`);
+
     verifier = createPkceVerifier(64);
     expect(verifier.length).toBe(64);
     expect(verifier).toMatchInlineSnapshot(`"XaOHqO5St-E5Yn-15lGL6zw_Gdz7v12F46f7BIYWW1SCKuB0mwDeoVWwcfiT43Zv"`);
@@ -57,6 +61,12 @@ describe('pkce', () => {
       `"XaOHqO5St-E5Yn-15lGL6zw_Gdz7v12F46f7BIYWW1SCKuB0mwDeoVWwcfiT43ZvZWcIXtFI4w8ibgTz2i-GSwR9Rpa0PV4ovK6D_KOXYAa6QFAPZJCUuOun07_ezXIf"`,
     );
 
+    verifier = createPkceVerifier(Number.NaN);
+    expect(verifier.length).toBe(128);
+    expect(verifier).toMatchInlineSnapshot(
+      `"XaOHqO5St-E5Yn-15lGL6zw_Gdz7v12F46f7BIYWW1SCKuB0mwDeoVWwcfiT43ZvZWcIXtFI4w8ibgTz2i-GSwR9Rpa0PV4ovK6D_KOXYAa6QFAPZJCUuOun07_ezXIf"`,
+    );
+
     verifier = createPkceVerifier();
     expect(verifier.length).toBe(128);
     expect(verifier).toMatchInlineSnapshot(
@@ -70,6 +80,9 @@ describe('pkce', () => {
     challenge = await createPkceChallenge('XaOHqO5St-E5Yn-15lGL6zw_Gdz7v12F46f7BIYWW1S');
     expect(challenge).toBe('KIE3c1Hvm6pvLCR3iavBHyOQEK-P1Z6wS2DF9qYeWfg');
 
+    challenge = await createPkceChallenge('XaOHqO5St-E5Yn-15lGL6zw_Gdz7v12F46f7BIYWW1SC');
+    expect(challenge).toBe('0L9SmrRq_aANO8prOlbT92kxGeQ1U4wsfZIqY7XCJRM');
+
     challenge = await createPkceChallenge('XaOHqO5St-E5Yn-15lGL6zw_Gdz7v12F46f7BIYWW1SCKuB0mwDeoVWwcfiT43Zv');
     expect(challenge).toBe('9o1huuS5t87OxSGedmV9pMgwySMHLdikzqTZknK1vlo');
 
@@ -77,5 +90,10 @@ describe('pkce', () => {
       'XaOHqO5St-E5Yn-15lGL6zw_Gdz7v12F46f7BIYWW1SCKuB0mwDeoVWwcfiT43ZvZWcIXtFI4w8ibgTz2i-GSwR9Rpa0PV4ovK6D_KOXYAa6QFAPZJCUuOun07_ezXI',
     );
     expect(challenge).toBe('k2lNh50R0NNz0_IadJN6NaBN62OEku_ogay_iTaKVX0');
+
+    challenge = await createPkceChallenge(
+      'XaOHqO5St-E5Yn-15lGL6zw_Gdz7v12F46f7BIYWW1SCKuB0mwDeoVWwcfiT43ZvZWcIXtFI4w8ibgTz2i-GSwR9Rpa0PV4ovK6D_KOXYAa6QFAPZJCUuOun07_ezXIf',
+    );
+    expect(challenge).toBe('SymxQ48IZBLnrAdBCmR6M6bHjSIra9zbPxtDophLeuY');
   });
 });

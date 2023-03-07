@@ -4,7 +4,7 @@ const encodeBase64Url = (bytes: Uint8Array): string => {
 };
 
 const createPkceVerifier = (length = 128): string => {
-  const bytes = crypto.getRandomValues(new Uint8Array(Math.min(128, Math.max(43, length)) || 43));
+  const bytes = crypto.getRandomValues(new Uint8Array(Math.min(128, Math.max(43, length)) || 128));
   return encodeBase64Url(bytes).slice(0, bytes.length);
 };
 
