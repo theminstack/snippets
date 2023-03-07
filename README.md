@@ -17,6 +17,7 @@ Completely free TypeScript one-file source code snippets _with tests_, which can
 - [is-json-safe](is-json-safe) - Can a value be converted to and from JSON without data loss.
 - [limiter](limiter) - Run asynchronous tasks with limited concurrency.
 - [maybe](maybe) - Functionally represent and manipulate possibly missing/error values.
+- [pkce](pkce) - Utilities for generating PKCE verifiers and challenges.
 - [react-decorator](react-decorator) - Decorate non-empty DOM content with a wrapper.
 - [react-use-boolean](react-use-boolean) - Boolean React states with helpful setters.
 - [react-use-mutation](react-use-mutation) - Minimal asynchronous create/update/delete hook.
