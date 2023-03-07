@@ -79,6 +79,9 @@ const updated: DataType = await mySdk.update(created.id, { ... });
 
 // Delete the record.
 await mySdk.delete(created.id);
+
+// List all records.
+const listed: { entries: DataType[] } = await mySdk.list();
 ```
 
 The `createFetchSdk` helper also accepts a function if the SDK class needs arguments.
