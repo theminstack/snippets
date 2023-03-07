@@ -2,7 +2,9 @@ type FsmStateKey = number | string | symbol;
 
 type FsmStatesDefinition = { readonly [state: FsmStateKey]: unknown };
 
-type FsmEdgesDefinition = { readonly [fromState: FsmStateKey]: { readonly [action: string]: FsmStateKey } };
+type FsmActions = { readonly [action: string]: FsmStateKey };
+
+type FsmEdgesDefinition = { readonly [fromState: FsmStateKey]: FsmActions };
 
 type FsmTransition<
   TStates extends FsmStatesDefinition = FsmStatesDefinition,
@@ -99,9 +101,10 @@ const createFsm = <TStates extends FsmStatesDefinition = {}>(): Fsm<TStates> => 
         const transitions: Record<FsmStateKey, Record<string, FsmTransition>> = {};
 
         Object.entries(edges).forEach(([fromState, actions]) => {
-          transitions[fromState] = {};
+          const transitionsMap: Record<string, FsmTransition> = (transitions[fromState] = {});
+
           Object.entries(actions).forEach(([action, toState]) => {
-            transitions[fromState][action] = (toValue?: unknown) => {
+            transitionsMap[action] = (toValue?: unknown) => {
               return createFsmState(transitions, toState, toValue);
             };
           });
@@ -111,7 +114,8 @@ const createFsm = <TStates extends FsmStatesDefinition = {}>(): Fsm<TStates> => 
       },
       transition: (action, edge): Fsm => {
         const { from, to } = edge;
-        return transition(edges[from] && action in edges[from] ? edges : { ...edges, [from]: { [action]: to } });
+        const actions: FsmActions | undefined = edges[from];
+        return transition(actions && action in actions ? edges : { ...edges, [from]: { [action]: to } });
       },
     } as Fsm;
   };

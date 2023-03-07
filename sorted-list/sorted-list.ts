@@ -54,7 +54,8 @@ class SortedList<TType> {
       ? [...values].sort(compare)
       : [...values]
           .sort(compare)
-          .filter((value, index, array) => index === 0 || this.#compare(value, array[index - 1]) !== 0);
+          // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+          .filter((value, index, array) => index === 0 || this.#compare(value, array[index - 1]!) !== 0);
   }
 
   /**
@@ -146,7 +147,8 @@ class SortedList<TType> {
     while (min <= max) {
       const mid = min + Math.floor((max - min) / 2);
 
-      result = this.#compare(value, this.#values[mid]);
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+      result = this.#compare(value, this.#values[mid]!);
 
       if (min === max) {
         break;

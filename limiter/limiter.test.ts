@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-non-null-assertion */
 import { createLimiter } from './limiter.js';
 
 const tasks: { readonly reject: () => void; readonly resolve: () => void }[] = [];
@@ -30,21 +31,21 @@ describe('limit', () => {
     await nextTick();
     expect(task).toHaveBeenCalledTimes(2);
 
-    tasks[0].resolve();
+    tasks[0]!.resolve();
     await expect(a).resolves.toBe('a');
     await nextTick();
     expect(task).toHaveBeenCalledTimes(3);
 
-    tasks[2].resolve();
+    tasks[2]!.resolve();
     await expect(c).resolves.toBe('c');
     await nextTick();
     expect(task).toHaveBeenCalledTimes(4);
 
-    tasks[1].reject();
+    tasks[1]!.reject();
     await expect(b).rejects.toBe('b');
     await nextTick();
 
-    tasks[3].resolve();
+    tasks[3]!.resolve();
     await expect(d).resolves.toBe('d');
     await nextTick();
 
@@ -61,11 +62,11 @@ describe('limit', () => {
     const c = limiter.run(task).then(() => order.push('c'));
 
     await nextTick();
-    tasks[1].resolve();
+    tasks[1]!.resolve();
     await nextTick();
-    tasks[2].resolve();
+    tasks[2]!.resolve();
     await nextTick();
-    tasks[0].resolve();
+    tasks[0]!.resolve();
     await Promise.allSettled([a, b, c]);
     expect(order).toStrictEqual(['a', 'b', 'c']);
   });
@@ -89,7 +90,7 @@ describe('limit', () => {
     limiter.pause();
     expect(limiter.isPaused).toBe(true);
     void limiter.run(task);
-    tasks[0].resolve();
+    tasks[0]!.resolve();
     await nextTick();
     expect(limiter.pending).toBe(2);
     expect(limiter.active).toBe(1);
@@ -100,7 +101,7 @@ describe('limit', () => {
     expect(limiter.active).toBe(2);
 
     limiter.pause();
-    tasks[1].resolve();
+    tasks[1]!.resolve();
     await nextTick();
     expect(limiter.pending).toBe(1);
     expect(limiter.active).toBe(1);
@@ -111,13 +112,13 @@ describe('limit', () => {
     expect(limiter.active).toBe(2);
 
     limiter.pause();
-    tasks[2].resolve();
+    tasks[2]!.resolve();
     await nextTick();
     expect(limiter.pending).toBe(0);
     expect(limiter.active).toBe(1);
 
     limiter.resume();
-    tasks[3].resolve();
+    tasks[3]!.resolve();
     await nextTick();
     expect(limiter.pending).toBe(0);
     expect(limiter.active).toBe(0);
@@ -135,7 +136,7 @@ describe('limit', () => {
     expect(limiter.active).toBe(1);
     await nextTick();
 
-    tasks[0].resolve();
+    tasks[0]!.resolve();
     await nextTick();
     expect(limiter.pending).toBe(0);
     expect(limiter.active).toBe(0);
@@ -151,7 +152,7 @@ describe('limit', () => {
     expect(limiter.pending).toBe(0);
     expect(limiter.active).toBe(1);
 
-    tasks[1].resolve();
+    tasks[1]!.resolve();
     await nextTick();
     expect(limiter.pending).toBe(0);
     expect(limiter.active).toBe(0);
