@@ -87,10 +87,13 @@ const listed: { entries: DataType[] } = await mySdk.list();
 The `createFetchSdk` helper also accepts a function if the SDK class needs arguments.
 
 ```ts
-const MySdk = createFetchSdk((url: string) => ({
-  read: (id: string) => ({
+const MySdk = createFetchSdk((url: string, auth: Auth) => ({
+  read: async (id: string) => ({
     url: `${url}/${id}`,
-    headers: { accept: 'application/json' },
+    headers: {
+      accept: 'application/json',
+      authorization: `Bearer ${await auth.acquireToken()}`,
+    },
     parse: async (res): DataType => res.json(),
   }),
 }));
@@ -99,5 +102,5 @@ const MySdk = createFetchSdk((url: string) => ({
 The SDK class constructor now has the same arguments as the function passed to the helper.
 
 ```ts
-const mySdk = new MySdk('https://example.com');
+const mySdk = new MySdk('https://example.com', auth);
 ```
