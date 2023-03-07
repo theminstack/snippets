@@ -12,6 +12,7 @@ Completely free TypeScript one-file source code snippets _with tests_, which can
 - [escape-regexp](escape-regexp) - Escape all regular expression special/meta characters
 - [events](events) - Named events with publication and subscription.
 - [fetch-error](fetch-error) - Error type for failed fetch requests.
+- [fetch-sdk](fetch-sdk) - Helper for creating fetch SDK classes.
 - [fsm](fsm) - Finite state machine.
 - [hash-djb2a](hash-djb2a) - Fast and good string hash function.
 - [is-json-safe](is-json-safe) - Can a value be converted to and from JSON without data loss.
