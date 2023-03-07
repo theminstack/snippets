@@ -35,7 +35,7 @@ const MySdk = createFetchSdk(
       body: JSON.stringify({ ...data }),
       parse: async (res): DataType => res.json(),
     }),
-    delete: (id: string) {
+    delete: (id: string) => {
       url: `https://example.com/${id}`,
       method: 'DELETE',
     },
