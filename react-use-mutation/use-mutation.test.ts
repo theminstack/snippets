@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-non-null-assertion */
 import { renderHook, waitFor } from '@testing-library/react';
 import { act } from 'react-dom/test-utils';
 
@@ -103,7 +104,7 @@ describe('useQuery', () => {
     expect(result.current.data).toEqual('foo');
 
     act(() => void jest.advanceTimersByTime(2000));
-    await expect(mutationFnMock.mock.results[0].value).resolves.toEqual('bar');
+    await expect(mutationFnMock.mock.results[0]!.value).resolves.toEqual('bar');
     await waitFor(() => expect(result.current.isLoading).toEqual(false));
     expect(result.current.data).toEqual('foo');
   });

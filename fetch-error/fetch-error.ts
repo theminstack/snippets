@@ -8,7 +8,7 @@ interface FetchErrorOptions {
   readonly status: number;
   readonly headers?: Record<string, string> | { readonly get: (key: string) => string | null } | null;
   readonly id?: string | null;
-  readonly code?: string | null;
+  readonly code?: number | string | null;
   readonly reason?: unknown;
 }
 
@@ -50,7 +50,7 @@ class FetchError extends Error {
   /**
    * Well known error code constant.
    */
-  public code: string;
+  public code: number | string;
   /**
    * Error that triggered this error (if any).
    */
