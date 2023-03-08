@@ -25,10 +25,8 @@ type EventsPublish<TEvents extends EventsDefinition = {}> = {
   readonly emit: EventsEmit<EventTypes<TEvents>>;
 };
 
-type EventsOff<TEvents extends EventsDefinition, TReturn> = (event: keyof TEvents, listener: Listener) => TReturn;
-
 type EventsOn<TEvents extends EventsDefinition, TReturn> = UnionToIntersection<
-  { readonly [P in keyof TEvents]: (event: P, listener: Listener<TEvents[P]>) => TReturn }[keyof TEvents]
+  { [P in keyof TEvents]: (event: P, listener: Listener<TEvents[P]>) => TReturn }[keyof TEvents]
 >;
 
 /**
@@ -43,7 +41,7 @@ type EventsSubscribe<TEvents extends EventsDefinition = {}, TReturn = void> = {
    * called multiple times to remove each instance. Multiple instances of the
    * same listener are removed in the order that they were added.
    */
-  readonly off: EventsOff<EventTypes<TEvents>, TReturn>;
+  off(event: keyof EventTypes<TEvents>, listener: Listener): TReturn;
   /**
    * Adds a `listener` for the named `event`.
    *
@@ -51,7 +49,7 @@ type EventsSubscribe<TEvents extends EventsDefinition = {}, TReturn = void> = {
    * calls passing the same combination of event name and listener will result
    * in the listener being added, and called, multiple times.
    */
-  readonly on: EventsOn<EventTypes<TEvents>, TReturn>;
+  on: EventsOn<EventTypes<TEvents>, TReturn>;
 };
 
 /**
@@ -67,7 +65,7 @@ const createEvents = <TEvents extends EventsDefinition = {}>(): Events<TEvents> 
   const listeners = new Map<string, readonly Listener[]>();
 
   const emitter: Events = {
-    emit: (event, value): boolean => {
+    emit(event, value) {
       const eventListeners = listeners.get(event);
 
       if (!eventListeners || !eventListeners.length) {
@@ -80,7 +78,7 @@ const createEvents = <TEvents extends EventsDefinition = {}>(): Events<TEvents> 
 
       return true;
     },
-    off: (event, listener) => {
+    off(event, listener) {
       const eventListeners = listeners.get(event);
 
       if (!eventListeners) {
@@ -99,7 +97,7 @@ const createEvents = <TEvents extends EventsDefinition = {}>(): Events<TEvents> 
         listeners.set(event, [...eventListeners.slice(0, index), ...eventListeners.slice(index + 1)]);
       }
     },
-    on: (event, listener) => {
+    on(event, listener) {
       const eventListeners = listeners.get(event);
 
       listeners.set(event, eventListeners ? [...eventListeners, listener] : [listener]);

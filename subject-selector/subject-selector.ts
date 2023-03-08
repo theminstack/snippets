@@ -1,5 +1,5 @@
 type Subscriber<TValue> = {
-  readonly next: (value: TValue) => void;
+  next(value: TValue): void;
 };
 
 /**
@@ -10,12 +10,12 @@ type Subscription = {
    * Unsubscribe from the subject. The subscribed callback will no longer be
    * invoked when the subject value is set.
    */
-  readonly unsubscribe: () => void;
+  unsubscribe(): void;
 };
 
 type SubjectLike<TValue> = {
-  readonly subscribe: (next: (value: TValue) => void) => Subscription;
   readonly value: TValue;
+  subscribe(next: (value: TValue) => void): Subscription;
 };
 
 /**
@@ -38,6 +38,10 @@ type SubscribeOptions = {
  */
 type SubjectSelector<TValue> = {
   /**
+   * Current subject value.
+   */
+  readonly value: TValue;
+  /**
    * Add a callback which will be invoked when the next value is set. If the
    * `immediate` option is set, the callback will also be invoked immediately.
    *
@@ -45,7 +49,7 @@ type SubjectSelector<TValue> = {
    * @param options Callback invocation options.
    * @param options.immediate Invoke the callback immediately.
    */
-  readonly subscribe: (next: (value: TValue) => void, options?: SubscribeOptions) => Subscription;
+  subscribe(next: (value: TValue) => void, options?: SubscribeOptions): Subscription;
   /**
    * Unsubscribe from all subject dependencies which have been used by the
    * compute function
@@ -54,11 +58,7 @@ type SubjectSelector<TValue> = {
    * value, and will no longer be updated when subject dependencies are
    * changed.
    */
-  readonly unsubscribe: () => void;
-  /**
-   * Current subject value.
-   */
-  readonly value: TValue;
+  unsubscribe(): void;
 };
 
 /**

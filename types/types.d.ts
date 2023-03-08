@@ -50,7 +50,6 @@ type UnionToIntersection<T> = (T extends any ? (x: T) => any : never) extends (x
  * Make optional the keys of an object which allow undefined value assignment.
  */
 type SmartPartial<T> = Simplify<
-  // eslint-disable-next-line functional/prefer-readonly-type
   UnionToIntersection<{ [P in keyof T]: undefined extends T[P] ? { [K in P]?: T[P] } : { [K in P]: T[P] } }[keyof T]>
 >;
 
@@ -61,7 +60,6 @@ type SmartPartial<T> = Simplify<
  * simplify the type to a single object with all the properties
  * (`{ foo: string; bar: string }`).
  */
-// eslint-disable-next-line functional/prefer-readonly-type
 type Simplify<T> = T extends Record<string, unknown> ? { [P in keyof T]: T[P] } : T;
 
 // eslint-disable-next-line @typescript-eslint/sort-type-union-intersection-members
@@ -84,7 +82,6 @@ type _OverloadUnion<TOverload, TPartialOverload = unknown> = TPartialOverload & 
  * // type U = (() => 1) | ((a: 2) => 2))
  * ```
  */
-// eslint-disable-next-line functional/prefer-readonly-type
 type OverloadUnion<TOverload extends (...args: any[]) => any> = Exclude<
   // eslint-disable-next-line @typescript-eslint/sort-type-union-intersection-members
   _OverloadUnion<(() => never) & TOverload>,

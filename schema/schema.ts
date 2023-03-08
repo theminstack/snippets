@@ -4,30 +4,27 @@ type Primitive = bigint | boolean | number | string | symbol | null | undefined;
 type UnionToIntersection<T> = (T extends any ? (x: T) => any : never) extends (x: infer V) => any ? V : never;
 
 type SmartPartial<T> = Simplify<
-  // eslint-disable-next-line functional/prefer-readonly-type
   UnionToIntersection<{ [P in keyof T]: undefined extends T[P] ? { [K in P]?: T[P] } : { [K in P]: T[P] } }[keyof T]>
 >;
 
-// eslint-disable-next-line functional/prefer-readonly-type
 type Simplify<T> = T extends Record<string, unknown> ? { [P in keyof T]: T[P] } : T;
 
 /**
  * Infer the parsed type from a schema.
  */
 type SchemaType<TSchema> = TSchema extends Schema<infer TType> ? TType : never;
-// eslint-disable-next-line functional/prefer-readonly-type
 type SchemaTupleType<TSchemas> = { [P in keyof TSchemas]: SchemaType<TSchemas[P]> };
 type SchemaObjectType<TSchemas, TIndexType> = Simplify<
   Record<string, TIndexType> & SmartPartial<SchemaTupleType<TSchemas>>
 >;
 
 type SchemaOptions = {
-  readonly onInvalid?: (reason: string) => void;
+  onInvalid?(reason: string): void;
   readonly path?: readonly (number | string)[];
 };
 
 type SchemaContext = {
-  readonly onInvalid: (reason?: string) => void;
+  onInvalid(reason?: string): void;
   /**
    * Readonly string/number array which stringifies to a JSON path.
    */
@@ -38,24 +35,24 @@ type Schema<TType> = {
   /**
    * Shortcut to union this schema with `$.undefined`.
    */
-  readonly optional: () => Schema<TType | undefined>;
+  optional(): Schema<TType | undefined>;
   /**
    * Return the unmodified `value` if it matches the schema. Otherwise, throw
    * an error.
    */
-  readonly parse: (value: unknown) => TType;
+  parse(value: unknown): TType;
   /**
    * Returns true if the `value` matches the schema. Otherwise, return false.
    * The `onInvalid` callback will be called for each JSON path that does not
    * match the schema.
    */
-  readonly test: (value: unknown, options?: SchemaOptions) => value is TType;
+  test(value: unknown, options?: SchemaOptions): value is TType;
 };
 type SchemaObject<TType> = Schema<TType> & {
   /**
    * Re-construct the object/record schema with all properties as optional.
    */
-  readonly partial: () => SchemaObject<Simplify<Partial<TType>>>;
+  partial(): SchemaObject<Simplify<Partial<TType>>>;
 };
 
 const isObject = (value: any): value is Record<string, any> => typeof value === 'object' && value !== null;

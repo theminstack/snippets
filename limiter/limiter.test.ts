@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
 import { createLimiter } from './limiter.js';
 
-const tasks: { readonly reject: () => void; readonly resolve: () => void }[] = [];
+const tasks: { reject(): void; resolve(): void }[] = [];
 const nextTick = () => new Promise(process.nextTick);
 let task: jest.Mock;
 

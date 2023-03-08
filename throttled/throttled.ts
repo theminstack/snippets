@@ -18,13 +18,13 @@ type Throttled<TArgs extends readonly unknown[]> = {
    * If a call to the wrapped callback is scheduled, cancel it. Has no effect
    * if no call is scheduled.
    */
-  readonly cancel: () => void;
+  cancel(): void;
   /**
    * If a call to the wrapped callback is scheduled, call it immediately
    * instead of waiting for the timeout to elapse. Has no effect if no call is
    * scheduled.
    */
-  readonly flush: () => void;
+  flush(): void;
 };
 
 /**

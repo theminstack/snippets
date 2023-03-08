@@ -9,16 +9,6 @@ type Mandatory<TValue> = Exclude<TValue, Nullish>;
 type MaybeBase<TValue> = {
   readonly [MAYBE]: Maybe<TValue>;
   /**
-   * Get the next monad if the current monad has an `error`. Otherwise, return
-   * the current monad.
-   */
-  readonly catch: <TNext>(next: (error: NonNullish) => Nullish | TNext) => Maybe<TNext | TValue>;
-  /**
-   * Get the next monad if the current monad is `empty` and does not have an
-   * `error`. Otherwise, return the current monad.
-   */
-  readonly else: <TNext>(next: TNext | (() => Nullish | TNext) | null | undefined) => Maybe<TNext | TValue>;
-  /**
    * True if the monad does not have a non-nullish value. Otherwise, false.
    *
    * _NOTE: Always the inverse of the `ok` property._
@@ -29,34 +19,43 @@ type MaybeBase<TValue> = {
    */
   readonly error: NonNullish | null;
   /**
-   * Get an `empty` monad if the current monad is `ok` and the `predicate`
-   * returns false. Otherwise, return the current monad.
-   */
-  readonly filter: <TNext extends TValue = TValue>(
-    predicate: ((value: Mandatory<TValue>) => boolean) | ((value: TValue) => value is TNext),
-  ) => Maybe<TNext>;
-  /**
-   * Get the next monad if the current monad is `ok`. Otherwise, return the
-   * current `empty` monad.
-   */
-  readonly map: <TNext>(next: (value: Mandatory<TValue>) => Maybe<TNext> | Nullish | TNext) => Maybe<TNext>;
-  /**
    * True if the monad has a non-nullish value. Otherwise, false.
    *
    * _NOTE: Always the inverse of the `empty` property._
    */
   readonly ok: boolean;
   /**
-   * Get a one element array containing the non-nullish value if `ok`.
-   * Otherwise, return an empty array.
-   */
-  // eslint-disable-next-line functional/prefer-readonly-type
-  readonly toArray: () => [] | [Mandatory<TValue>];
-  /**
    * Get the non-nullish value if the monad is `ok`. Otherwise, throws the
    * `error` or a new `ReferenceError`.
    */
   readonly value: Mandatory<TValue>;
+  /**
+   * Get the next monad if the current monad is `empty` and does not have an
+   * `error`. Otherwise, return the current monad.
+   */
+  else<TNext>(next: TNext | (() => Nullish | TNext) | null | undefined): Maybe<TNext | TValue>;
+  /**
+   * Get the next monad if the current monad has an `error`. Otherwise, return
+   * the current monad.
+   */
+  catch<TNext>(next: (error: NonNullish) => Nullish | TNext): Maybe<TNext | TValue>;
+  /**
+   * Get an `empty` monad if the current monad is `ok` and the `predicate`
+   * returns false. Otherwise, return the current monad.
+   */
+  filter<TNext extends TValue = TValue>(
+    predicate: ((value: Mandatory<TValue>) => boolean) | ((value: TValue) => value is TNext),
+  ): Maybe<TNext>;
+  /**
+   * Get the next monad if the current monad is `ok`. Otherwise, return the
+   * current `empty` monad.
+   */
+  map<TNext>(next: (value: Mandatory<TValue>) => Maybe<TNext> | Nullish | TNext): Maybe<TNext>;
+  /**
+   * Get a one element array containing the non-nullish value if `ok`.
+   * Otherwise, return an empty array.
+   */
+  toArray(): [] | [Mandatory<TValue>];
 };
 
 type MaybeOk<TValue> = MaybeBase<TValue> & {
@@ -88,15 +87,15 @@ const createOk = <TValue>(value: Mandatory<TValue>): MaybeOk<TValue> => {
     get [MAYBE]() {
       return instance;
     },
-    catch: () => instance,
-    else: () => instance,
     empty: false,
     error: null,
+    ok: true,
+    value,
+    else: () => instance,
+    catch: () => instance,
     filter: (predicate) => maybe<any>(() => (predicate(value) ? instance : maybe.empty())),
     map: (next) => maybe(() => next(value)),
-    ok: true,
     toArray: () => [value],
-    value,
   };
 
   return instance;
@@ -107,17 +106,17 @@ const createEmpty = (error: NonNullish | null): MaybeNotOk<never> => {
     get [MAYBE]() {
       return instance;
     },
-    catch: error == null ? () => instance : (next) => maybe(() => next(error)),
-    else: error == null ? maybe : () => instance,
     empty: true,
     error,
-    filter: () => instance,
-    map: () => instance,
     ok: false,
-    toArray: () => [],
     get value(): never {
       throw error ?? new ReferenceError('maybe instance is empty');
     },
+    else: error == null ? maybe : () => instance,
+    catch: error == null ? () => instance : (next) => maybe(() => next(error)),
+    filter: () => instance,
+    map: () => instance,
+    toArray: () => [],
   };
 
   return instance;

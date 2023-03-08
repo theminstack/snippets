@@ -59,7 +59,7 @@ type QueryResult<TData> = {
    * Immediately cause the query to be refetched, even if the query is not
    * currently enabled.
    */
-  readonly refetch: (options?: QueryRefetchOptions) => void;
+  refetch(options?: QueryRefetchOptions): void;
 };
 
 type QueryFn<TData = unknown, TKey extends readonly unknown[] = readonly unknown[]> = (

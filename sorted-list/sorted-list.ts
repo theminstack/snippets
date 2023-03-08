@@ -24,7 +24,6 @@ class SortedList<TType> {
 
   readonly #compare: (a: TType, b: TType) => number;
   readonly #allowDuplicates: boolean;
-  // eslint-disable-next-line functional/prefer-readonly-type
   readonly #values: TType[];
 
   /**

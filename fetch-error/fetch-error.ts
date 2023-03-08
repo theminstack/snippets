@@ -1,12 +1,12 @@
 interface HeadersLike {
-  readonly get: (key: string) => string | null;
+  get(key: string): string | null;
 }
 
 interface FetchErrorOptions {
   readonly method?: string | null;
   readonly url: string;
   readonly status: number;
-  readonly headers?: Record<string, string> | { readonly get: (key: string) => string | null } | null;
+  readonly headers?: Record<string, string> | { get(key: string): string | null } | null;
   readonly id?: string | null;
   readonly code?: number | string | null;
   readonly reason?: unknown;

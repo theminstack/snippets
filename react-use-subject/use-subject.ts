@@ -1,8 +1,8 @@
 import { type Context, createContext, useCallback, useContext, useEffect, useState } from 'react';
 
 type SubjectLike<TValue> = {
-  readonly next?: (nextValue: TValue) => void;
-  readonly subscribe: (listener: (value: TValue) => void) => { readonly unsubscribe: () => void };
+  next?(nextValue: TValue): void;
+  subscribe(listener: (value: TValue) => void): { unsubscribe(): void };
   readonly value: TValue;
 };
 

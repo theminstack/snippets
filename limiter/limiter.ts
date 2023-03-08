@@ -12,47 +12,47 @@ type LimiterOptions = {
 
 type Limiter = {
   /**
+   * The number of incomplete tasks (`pending + active`).
+   */
+  readonly size: number;
+  /**
    * Number of tasks that are running (ie. the task functions have been called,
    * but have not resolved).
    */
   readonly active: number;
-  /**
-   * Remove all pending tasks without running them. If a `reason` is given,
-   * promises associated with the pending tasks will be rejected with the
-   * reason. Otherwise, pending task promises will never resolve or reject.
-   * Active tasks are not affected.
-   */
-  readonly clear: (reason?: unknown) => void;
-  /**
-   * Return true if the limiter is paused. Otherwise, false.
-   */
-  readonly isPaused: boolean;
-  /**
-   * Prevent any new or pending tasks from becoming active until `resume()` is
-   * called.
-   */
-  readonly pause: () => void;
   /**
    * Number of tasks that are waiting to run (ie. the task functions have not
    * been called).
    */
   readonly pending: number;
   /**
-   * Allow new and pending tasks to become active.
+   * Return true if the limiter is paused. Otherwise, false.
    */
-  readonly resume: () => void;
+  readonly isPaused: boolean;
   /**
    * Run a task when concurrency limit requirements have been met, and the
    * limiter is not paused.
    */
-  readonly run: <TReturn, TArgs extends readonly unknown[] = readonly []>(
+  run<TReturn, TArgs extends readonly unknown[] = readonly []>(
     task: (...args: TArgs) => PromiseLike<TReturn> | TReturn,
     ...args: TArgs
-  ) => Promise<TReturn>;
+  ): Promise<TReturn>;
   /**
-   * The number of incomplete tasks (`pending + active`).
+   * Prevent any new or pending tasks from becoming active until `resume()` is
+   * called.
    */
-  readonly size: number;
+  pause(): void;
+  /**
+   * Allow new and pending tasks to become active.
+   */
+  resume(): void;
+  /**
+   * Remove all pending tasks without running them. If a `reason` is given,
+   * promises associated with the pending tasks will be rejected with the
+   * reason. Otherwise, pending task promises will never resolve or reject.
+   * Active tasks are not affected.
+   */
+  clear(reason?: unknown): void;
 };
 
 /**
@@ -61,7 +61,7 @@ type Limiter = {
 const createLimiter = (concurrency: number, options: LimiterOptions = {}): Limiter => {
   const { sequential = false, paused = false } = options;
   const safeConcurrency = Math.max(1, Math.floor(concurrency));
-  const queue: { reject: (reason: unknown) => void; start: () => Promise<void> }[] = [];
+  const queue: { reject(reason: unknown): void; start(): Promise<void> }[] = [];
 
   let isPaused = paused;
   let active = 0;
@@ -81,30 +81,19 @@ const createLimiter = (concurrency: number, options: LimiterOptions = {}): Limit
   };
 
   return {
+    get size() {
+      return queue.length + active;
+    },
     get active() {
       return active;
-    },
-    clear: (reason) => {
-      if (reason != null) {
-        queue.splice(0, Number.POSITIVE_INFINITY).forEach((item) => item.reject(reason));
-      } else {
-        queue.length = 0;
-      }
-    },
-    get isPaused() {
-      return isPaused;
-    },
-    pause: () => {
-      isPaused = true;
     },
     get pending() {
       return queue.length;
     },
-    resume: () => {
-      isPaused = false;
-      update();
+    get isPaused() {
+      return isPaused;
     },
-    run: async (task, ...args) => {
+    async run(task, ...args) {
       const newPromise = new Promise<any>((resolve, reject) => {
         queue.push({
           reject,
@@ -122,8 +111,19 @@ const createLimiter = (concurrency: number, options: LimiterOptions = {}): Limit
 
       return promise;
     },
-    get size() {
-      return queue.length + active;
+    pause() {
+      isPaused = true;
+    },
+    resume() {
+      isPaused = false;
+      update();
+    },
+    clear: (reason) => {
+      if (reason != null) {
+        queue.splice(0, Number.POSITIVE_INFINITY).forEach((item) => item.reject(reason));
+      } else {
+        queue.length = 0;
+      }
     },
   };
 };

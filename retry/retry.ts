@@ -6,12 +6,6 @@ type RetryOptions = {
    */
   delay?: number | readonly number[];
   /**
-   * Determine if a retry is useful and/or what the delay should be. Returning
-   * false prevents retrying. Returning true/void/undefined will retry with
-   * the default delay. Returning a number will retry with a custom delay.
-   */
-  onRetry?: (error: unknown, count: number) => boolean | number | undefined | void;
-  /**
    * Maximum number of retries, not including the initial handler call.
    */
   retries?: number;
@@ -20,6 +14,12 @@ type RetryOptions = {
    * be thrown.
    */
   signal?: AbortSignal;
+  /**
+   * Determine if a retry is useful and/or what the delay should be. Returning
+   * false prevents retrying. Returning true/void/undefined will retry with
+   * the default delay. Returning a number will retry with a custom delay.
+   */
+  onRetry?(error: unknown, count: number): boolean | number | undefined | void;
 };
 
 type RetryHandler<TValue = unknown> = () => PromiseLike<TValue> | TValue;

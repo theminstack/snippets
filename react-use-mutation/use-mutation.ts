@@ -5,16 +5,11 @@ type MutationOptions<TData, TVariables, TContext> = {
    * Callback invoked before the mutation function. The returned value is
    * passed to `onSettled` as a context.
    */
-  readonly onMutate?: (variables: TVariables) => Promise<TContext | void> | TContext | void;
+  onMutate?(variables: TVariables): Promise<TContext | void> | TContext | void;
   /**
    * Callback invoked when a mutation completes.
    */
-  readonly onSettled?: (
-    data: TData | undefined,
-    error: unknown,
-    variables: TVariables,
-    context?: unknown,
-  ) => Promise<void> | void;
+  onSettled?(data: TData | undefined, error: unknown, variables: TVariables, context?: unknown): Promise<void> | void;
 };
 
 type MutationResult<TData, TVariables> = {
@@ -39,11 +34,11 @@ type MutationResult<TData, TVariables> = {
    * the outcome will be lost. Only the state of the most recent mutation is
    * reflected in the mutation result.
    */
-  readonly mutate: undefined extends TVariables ? (variables?: TVariables) => void : (variables: TVariables) => void;
+  mutate: undefined extends TVariables ? (variables?: TVariables) => void : (variables: TVariables) => void;
   /**
    * Reset the response `data` and `error` values to undefined.
    */
-  readonly reset: () => void;
+  reset(): void;
 };
 
 type MutationFn<TData = unknown, TVariables = undefined> = (variables: TVariables) => Promise<TData>;

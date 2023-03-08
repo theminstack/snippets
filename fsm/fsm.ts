@@ -38,22 +38,22 @@ type FsmStatesUnion<
 }[TStateSubset];
 
 type Fsm<TStates extends FsmStatesDefinition = FsmStatesDefinition, TEdges extends FsmEdgesDefinition = {}> = {
-  readonly start: <TState extends keyof TStates>(
+  start<TState extends keyof TStates>(
     state: TState,
     ...args: TStates[TState] extends undefined | void
       ? readonly []
       : undefined extends TStates[TState]
       ? readonly [value?: TStates[TState]]
       : readonly [value: TStates[TState]]
-  ) => FsmState<TStates, TEdges, TState>;
-  readonly transition: <
+  ): FsmState<TStates, TEdges, TState>;
+  transition<
     TAction extends string,
     TFromState extends keyof TStates,
     TToState extends TAction extends keyof TEdges[TFromState] ? never : keyof TStates,
   >(
     action: TAction,
     edge: { readonly from: TFromState; readonly to: TToState },
-  ) => Fsm<
+  ): Fsm<
     TStates,
     TAction extends keyof TEdges[TFromState]
       ? TEdges

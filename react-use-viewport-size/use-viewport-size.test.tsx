@@ -1,4 +1,3 @@
-/* eslint-disable unicorn/prevent-abbreviations */
 import { act, renderHook } from '@testing-library/react';
 
 import { useViewportSize } from './use-viewport-size.js';

@@ -1,5 +1,5 @@
 type Subscriber<TValue> = {
-  readonly next: (value: TValue) => void;
+  next(value: TValue): void;
 };
 
 /**
@@ -21,7 +21,7 @@ type Subscription = {
    * Unsubscribe from the subject. The subscribed callback will no longer be
    * invoked when the subject value is set.
    */
-  readonly unsubscribe: () => void;
+  unsubscribe(): void;
 };
 
 /**
@@ -32,11 +32,15 @@ type Subscription = {
  */
 type Subject<TValue> = {
   /**
+   * Current subject value.
+   */
+  readonly value: TValue;
+  /**
    * Set the next value and notify all subscribers.
    *
    * @param next The next subject value.
    */
-  readonly next: (value: TValue) => void;
+  next(value: TValue): void;
   /**
    * Add a callback which will be invoked when the next value is set. If the
    * `immediate` option is set, the callback will also be invoked immediately.
@@ -45,11 +49,7 @@ type Subject<TValue> = {
    * @param options Callback invocation options.
    * @param options.immediate Invoke the callback immediately.
    */
-  readonly subscribe: (next: (value: TValue) => void, options?: SubscribeOptions) => Subscription;
-  /**
-   * Current subject value.
-   */
-  readonly value: TValue;
+  subscribe(next: (value: TValue) => void, options?: SubscribeOptions): Subscription;
 };
 
 /**
@@ -67,6 +67,9 @@ const createSubject = <TValue>(initialValue: TValue): Subject<TValue> => {
   const subscribers = new Set<Subscriber<TValue>>();
 
   return {
+    get value() {
+      return value;
+    },
     next: (newValue) => {
       value = newValue;
       [...subscribers].forEach(({ next }) => {
@@ -87,9 +90,6 @@ const createSubject = <TValue>(initialValue: TValue): Subject<TValue> => {
       }
 
       return { unsubscribe };
-    },
-    get value() {
-      return value;
     },
   };
 };

@@ -10,7 +10,7 @@ type HashValue = {
    * Unsigned 32-bit integer final hash value.
    */
   readonly value: number;
-  readonly valueOf: () => number;
+  valueOf(): number;
 };
 
 type HashOptions = {

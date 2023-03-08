@@ -5,13 +5,17 @@ import { type Dispatch, type SetStateAction, useCallback, useState } from 'react
  */
 type BooleanState = {
   /**
+   * Current boolean state value.
+   */
+  readonly value: boolean;
+  /**
    * Set the boolean state to false.
    */
-  readonly setFalse: () => void;
+  setFalse(): void;
   /**
    * Set the boolean state to true.
    */
-  readonly setTrue: () => void;
+  setTrue(): void;
   /**
    * Set the boolean state to a specific value.
    */
@@ -19,11 +23,7 @@ type BooleanState = {
   /**
    * Switch the state from true to false, or false to true.
    */
-  readonly toggle: () => void;
-  /**
-   * Current boolean state value.
-   */
-  readonly value: boolean;
+  toggle(): void;
 };
 
 /**

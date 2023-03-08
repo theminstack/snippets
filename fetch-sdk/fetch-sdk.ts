@@ -34,7 +34,7 @@ interface FetchSdkDefaults {
    * Derive the request ID from the response. If not given, the
    * `x-request-id` is used if present.
    */
-  readonly getRequestId?: (res: Response) => string | null | undefined;
+  getRequestId?(res: Response): string | null | undefined;
   /**
    * Derive a well known error string constant from the response. If not
    * given, the response body is parsed and the `error` string property of
@@ -42,7 +42,7 @@ interface FetchSdkDefaults {
    * contain an `error` string property, then `unknown_error` is used.
    * Errors thrown by this function are ignored.
    */
-  readonly getErrorCode?: (res: Response) => Promise<number | string | null | undefined>;
+  getErrorCode?(res: Response): Promise<number | string | null | undefined>;
   /**
    * Custom `Error` constructor for thrown failed fetch errors.
    */
@@ -75,12 +75,12 @@ interface FetchSdkRequest<TResult> extends FetchSdkDefaults {
    * Callback which should return false if the response is not acceptable
    * (ie. an error). If not given, the `res.ok` value will be returned.
    */
-  readonly accept?: (res: Response, req: Request) => boolean;
+  accept?(res: Response, req: Request): boolean;
   /**
    * Callback which should parse the response body into a validated
    * return type. If not given, the `Response` object will be returned.
    */
-  readonly parse?: (res: Response, req: Request, id: string | undefined) => Promise<TResult>;
+  parse?(res: Response, req: Request, id: string | undefined): Promise<TResult>;
 }
 
 type FetchSdkRequestFactory<TResult, TArgs extends unknown[] = []> = (
@@ -95,10 +95,10 @@ type FetchSdkInstance<TDefinitions extends FetchSdkRequests> = {
   [P in keyof TDefinitions]: TDefinitions[P] extends string
     ? FetchSdkFunction<Response, []>
     : TDefinitions[P] extends FetchSdkRequestFactory<any, infer TArgs>
-    ? ReturnType<TDefinitions[P]> extends { parse: (...args: any[]) => Promise<infer TResult> }
+    ? ReturnType<TDefinitions[P]> extends { parse(...args: any[]): Promise<infer TResult> }
       ? FetchSdkFunction<TResult, TArgs>
       : FetchSdkFunction<Response, TArgs>
-    : TDefinitions[P] extends { parse: (...args: any[]) => Promise<infer TResult> }
+    : TDefinitions[P] extends { parse(...args: any[]): Promise<infer TResult> }
     ? FetchSdkFunction<TResult, []>
     : FetchSdkFunction<Response, []>;
 };
