@@ -34,7 +34,7 @@ interface FetchSdkDefaults {
    * Derive the request ID from the response. If not given, the
    * `x-request-id` is used if present.
    */
-  getRequestId?(res: Response): string | null | undefined;
+  readonly getRequestId?: (res: Response) => string | null | undefined;
   /**
    * Derive a well known error string constant from the response. If not
    * given, the response body is parsed and the `error` string property of
@@ -42,7 +42,7 @@ interface FetchSdkDefaults {
    * contain an `error` string property, then `unknown_error` is used.
    * Errors thrown by this function are ignored.
    */
-  getErrorCode?(res: Response): Promise<number | string | null | undefined>;
+  readonly getErrorCode?: (res: Response) => Promise<number | string | null | undefined>;
   /**
    * Custom `Error` constructor for thrown failed fetch errors.
    */
@@ -75,12 +75,12 @@ interface FetchSdkRequest<TResult> extends FetchSdkDefaults {
    * Callback which should return false if the response is not acceptable
    * (ie. an error). If not given, the `res.ok` value will be returned.
    */
-  accept?(res: Response, req: Request): boolean;
+  readonly accept?: (res: Response, req: Request) => boolean;
   /**
    * Callback which should parse the response body into a validated
    * return type. If not given, the `Response` object will be returned.
    */
-  parse?(res: Response, req: Request, id: string | undefined): Promise<TResult>;
+  readonly parse?: (res: Response, req: Request, id: string | undefined) => Promise<TResult>;
 }
 
 type FetchSdkRequestFactory<TResult, TArgs extends unknown[] = []> = (

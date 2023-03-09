@@ -5,11 +5,16 @@ type MutationOptions<TData, TVariables, TContext> = {
    * Callback invoked before the mutation function. The returned value is
    * passed to `onSettled` as a context.
    */
-  onMutate?(variables: TVariables): Promise<TContext | void> | TContext | void;
+  readonly onMutate?: (variables: TVariables) => Promise<TContext | void> | TContext | void;
   /**
    * Callback invoked when a mutation completes.
    */
-  onSettled?(data: TData | undefined, error: unknown, variables: TVariables, context?: unknown): Promise<void> | void;
+  readonly onSettled?: (
+    data: TData | undefined,
+    error: unknown,
+    variables: TVariables,
+    context?: unknown,
+  ) => Promise<void> | void;
 };
 
 type MutationResult<TData, TVariables> = {

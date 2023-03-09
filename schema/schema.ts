@@ -19,8 +19,8 @@ type SchemaObjectType<TSchemas, TIndexType> = Simplify<
 >;
 
 type SchemaOptions = {
-  onInvalid?(reason: string): void;
   readonly path?: readonly (number | string)[];
+  readonly onInvalid?: (reason: string) => void;
 };
 
 type SchemaContext = {
