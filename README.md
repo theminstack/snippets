@@ -10,7 +10,7 @@ Completely free TypeScript one-file source code snippets _with tests_, which can
 - [debounced](debounced) - Ignore repeating calls that happen too fast.
 - [deferred](deferred) - Delay execution until idle.
 - [escape-regexp](escape-regexp) - Escape all regular expression special/meta characters
-- [events](events) - Named events with publication and subscription.
+- [events](events) - Typed events class.
 - [fetch-error](fetch-error) - Error type for failed fetch requests.
 - [fetch-sdk](fetch-sdk) - Helper for creating fetch SDK classes.
 - [fsm](fsm) - Finite state machine.
