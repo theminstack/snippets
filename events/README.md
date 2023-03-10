@@ -1,34 +1,34 @@
 # Events
 
-Publish and subscribe to named events.
+Typed events class.
 
-Similar to [browser DOM events](https://developer.mozilla.org/en-US/docs/Web/Events) and [NodeJS events](https://nodejs.org/api/events.html#events), but strongly typed and not tied to either a browser or NodeJS environment.
+Use the `Events` class as a base class.
 
 ```ts
-type EventTypes = {
-  foo: number;
-  bar: string;
-};
-
-const events = createEvents<EventTypes>();
-
-const fooListener = (value: number) => {
-  console.log(value);
-};
-events.on('foo', fooListener);
-
-const barListener = (value: string) => {
-  console.log(value);
+class MyClass extends Events<{
+  foo: (value: number) => void;
+  bar: (value: string) => void;
+}> {
+  // ...
 }
-events.on('bar', barListener);
 
-events.emit('foo', 42);
-// stdout: 42
+const myClass = new MyClass();
+```
 
-events.emit('bar', 'Hello, world!');
-// stdout: Hello, world!
+Use the `on` method to receive events. The method returns a function which removes the listener when called.
 
-events.off('bar', barListener);
-events.emit('bar', 'Nobody is listening');
-// No output
+```ts
+const offFoo = myClass.on('foo', (value: number) => { ... });
+const offBar = myClass.on('bar', (value: string) => { ... });
+
+// Call a returned function to remove the
+// associated listener.
+offBar();
+```
+
+Use the `emit` method to send events. The method returns true if there are listeners, or false if there are no listeners.
+
+```ts
+events.emit('foo', 42); // true
+events.emit('bar', 'Hello, world!'); // false
 ```
