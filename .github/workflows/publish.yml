@@ -1,9 +1,7 @@
-name: tests
+name: publish
 
 on:
   push:
-    branches: [main]
-  pull_request:
     branches: [main]
 
 jobs:
@@ -36,3 +34,6 @@ jobs:
           files: ./.coverage/lcov.info
           fail_ci_if_error: true
           verbose: true
+
+      - name: Publish (NPM)
+        run: npm run release
