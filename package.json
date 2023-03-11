@@ -6,7 +6,7 @@
   "scripts": {
     "test": "tsc && eslint . --max-warnings=0 && jest --no-cache",
     "modernize": "npx npm-check-updates -i --format group",
-    "release": "catch-uncommitted --exclude=.npmrc && lerna publish from-package --no-git-tag-version --no-push"
+    "release": "catch-uncommitted --exclude=.npmrc && lerna publish from-package --no-git-tag-version --no-push --yes"
   },
   "workspaces": [
     "*/"
