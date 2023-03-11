@@ -108,7 +108,7 @@ All schemas have the following extension methods.
 - `.and(predicate: AnyPredicate)` - intersection
 - `.optional()` - union with `undefined`
 
-For instance, make a string or undefined schema.
+For example, you could create an optional string schema.
 
 ```ts
 const isOptionalString = $.string().optional();
