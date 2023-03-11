@@ -1,120 +1,145 @@
 # Schema
 
-Complex runtime type checking with TypeScript type inference.
+Composable [type predicates](https://www.typescriptlang.org/docs/handbook/2/narrowing.html#using-type-predicates) for runtime type checking.
 
-A schema is a complex [type predicate](https://www.typescriptlang.org/docs/handbook/2/narrowing.html#using-type-predicates), which can be created by nesting other schemas.
+## Getting Started
 
-For example, when calling an API and deserializing the response, the response type will be `any` (unknown). You have to check the structure of the data before it's safe to use.
+Import the schema namespace (I recommend naming it `$` for brevity).
 
 ```ts
-const $articles = $.array($.object({
-  id: $.number,
-  url: $.string,
-  launches: $.array($.object({
-    id: $.number,
-    provider: $.string,
-  })),
-}));
+import * as $ from './schema.js';
 ```
 
-The above creates an `$articles` schema which (partially) matches the response from https://api.spaceflightnewsapi.net/v3/articles.
+Construct a custom schema by composing built-in schemas.
 
 ```ts
-const response = await fetch('https://api.spaceflightnewsapi.net/v3/articles');
-const articles = await response.json();
+const isPerson = $.object({
+  name: $.string(),
+  age: $.number(),
+});
+```
 
-if ($articles.test(articles)) {
-  // The "articles" variable is strongly typed here.
+Infer the typescript type from the custom schema (if required).
+
+```ts
+type Person = $.SchemaType<typeof isPerson>;
+```
+
+Use the custom schema to narrow the type of a variable.
+
+```ts
+if (isPersion(value)) {
+  // The value type is narrowed to Person here.
 }
 ```
 
-You can also infer the TypeScript type from the schema.
+## Included Schemas
+
+Simple schemas match the basic TS types.
+
+- `string()`
+- `number()`
+- `bigint()`
+- `boolean()`
+- `symbol()`
+- `callable()` - functions and constructors
+- `notDefined()`
+- `defined`
+- `nul()`
+- `notNul()`
+- `nil()` - null or undefined
+- `notNil()`
+- `any()`
+- `unknown()`
+
+Configurable schemas accept values for matching.
+
+- `enumeration(enumType: EnumLike)`
+- `literal(...primitives: Primitive[])`
+- `instance(...constructors: AnyConstructor[])`
+
+Composition schemas merge other schemas (or predicates) into more complex schemas.
+
+- `union(...predicates: AnyPredicate[])`
+- `intersection(...predicates: AnyPredicate[])`
+- `object(shape: Record<string, AnyPredicate>)`
+- `tuple(...shape: AnyPredicate[])`
+- `record(type?: AnyPredicate)`
+- `array(type?: AnyPredicate)`
+
+Utilities which are less commonly used, or normally only used internally.
+
+- `schema<T>(predicate: (value: unknown) => value is T)`
+  - Create a custom schema.
+- `predicate<T>(predicate: (value: unknown) => value is T)`
+  - Create a predicate (copy).
+- `lazy(resolve: () => AnyPredicate)`
+  - Delay use of a predicate until needed (allows for recursive types).
+- `assert(predicate: AnyPredicate, value: unknown, error?: ErrorLike)`
+  - Throw if the predicate does not match the value.
+
+## Type Assertions
+
+Sometimes you just want to throw an error when a predicate does not match a value.
 
 ```ts
-type Articles = SchemaType<typeof $articles>;
+$.assert($.string(), value, 'value is not a string');
 ```
 
-Which would give you a type equivalent to...
+After the assert, the type of `value` will be narrowed to the predicate type.
+
+The above assertion is equivalent to the following conditional throw.
 
 ```ts
-type Articles = Array<{
-  id: number;
-  url: string;
-  launches: Array<{
-    id: number;
-    provider: string;
-  }>;
-}>
+if (!$.string()(value)) {
+  throw new TypeError('value is not a string');
+}
 ```
 
-If you want to throw an error when validation fails, you can use the `parse` method instead of the `test` method.
+## Recursive Types
+
+Recursive (self referential) types are possible, but require a few extra steps because type inference doesn't handle self references (Errors: [TS7022](https://github.com/microsoft/TypeScript/blob/v4.9.5/src/compiler/diagnosticMessages.json#L6108), [TS2454](https://github.com/microsoft/TypeScript/blob/v4.9.5/src/compiler/diagnosticMessages.json#L2193)).
+
+First, define the non-recursive part of the schema.
 
 ```ts
-const articles: Articles = $articles.parse(await response.json());
+const isNode = $.object({ name: $.string() });
 ```
 
-## Basic schemas
-
-The following basic schemas are "built-in" and can be used to compose more complex schemas.
-
-- `$.string` - String or boxed string.
-- `$.number` - Number or boxed number.
-- `$.bigint` - Big integer or boxed big integer.
-- `$.boolean` - Boolean or boxed boolean.
-- `$.symbol` - Symbol or boxed symbol.
-- `$.null` - Match `null` exactly.
-- `$.undefined` - Match `undefined` exactly.
-- `$.enum(...values)` - Any of the (primitive) `values`, matched exactly.
-- `$.function` - Any function, cast as `(...args: unknown[]) => unknown`.
-- `$.array(schema?)` - An array with elements matching an (optional) element `schema`.
-- `$.tuple(...schemas)` - A tuple with elements matching the `schemas`.
-- `$.record(schema?)` - An indexed object with values matching an (optional) element `schema`.
-- `$.object(schemas, index?)` - An object with known properties matching the `schemas` map, and unknown properties matching the (optional) `index` schema.
-- `$.instance(class)` - An instance of a `class`.
-- `$.unknown` - Anything, cast as `unknown`.
-- `$.any` - Anything, cast as `any`.
-- `$.union(...schemas)` - Anything matching at least one of the `schemas`.
-- `$.intersection(...schemas)` - Anything matching all of the `schemas`.
-- `$.custom(predicate)` - Anything matching a custom type `predicate`.
-
-## Optional
-
-Any schema can be made "optional", which adds `undefined` to the allowed types.
+Then, derive the recursive type. We need this type so that the recursive schema's type is explicit.
 
 ```ts
-const $base = $.string; // Schema<string>
-const $optional = $base.optional(); // Schema<string | undefined>
-
-$base.test('string'); // true
-$base.test(1); // false
-$base.test(undefined); // false
-
-$optional.test('string'); // true
-$optional.test(1); // false
-$optional.test(undefined); // true
+type Node = $.SchemaType<typeof isNode>;
+type Tree = Node & { children: Tree[] };
 ```
 
-This is equivalent to the following.
+And finally, extend the non-recursive schema to add recursion, and assign the final schema to an explicitly typed variable.
 
 ```ts
-const $optionalString = $.union($.string, $.undefined);
+const isTree: $.ObjectSchema<Tree> = isNode.extend({
+  children: $.array($.lazy(() => isTree)),
+});
 ```
 
-## Partial
+### Wrong ways to make recursive types
 
-Object (`$.object`) and record (`$.record`) schemas can be made "partial", which makes all properties optional.
+Without the `$.lazy` wrapper around the self reference, you will see a `TS2454` error, which means you're trying to use the schema before it's defined.
 
 ```ts
-const $base = $.object({ foo: $.string }); // Schema<{ foo: string }>
-const $partial = $base.partial(); // Schema<{ foo?: string | undefined }>
+const isTree: $.ObjectSchema<Tree> = isNode.extend({
+  // Error: Variable 'isTree' is used before being assigned. ts(2454)
+  children: $.array(isTree),
+});
+```
 
-$base.test({ foo: '' }); // true
-$base.test({ foo: 1 }); // false
-$base.test({ foo: undefined }); // false
-$base.test({}); // false
+If you just try to define the recursive type in a single step, you will see a `TS7022` error, which means the schema type is implicitly `any`, because typescript has failed to automatically infer a type which references itself.
 
-$partial.test({ foo: '' }); // true
-$partial.test({ foo: 1 }); // false
-$partial.test({ foo: undefined }); // true
-$partial.test({}); // true
+```ts
+// Error: 'isTree' implicitly has type 'any' because it does not have a
+//        type annotation and is referenced directly or indirectly in its
+//        own initializer. ts(7022) 
+const isTree = $.object({
+  name: $.string(),
+  children: $.array($.lazy(() => isTree)),
+});
 ```
