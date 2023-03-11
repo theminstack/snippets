@@ -2,7 +2,7 @@
 
 Completely free TypeScript one-file source code snippets _with tests_, which can be copied to **avoid extra dependencies** (contributions welcome).
 
-[![tests](https://github.com/theminstack/snippets/actions/workflows/tests.yml/badge.svg)](https://github.com/theminstack/snippets/actions/workflows/tests.yml)
+[![publish](https://github.com/theminstack/snippets/actions/workflows/publish.yml/badge.svg)](https://github.com/theminstack/snippets/actions/workflows/publish.yml)
 [![codecov](https://codecov.io/gh/theminstack/snippets/branch/main/graph/badge.svg?token=E2VYI8XJLB)](https://codecov.io/gh/theminstack/snippets)
 
 ## Snippets
@@ -43,7 +43,7 @@ Copying isn't a good solution for large dependencies (eg. React), but its defini
 Pros:
 
 - Still leveraging community written code
-- Tests are already written
+- publish are already written
 - No risk of [supply chain attacks](https://blog.sonatype.com/npm-project-used-by-millions-hijacked-in-supply-chain-attack)
 - No risk of version hell
 - No licensing conflicts
