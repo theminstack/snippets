@@ -30,7 +30,7 @@ type Person = $.SchemaType<typeof isPerson>;
 Use the custom schema to narrow the type of a variable.
 
 ```ts
-if (isPersion(value)) {
+if (isPerson(value)) {
   // Value type is narrowed to: Person
 }
 ```
