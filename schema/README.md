@@ -49,8 +49,8 @@ Simple schemas match the basic TS types.
 - `notNul()`
 - `nil()` - null or undefined
 - `notNil()`
-- `any()`
-- `unknown()`
+- `any()` - anything (as type `any`)
+- `unknown()` - anything (as type `unknown`)
 
 Configurable schemas accept values for matching.
 
@@ -77,6 +77,55 @@ Utilities which are less commonly used, or normally only used internally.
   - Delay use of a predicate until needed (allows for recursive types).
 - `assert(predicate: AnyPredicate, value: unknown, error?: ErrorLike)`
   - Throw if the predicate does not match the value.
+
+## Custom Schema
+
+Use the `schema` utility to create custom schemas with arbitrary validation logic. Creating a factory function which returns the schema is recommended.
+
+```ts
+const isNumberString = () => {
+  return $.schema<`${number}`>((value) => {
+    return typeof value === 'string' && /^\d*$/.test(value);
+  });
+};
+```
+
+Use the custom schema like any other schema.
+
+```ts
+const isNumberLike = $.union($.number(), isNumberString());
+
+if (isNumberLike(value)) {
+  // The value type is narrowed to: number | `${number}`
+}
+```
+
+## Extension Methods
+
+All schemas have the following extension methods.
+
+- `.or(predicate: AnyPredicate)` - union
+- `.and(predicate: AnyPredicate)` - intersection
+- `.optional()` - union with `undefined`
+
+For instance, make a string or undefined schema.
+
+```ts
+const isOptionalString = $.string().optional();
+```
+
+All collection schemas (`object`, `tuple`, `record`, `array`) have special extension methods.
+
+- `.partial()`
+- `.required()`
+
+The `array` schema has one additional extension which creates an array schema that must contain at least one entry.
+
+- `.nonEmpty()`
+
+The `object` schema has one additional extension adds new properties or additional constraints (intersections) on existing properties.
+
+- `.extend(shape: Record<string, AnyPredicate>)`
 
 ## Type Assertions
 
@@ -137,7 +186,7 @@ If you just try to define the recursive type in a single step, you will see a `T
 ```ts
 // Error: 'isTree' implicitly has type 'any' because it does not have a
 //        type annotation and is referenced directly or indirectly in its
-//        own initializer. ts(7022) 
+//        own initializer. ts(7022)
 const isTree = $.object({
   name: $.string(),
   children: $.array($.lazy(() => isTree)),
