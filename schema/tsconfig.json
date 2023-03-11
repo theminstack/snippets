@@ -1,0 +1,7 @@
+// Modern code (to be polyfilled) and explicit ambient types.
+{
+  "extends": "../tsconfig.json",
+  "include": [],
+  "exclude": [],
+  "files": ["schema.ts"]
+}

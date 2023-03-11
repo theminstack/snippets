@@ -4,13 +4,15 @@ Composable [type predicates](https://www.typescriptlang.org/docs/handbook/2/narr
 
 ## Getting Started
 
-Import the schema namespace (I recommend naming it `$` for brevity).
+Import the schema namespace. Using `$` is recommended for brevity.
 
 ```ts
 import * as $ from './schema.js';
+// Or, as an NPM package.
+import * as $ from '@minstack/schema';
 ```
 
-Construct a custom schema by composing built-in schemas.
+Construct a new custom schema from pre-existing schemas.
 
 ```ts
 const isPerson = $.object({
@@ -29,7 +31,7 @@ Use the custom schema to narrow the type of a variable.
 
 ```ts
 if (isPersion(value)) {
-  // The value type is narrowed to Person here.
+  // Value type is narrowed to: Person
 }
 ```
 
@@ -42,15 +44,19 @@ Simple schemas match the basic TS types.
 - `bigint()`
 - `boolean()`
 - `symbol()`
-- `callable()` - functions and constructors
+- `callable()`
+  - Match functions or constructors.
 - `notDefined()`
 - `defined`
 - `nul()`
 - `notNul()`
-- `nil()` - null or undefined
+- `nil()`
+  - Match null or undefined.
 - `notNil()`
-- `any()` - anything (as type `any`)
-- `unknown()` - anything (as type `unknown`)
+- `any()`
+  - Match anything as type `any`.
+- `unknown()`
+  - Match anything as type `unknown`.
 
 Configurable schemas accept values for matching.
 
@@ -74,18 +80,21 @@ Utilities which are less commonly used, or normally only used internally.
 - `predicate<T>(predicate: (value: unknown) => value is T)`
   - Create a predicate (copy).
 - `lazy(resolve: () => AnyPredicate)`
-  - Delay use of a predicate until needed (allows for recursive types).
+  - Delay resolving a predicate until needed (for recursive types).
 - `assert(predicate: AnyPredicate, value: unknown, error?: ErrorLike)`
   - Throw if the predicate does not match the value.
 
 ## Custom Schema
 
-Use the `schema` utility to create custom schemas with arbitrary validation logic. Creating a factory function which returns the schema is recommended.
+Use the `schema` utility to create custom schemas with arbitrary validation logic. Creating a factory function which returns a new schema is recommended.
 
 ```ts
-const isNumberString = () => {
+const isNumericString = () => {
   return $.schema<`${number}`>((value) => {
-    return typeof value === 'string' && /^\d*$/.test(value);
+    return (
+      typeof value === 'string' &&
+      value.trim() !== '' &&
+      !Number.isNaN(value as unknown as number);
   });
 };
 ```
@@ -93,43 +102,50 @@ const isNumberString = () => {
 Use the custom schema like any other schema.
 
 ```ts
-const isNumberLike = $.union($.number(), isNumberString());
+const isNumeric = $.union($.number(), isNumericString());
 
-if (isNumberLike(value)) {
-  // The value type is narrowed to: number | `${number}`
+if (isNumeric(value)) {
+  // Value type is narrowed to: number | `${number}`
 }
 ```
 
 ## Extension Methods
 
-All schemas have the following extension methods.
+All schemas have basic extension methods.
 
-- `.or(predicate: AnyPredicate)` - union
-- `.and(predicate: AnyPredicate)` - intersection
-- `.optional()` - union with `undefined`
+- `.or(predicate: AnyPredicate)`
+  - Union.
+- `.and(predicate: AnyPredicate)`
+  - Intersection.
+- `.optional()`
+  - Union with `undefined`.
 
-For example, you could create an optional string schema.
+An optional string scheme could be created as follows.
 
 ```ts
 const isOptionalString = $.string().optional();
 ```
 
-All collection schemas (`object`, `tuple`, `record`, `array`) have special extension methods.
+All collection schemas (`object`, `tuple`, `record`, `array`) have additional extension methods.
 
 - `.partial()`
+  - Make all entries optional.
 - `.required()`
+  - Make all entries required.
 
-The `array` schema has one additional extension which creates an array schema that must contain at least one entry.
+The `array` schema has an additional extension.
 
 - `.nonEmpty()`
+  - Match arrays with length > 0.
 
-The `object` schema has one additional extension adds new properties or additional constraints (intersections) on existing properties.
+The `object` schema has an additional extension.
 
 - `.extend(shape: Record<string, AnyPredicate>)`
+  - Add new properties or additional constraints (intersections) on existing properties.
 
 ## Type Assertions
 
-Sometimes you just want to throw an error when a predicate does not match a value.
+It can be useful to throw an error when a predicate does not match a value.
 
 ```ts
 $.assert($.string(), value, 'value is not a string');
@@ -155,7 +171,7 @@ First, define the non-recursive part of the schema.
 const isNode = $.object({ name: $.string() });
 ```
 
-Then, derive the recursive type. We need this type so that the recursive schema's type is explicit.
+Then, derive the recursive type. This type is needed to explicitly type the recursive schema.
 
 ```ts
 type Node = $.SchemaType<typeof isNode>;
@@ -172,7 +188,7 @@ const isTree: $.ObjectSchema<Tree> = isNode.extend({
 
 ### Wrong ways to make recursive types
 
-Without the `$.lazy` wrapper around the self reference, you will see a `TS2454` error, which means you're trying to use the schema before it's defined.
+A `TS2454` error is raised without the `$.lazy` wrapper around the self reference. This is because the schema is used before it is defined.
 
 ```ts
 const isTree: $.ObjectSchema<Tree> = isNode.extend({
@@ -181,7 +197,7 @@ const isTree: $.ObjectSchema<Tree> = isNode.extend({
 });
 ```
 
-If you just try to define the recursive type in a single step, you will see a `TS7022` error, which means the schema type is implicitly `any`, because typescript has failed to automatically infer a type which references itself.
+A `TS7022` error is raised when defining the recursive type in a single step. This is because typescript cannot automatically infer a type which references itself.
 
 ```ts
 // Error: 'isTree' implicitly has type 'any' because it does not have a

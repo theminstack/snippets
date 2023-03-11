@@ -1,0 +1,40 @@
+{
+  "name": "@minstack/schema",
+  "version": "1.0.0-prerelease.6",
+  "license": "CC0-1.0",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/theminstack/snippets.git",
+    "directory": "schema"
+  },
+  "keywords": [
+    "schema",
+    "validation",
+    "type",
+    "inference",
+    "predicate"
+  ],
+  "files": [
+    "lib/**"
+  ],
+  "directories": {
+    "lib": "lib"
+  },
+  "type": "module",
+  "types": "lib/esm/schema.d.ts",
+  "module": "lib/esm/schema.js",
+  "main": "lib/cjs/schema.js",
+  "exports": {
+    ".": {
+      "types": "./lib/esm/schema.d.ts",
+      "import": "./lib/esm/schema.js",
+      "default": "./lib/cjs/schema.js"
+    }
+  },
+  "sideEffects": false,
+  "scripts": {
+    "build:cjs": "rm -rf lib/cjs && tsc --noEmit false --module commonjs --outDir lib/cjs && echo '{ \"type\": \"commonjs\" }' > lib/cjs/package.json",
+    "build:esm": "rm -rf lib/esm && tsc --noEmit false --module es2022 --outDir lib/esm",
+    "prepublishOnly": "npm run build:cjs && npm run build:esm"
+  }
+}
