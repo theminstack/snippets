@@ -5,10 +5,15 @@
   "type": "module",
   "scripts": {
     "test": "tsc && eslint . --max-warnings=0 && jest --no-cache",
-    "modernize": "npx npm-check-updates -i --format group"
+    "modernize": "npx npm-check-updates -i --format group",
+    "release": "lerna publish from-package --no-git-reset --no-git-tag-version --no-push"
   },
-  "workspaces":["*/"],
+  "workspaces": [
+    "*/"
+  ],
   "devDependencies": {
+    "@lerna-lite/cli": "^1.16.1",
+    "@lerna-lite/publish": "^1.16.1",
     "@testing-library/react": "^14.0.0",
     "@types/eslint": "^8.21.1",
     "@types/jest": "^29.4.0",
