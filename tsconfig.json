@@ -1,7 +1,7 @@
 // Modern code (to be polyfilled) and explicit ambient types.
 {
   "compilerOptions": {
-    "moduleResolution": "node",
+    "moduleResolution": "NodeNext",
     "module": "ES2022",
     "target": "ES2022",
     "lib": ["ES2022", "DOM"],

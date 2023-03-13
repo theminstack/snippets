@@ -10,10 +10,6 @@ const mockBytes = new Uint8Array([
 
 describe('pkce', () => {
   beforeEach(async () => {
-    Object.defineProperties(global, {
-      TextEncoder: { value: (await import('node:util')).TextEncoder },
-      crypto: { value: (await import('node:crypto')).webcrypto },
-    });
     jest.spyOn(crypto, 'getRandomValues').mockImplementation((array) => {
       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
       return mockBytes.slice(0, new Uint8Array(array!.byteLength).length);

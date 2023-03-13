@@ -112,7 +112,7 @@ const useMutation = <TData, TVariables, TContext>(
       .catch(async (newError) => {
         if (!signal.aborted) {
           await onSettledRef.current?.(undefined, newError, variables, context);
-          return Promise.reject(newError);
+          throw newError;
         }
       })
       .catch((newError) => {

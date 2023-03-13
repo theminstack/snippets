@@ -23,7 +23,7 @@ module.exports = {
   preset: 'ts-jest/presets/default-esm',
   restoreMocks: true,
   roots: ['<rootDir>'],
-  setupFilesAfterEnv: [],
+  setupFilesAfterEnv: ['<rootDir>/jest.setup.cjs'],
   testEnvironment: 'jsdom',
   testPathIgnorePatterns: ignorePatterns,
   transformIgnorePatterns: ['/node_modules/core-js/'],

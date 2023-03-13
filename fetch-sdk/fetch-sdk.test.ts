@@ -222,7 +222,7 @@ describe('createFetchSdk', () => {
         foo: {
           url: 'https://example.com',
           accept: () => false,
-          getErrorCode: async () => Promise.reject(new Error('getErrorCode')),
+          getErrorCode: () => Promise.reject(new Error('getErrorCode')),
         },
       });
       const sdk = new Sdk();
@@ -237,7 +237,7 @@ describe('createFetchSdk', () => {
       const Sdk = createFetchSdk({
         foo: {
           url: 'https://example.com',
-          parse: async () => Promise.reject(reason),
+          parse: () => Promise.reject(reason),
         },
       });
       const sdk = new Sdk();

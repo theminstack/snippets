@@ -65,7 +65,7 @@ const createLimiter = (concurrency: number, options: LimiterOptions = {}): Limit
 
   let isPaused = paused;
   let active = 0;
-  let lastPromise = Promise.resolve();
+  let promise = Promise.resolve();
 
   const update = (): void => {
     while (!isPaused && active < safeConcurrency && queue.length) {
@@ -97,19 +97,17 @@ const createLimiter = (concurrency: number, options: LimiterOptions = {}): Limit
       const newPromise = new Promise<any>((resolve, reject) => {
         queue.push({
           reject,
-          start: async () => {
+          start: () => {
             return Promise.resolve()
               .then(() => task(...args))
               .then(resolve, reject);
           },
         });
       });
-      const promise = sequential ? lastPromise.then(() => newPromise) : newPromise;
 
-      lastPromise = promise.catch(() => undefined);
       update();
 
-      return promise;
+      return await (sequential ? (promise = promise.catch(() => undefined).then(() => newPromise)) : newPromise);
     },
     pause() {
       isPaused = true;

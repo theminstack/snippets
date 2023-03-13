@@ -24,10 +24,9 @@ type ReadStream = {
 /**
  * Capture all data from a readable stream to a `Buffer` or `string` (if an `encoding` is set).
  */
-const readStream = (async (readable, encoding) => {
-  const buffers: Buffer[] = [];
-
+const readStream = ((readable, encoding) => {
   return new Promise<Buffer | string>((resolve, reject) => {
+    const buffers: Buffer[] = [];
     readable.on('data', (chunk) => {
       if (chunk instanceof Buffer) {
         buffers.push(chunk);
