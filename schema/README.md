@@ -21,7 +21,7 @@ const isPerson = $.object({
 });
 ```
 
-Infer the typescript type from the custom schema (if required).
+Infer the type from the custom schema (if required).
 
 ```ts
 type Person = $.SchemaType<typeof isPerson>;
@@ -44,19 +44,15 @@ Simple schemas match the basic TS types.
 - `bigint()`
 - `boolean()`
 - `symbol()`
-- `callable()`
-  - Match functions or constructors.
+- `callable()` - Match functions or constructors.
 - `notDefined()`
 - `defined`
 - `nul()`
 - `notNul()`
-- `nil()`
-  - Match null or undefined.
+- `nil()` - Match null or undefined.
 - `notNil()`
-- `any()`
-  - Match anything as type `any`.
-- `unknown()`
-  - Match anything as type `unknown`.
+- `any()` - Match anything as type `any`.
+- `unknown()` - Match anything as type `unknown`.
 
 Configurable schemas accept values for matching.
 
@@ -120,7 +116,7 @@ All schemas have basic extension methods.
 - `.optional()`
   - Union with `undefined`.
 
-An optional string scheme could be created as follows.
+An optional string schema could be created as follows.
 
 ```ts
 const isOptionalString = $.string().optional();
@@ -133,12 +129,12 @@ All collection schemas (`object`, `tuple`, `record`, `array`) have additional ex
 - `.required()`
   - Make all entries required.
 
-The `array` schema has an additional extension.
+The `array` schema has an additional extension method.
 
 - `.nonEmpty()`
   - Match arrays with length > 0.
 
-The `object` schema has an additional extension.
+The `object` schema has an additional extension method.
 
 - `.extend(shape: Record<string, AnyPredicate>)`
   - Add new properties or additional constraints (intersections) on existing properties.
