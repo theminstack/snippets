@@ -49,6 +49,10 @@ const createThrottled = <TArgs extends readonly unknown[]>(
       case 'waiting':
         state = { key: 'idle' };
         break;
+      /* c8 ignore next */
+      case 'idle':
+        /* c8 ignore next */
+        break;
     }
   };
 
