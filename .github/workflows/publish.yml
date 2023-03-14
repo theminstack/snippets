@@ -31,6 +31,7 @@ jobs:
       - name: Publish (CodeCov)
         uses: codecov/codecov-action@v3
         with:
+          token: ${{ secrets.CODECOV_TOKEN }}
           files: ./.coverage/lcov.info
           fail_ci_if_error: true
           verbose: true
@@ -40,4 +41,4 @@ jobs:
           npm config --location project set //registry.npmjs.org/:_authToken '${NPM_TOKEN}'
           npm run release
         env:
-          NPM_TOKEN: ${{secrets.NPM_TOKEN}}
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
