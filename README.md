@@ -17,7 +17,7 @@ Completely free TypeScript one-file source code snippets _with tests_, which can
 - [hash-djb2a](hash-djb2a) - Fast and good string hash function.
 - [is-json-safe](is-json-safe) - Can a value be converted to and from JSON without data loss.
 - [jwk](jwk) - Create JWKs for signing and verifying JWT tokens.
-- [jwt-create][jwt-create] - Create JWTs for web ID and auth.
+- [jwt-create](jwt-create) - Create JWTs for web ID and auth.
 - [jwt-decode](jwt-decode) - Decode JWTs with (optional) verification.
 - [limiter](limiter) - Run asynchronous tasks with limited concurrency.
 - [maybe](maybe) - Functionally represent and manipulate possibly missing/error values.
