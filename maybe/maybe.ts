@@ -156,7 +156,7 @@ maybe.error = <TValue = never>(error?: unknown): Maybe<TValue> => {
 /**
  * Get an empty (not ok) monad, _without_ an error.
  *
- * **NOTE**: All empty monad instances are the same instance (ie. referentially
+ * **NOTE:** All empty monad instances are the same instance (ie. referentially
  * identical).
  */
 maybe.empty = <TValue = never>(): Maybe<TValue> => {

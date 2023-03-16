@@ -6,7 +6,7 @@ This is more efficient than simply providing raw values in the context,
 because only the components which are using the subject will be rerendered
 when the subject value is changed.
 
-**NOTE**: The returned `setValue()` function returns true if the subject is
+**NOTE:** The returned `setValue()` function returns true if the subject is
 writable (has a `next()` method). It is a no-op and returns false if the
 subject is readonly.
 

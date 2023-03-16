@@ -58,7 +58,7 @@ total.subscribe(
 
 The selector callback also receives a second argument (after `get()`) which is the current value, or undefined on the first call. This can be used for progressive calculation, or to "cancel" updates by returning the previous value.
 
-**NOTE**: Due to the way type inference works, you must explicitly set the selector generic type when using the `current` argument.
+**NOTE:** Due to the way type inference works, you must explicitly set the selector generic type when using the `current` argument.
 
 ```ts
 const progressive = createSubjectSelector<number>((get, current = 0) => {
