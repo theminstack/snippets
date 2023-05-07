@@ -123,4 +123,4 @@ const createFsm = <TStates extends FsmStatesDefinition = {}>(): Fsm<TStates> => 
   return transition({}) as unknown as Fsm<TStates>;
 };
 
-export { type InferFsmStates, createFsm };
+export { createFsm, type InferFsmStates };

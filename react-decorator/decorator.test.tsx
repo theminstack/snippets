@@ -11,8 +11,8 @@ const Decoration: FC<{ readonly children?: ReactNode; readonly id?: string }> = 
   );
 };
 
-const Empty = () => null;
-const NotEmpty = () => <div>not empty</div>;
+const Empty = (): null => null;
+const NotEmpty = (): JSX.Element => <div>not empty</div>;
 let mutationObserverSpy: jest.SpyInstance;
 
 beforeEach(() => {

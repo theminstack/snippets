@@ -2,7 +2,7 @@ import { inspect } from 'node:util';
 
 import { toArray } from './to-array.js';
 
-const fn = () => undefined;
+const fn = (): undefined => undefined;
 
 const cases: [unknown, unknown][] = [
   [null, [null]],

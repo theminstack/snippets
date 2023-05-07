@@ -99,11 +99,11 @@ const createSubjectContext: createSubjectContext = <TValue = undefined>(
     },
     value: defaultValue as unknown as TValue,
   });
-  const useSubjectContext = () => {
+  const useSubjectContext = (): SubjectHookResult<TValue> => {
     return useSubject(useContext(context));
   };
 
   return [useSubjectContext, context];
 };
 
-export { type SubjectLike, createSubjectContext, useSubject };
+export { createSubjectContext, type SubjectLike, useSubject };

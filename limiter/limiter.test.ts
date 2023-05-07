@@ -2,7 +2,7 @@
 import { createLimiter } from './limiter.js';
 
 const tasks: { reject(): void; resolve(): void }[] = [];
-const nextTick = () => new Promise(process.nextTick);
+const nextTick = (): Promise<void> => new Promise(process.nextTick);
 let task: jest.Mock;
 
 beforeEach(() => {

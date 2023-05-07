@@ -60,7 +60,7 @@ const Decorator = <TDecoration extends ComponentType<any>, TContainer extends ke
   containerHiddenStyle = containerHiddenStyleDefault,
   containerProps,
   children,
-}: DecoratorProps<TDecoration, TContainer>) => {
+}: DecoratorProps<TDecoration, TContainer>): JSX.Element => {
   const Decoration = decoration as unknown as ComponentType<any>;
   const Container = container as unknown as ComponentType<any>;
   const [element, setElement] = useState<Node | null>(null);
@@ -73,7 +73,7 @@ const Decorator = <TDecoration extends ComponentType<any>, TContainer extends ke
 
     let isEmptyPrevious: boolean | undefined;
 
-    const update = () => {
+    const update = (): void => {
       const isEmptyNow = element.childNodes.length === 0;
 
       if (isEmptyPrevious !== isEmptyNow) {
@@ -109,4 +109,4 @@ const Decorator = <TDecoration extends ComponentType<any>, TContainer extends ke
   );
 };
 
-export { type DecoratorProps, Decorator };
+export { Decorator, type DecoratorProps };

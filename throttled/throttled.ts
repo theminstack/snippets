@@ -40,7 +40,7 @@ const createThrottled = <TArgs extends readonly unknown[]>(
 ): Throttled<TArgs> => {
   let state: State<TArgs> = { key: 'idle' };
 
-  const onTimeout = (current: State<TArgs>) => {
+  const onTimeout = (current: State<TArgs>): void => {
     switch (current.key) {
       case 'scheduled':
         state = { handle: startTimeout(), key: 'waiting' };
@@ -56,7 +56,7 @@ const createThrottled = <TArgs extends readonly unknown[]>(
     }
   };
 
-  const startTimeout = () => {
+  const startTimeout = (): ReturnType<typeof setTimeout> => {
     return setTimeout(() => {
       onTimeout(state);
     }, timeout);

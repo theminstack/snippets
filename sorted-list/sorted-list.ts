@@ -60,7 +60,7 @@ class SortedList<TType> {
   /**
    * Number of entries in the list.
    */
-  public get size() {
+  public get size(): number {
     return this.#values.length;
   }
 
@@ -181,4 +181,4 @@ class SortedList<TType> {
   }
 }
 
-export { type SortedListCompare, type SortedListOptions, SortedList };
+export { SortedList, type SortedListCompare, type SortedListOptions };

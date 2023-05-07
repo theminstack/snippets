@@ -79,7 +79,7 @@ const createSubject = <TValue>(initialValue: TValue): Subject<TValue> => {
     subscribe: (next, options = {}) => {
       const { immediate = false } = options;
       const subscriber = { next };
-      const unsubscribe = () => {
+      const unsubscribe = (): void => {
         subscribers.delete(subscriber);
       };
 
@@ -94,4 +94,4 @@ const createSubject = <TValue>(initialValue: TValue): Subject<TValue> => {
   };
 };
 
-export { type Subject, type SubscribeOptions, type Subscription, createSubject };
+export { createSubject, type Subject, type SubscribeOptions, type Subscription };

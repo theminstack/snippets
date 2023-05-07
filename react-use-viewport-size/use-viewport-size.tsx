@@ -11,7 +11,7 @@ const useViewportSize = (): { height: number; width: number } => {
   const [size, setSize] = useState({ height: window.innerHeight, width: window.innerWidth });
 
   useEffect(() => {
-    const update = () => {
+    const update = (): void => {
       if (af.current != null) {
         return;
       }

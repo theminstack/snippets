@@ -87,7 +87,7 @@ const createSubjectSelector = <TValue>(compute: SubjectSelectorCompute<TValue>):
   let isUpdating = false;
 
   const subscribers = new Set<Subscriber<TValue>>();
-  const update = () => {
+  const update = (): void => {
     if (isUpdating) {
       return;
     }
@@ -173,9 +173,9 @@ const createSubjectSelector = <TValue>(compute: SubjectSelectorCompute<TValue>):
 };
 
 export {
+  createSubjectSelector,
   type SubjectSelector,
   type SubjectSelectorCompute,
   type SubscribeOptions,
   type Subscription,
-  createSubjectSelector,
 };

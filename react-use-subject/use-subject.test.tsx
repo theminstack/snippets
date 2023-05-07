@@ -1,7 +1,7 @@
 import { act, renderHook } from '@testing-library/react';
 import { type FC, type PropsWithChildren } from 'react';
 
-import { type SubjectLike, createSubjectContext, useSubject } from './use-subject.js';
+import { createSubjectContext, type SubjectLike, useSubject } from './use-subject.js';
 
 const createMockSubject = ({
   value = 0,

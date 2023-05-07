@@ -126,4 +126,4 @@ const createLimiter = (concurrency: number, options: LimiterOptions = {}): Limit
   };
 };
 
-export { type Limiter, type LimiterOptions, createLimiter };
+export { createLimiter, type Limiter, type LimiterOptions };

@@ -295,4 +295,4 @@ const createFetchSdk: {
   return FetchSdk as FetchSdkConstructor<TDefinitions, TArgs>;
 };
 
-export { type FetchSdkErrorDetails, createFetchSdk };
+export { createFetchSdk, type FetchSdkErrorDetails };

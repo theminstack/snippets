@@ -6,7 +6,7 @@ test('subject-selector', () => {
   const b = createSubject(1);
   const c = createSubject(100);
   let lastCurrent = 0;
-  const expected = () => {
+  const expected = (): number => {
     return a.value + b.value + (b.value % 2 ? c.value : 0);
   };
   const sum = createSubjectSelector<number>((get, current) => {

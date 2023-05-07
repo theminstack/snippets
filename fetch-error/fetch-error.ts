@@ -86,4 +86,4 @@ class FetchError extends Error {
   }
 }
 
-export { type FetchErrorOptions, FetchError };
+export { FetchError, type FetchErrorOptions };

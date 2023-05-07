@@ -1,4 +1,4 @@
-import { type InferFsmStates, createFsm } from './fsm.js';
+import { createFsm, type InferFsmStates } from './fsm.js';
 
 describe('fsm', () => {
   test('creation and transitions', () => {

@@ -187,7 +187,7 @@ const useQuery = <TData, TKey extends readonly unknown[]>(
   // Fetch on reconnect
   useEffect(() => {
     if (enabled && refetchOnReconnect) {
-      const onOnline = () => refetch({ cancelRefetch: false });
+      const onOnline = (): void => refetch({ cancelRefetch: false });
       window.addEventListener('online', onOnline);
       return () => window.removeEventListener('online', onOnline);
     }
@@ -196,7 +196,7 @@ const useQuery = <TData, TKey extends readonly unknown[]>(
   // Fetch on window focus
   useEffect(() => {
     if (enabled && refetchOnWindowFocus) {
-      const onFocus = () => refetch({ cancelRefetch: false });
+      const onFocus = (): void => refetch({ cancelRefetch: false });
       window.addEventListener('focus', onFocus);
       return () => window.removeEventListener('focus', onFocus);
     }
