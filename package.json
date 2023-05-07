@@ -8,13 +8,13 @@
     "test": "tsc && npm run lint --max-warnings=0 && jest --no-cache",
     "modernize": "npx npm-check-updates -i --format group",
     "release": "catch-uncommitted --exclude=.npmrc && lerna publish from-package --no-git-tag-version --no-push --yes",
-    "bump": "lerna version --no-git-tag-version --no-push --yes bump"
+    "bump": "lerna exec npm -- version patch"
   },
   "workspaces": [
     "*/"
   ],
   "devDependencies": {
-    "@lerna-lite/cli": "^2.3.0",
+    "@lerna-lite/exec": "^2.3.0",
     "@lerna-lite/publish": "^2.3.0",
     "@testing-library/react": "^14.0.0",
     "@types/eslint": "^8.37.0",
