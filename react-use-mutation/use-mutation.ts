@@ -77,14 +77,14 @@ const useMutation = <TData, TVariables, TContext>(
   const mutationFnRef = useRef(mutationFn);
   const onMutateRef = useRef(onMutate);
   const onSettledRef = useRef(onSettled);
-  const abortControllerRef = useRef(new AbortController());
+  const abortControllerRef = useRef<AbortController>();
 
   const mutate = useCallback((variables: TVariables = undefined as TVariables) => {
-    if (abortControllerRef.current.signal.aborted) {
+    if (abortControllerRef.current?.signal.aborted) {
       return;
     }
 
-    abortControllerRef.current.abort();
+    abortControllerRef.current?.abort();
     abortControllerRef.current = new AbortController();
 
     const signal = abortControllerRef.current.signal;
@@ -137,7 +137,7 @@ const useMutation = <TData, TVariables, TContext>(
 
   // Prevent state changes after unmount.
   useEffect(() => {
-    return () => abortControllerRef.current.abort();
+    return () => abortControllerRef.current?.abort();
   }, []);
 
   return { data, error, isLoading, mutate, reset };

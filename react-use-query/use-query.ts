@@ -122,7 +122,7 @@ const useQuery = <TData, TKey extends readonly unknown[]>(
   const [isFetching, setIsFetching] = useState(false);
 
   const queryFnRef = useRef(queryFn);
-  const abortControllerRef = useRef<AbortController | undefined>();
+  const abortControllerRef = useRef<AbortController>();
 
   const refetch = useCallback(
     ({ cancelRefetch = true }: QueryRefetchOptions = {}) => {
