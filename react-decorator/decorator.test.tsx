@@ -13,12 +13,12 @@ const Decoration: FC<{ readonly children?: ReactNode; readonly id?: string }> = 
 
 const Empty = (): null => null;
 const NotEmpty = (): JSX.Element => <div>not empty</div>;
-let mutationObserverSpy: jest.SpyInstance;
+let mutationObserverSpy: any;
 
 beforeEach(() => {
-  mutationObserverSpy = jest.spyOn(global, 'MutationObserver').mockReturnValue({
-    disconnect: jest.fn(),
-    observe: jest.fn(),
+  mutationObserverSpy = vi.spyOn(global, 'MutationObserver').mockReturnValue({
+    disconnect: vi.fn(),
+    observe: vi.fn(),
   } as never);
 });
 

@@ -1,22 +1,22 @@
 import { createThrottled } from './throttled.js';
 
 test('throttled', () => {
-  jest.useFakeTimers();
-  const callback = jest.fn();
+  vi.useFakeTimers();
+  const callback = vi.fn();
   const throttled = createThrottled(100, callback);
   throttled(1);
   expect(callback).toHaveBeenCalledTimes(1);
   expect(callback).toHaveBeenLastCalledWith(1);
-  jest.runAllTimers();
+  vi.runAllTimers();
   expect(callback).toHaveBeenCalledTimes(1);
   throttled(2);
   expect(callback).toHaveBeenCalledTimes(2);
   expect(callback).toHaveBeenLastCalledWith(2);
   throttled(3);
-  jest.advanceTimersByTime(99);
+  vi.advanceTimersByTime(99);
   throttled(4);
   expect(callback).toHaveBeenCalledTimes(2);
-  jest.advanceTimersByTime(1);
+  vi.advanceTimersByTime(1);
   expect(callback).toHaveBeenCalledTimes(3);
   expect(callback).toHaveBeenLastCalledWith(4);
   throttled(5);
@@ -27,7 +27,7 @@ test('throttled', () => {
   throttled(6);
   expect(callback).toHaveBeenCalledTimes(4);
   throttled.cancel();
-  jest.runAllTimers();
+  vi.runAllTimers();
   expect(callback).toHaveBeenCalledTimes(4);
   throttled(7);
   expect(callback).toHaveBeenCalledTimes(5);
@@ -36,7 +36,7 @@ test('throttled', () => {
   expect(callback).toHaveBeenCalledTimes(5);
   throttled.cancel();
   throttled(9);
-  jest.advanceTimersByTime(100);
+  vi.advanceTimersByTime(100);
   expect(callback).toHaveBeenCalledTimes(6);
   expect(callback).toHaveBeenLastCalledWith(9);
 });

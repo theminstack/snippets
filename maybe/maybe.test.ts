@@ -15,7 +15,7 @@ describe('maybe', () => {
     expect(test.map(() => 1)).toBe(test);
     expect(test.toArray()).toEqual([]);
 
-    const callback = jest.fn();
+    const callback = vi.fn();
     expect(test.filter(callback)).toBe(test);
     expect(callback).not.toBeCalled();
   });
@@ -27,11 +27,11 @@ describe('maybe', () => {
     expect(test.empty).toBe(true);
     expect(test.error).toBe(error);
     expect(() => test.value).toThrow(error);
-    expect(maybe.error(error)).not.toBe(test);
+    expect(maybe.error(error) !== test).toBeTruthy();
     expect(test.catch(() => 1).value).toBe(1);
     expect(test.toArray()).toEqual([]);
 
-    const callback = jest.fn();
+    const callback = vi.fn();
     expect(test.else(callback)).toBe(test);
     expect(test.filter(callback)).toBe(test);
     expect(test.map(callback)).toBe(test);
@@ -69,7 +69,7 @@ describe('maybe', () => {
     expect(test.map((value) => value + 2).value).toBe(3);
     expect(test.toArray()).toEqual([1]);
 
-    const callback = jest.fn();
+    const callback = vi.fn();
     expect(test.catch(callback)).toBe(test);
     expect(test.else(callback)).toBe(test);
     expect(callback).not.toBeCalled();

@@ -3,17 +3,17 @@ import * as $ from './schema.js';
 
 describe('schema', () => {
   test('assert', () => {
-    const a = jest.fn() as unknown as (v: unknown) => v is any;
+    const a = vi.fn() as unknown as (v: unknown) => v is any;
 
-    jest.mocked(a).mockReturnValue(false);
+    vi.mocked(a).mockReturnValue(false);
     expect(() => $.assert(a, 1, 'testing')).toThrow(new TypeError('testing'));
     expect(a).toHaveBeenLastCalledWith(1);
 
-    jest.mocked(a).mockReturnValue(false);
+    vi.mocked(a).mockReturnValue(false);
     expect(() => $.assert(a, 2, () => new SyntaxError('testing'))).toThrow(new SyntaxError('testing'));
     expect(a).toHaveBeenLastCalledWith(2);
 
-    jest.mocked(a).mockReturnValue(true);
+    vi.mocked(a).mockReturnValue(true);
     expect(() => $.assert(a, 3)).not.toThrow();
     expect(a).toHaveBeenLastCalledWith(3);
   });
@@ -118,7 +118,7 @@ describe('schema', () => {
       expect($.instance(Date, Error)(new TypeError('...'))).toBe(true);
       // Fail
       expect($.instance(Date)(Date)).toBe(false);
-      expect($.instance(Date)(new RegExp('/./'))).toBe(false);
+      expect($.instance(Date)(/\/.\//u)).toBe(false);
     });
 
     test('callable', () => {
@@ -126,9 +126,10 @@ describe('schema', () => {
       expect($.callable()(() => {})).toBe(true);
       expect($.callable()(function () {})).toBe(true);
       expect($.callable()(class A {})).toBe(true);
+      // eslint-disable-next-line @typescript-eslint/no-implied-eval
       expect($.callable()(new Function())).toBe(true);
       // Fail
-      [null, undefined, {}, [], /./].forEach((value) => {
+      [null, undefined, {}, [], /./u].forEach((value) => {
         expect($.callable()(value)).toBe(false);
       });
     });

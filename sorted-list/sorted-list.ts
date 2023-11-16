@@ -160,9 +160,11 @@ class SortedList<TType> {
       }
     }
 
-    // If the search value is undefined, it can look like an exact match with
-    // the index off the end of the list, which is incorrect. So, isMatch
-    // (result === 0) is only true if the index (min) is less than list length.
+    /*
+     * If the search value is undefined, it can look like an exact match with
+     * the index off the end of the list, which is incorrect. So, isMatch
+     * (result === 0) is only true if the index (min) is less than list length.
+     */
     return [min, result === 0 && min < this.#values.length];
   }
 

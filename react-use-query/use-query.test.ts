@@ -1,5 +1,4 @@
-import { fireEvent, renderHook, waitFor } from '@testing-library/react';
-import { act } from 'react-dom/test-utils';
+import { act, fireEvent, renderHook } from '@testing-library/react';
 
 import { type QueryFn, type QueryOptions, useQuery, useStableQueryKey } from './use-query.js';
 
@@ -30,15 +29,15 @@ describe('useStableQueryKey', () => {
 });
 
 describe('useQuery', () => {
-  let queryFnMock: jest.Mock;
+  let queryFnMock: any;
 
   beforeEach(() => {
-    queryFnMock = jest.fn().mockResolvedValue('foo');
-    jest.useFakeTimers();
+    queryFnMock = vi.fn().mockResolvedValue('foo');
+    vi.useFakeTimers();
   });
 
   afterEach(() => {
-    jest.useRealTimers();
+    vi.useRealTimers();
   });
 
   it('should query on mount and not on rerender', async () => {
@@ -51,7 +50,8 @@ describe('useQuery', () => {
     expect(result.current.data).toBeUndefined();
     expect(result.current.error).toBeUndefined();
 
-    await waitFor(() => expect(result.current.isFetching).toEqual(false));
+    await act(() => vi.waitFor(() => !result.current.isFetching));
+
     expect(result.current.data).toEqual('foo');
     expect(result.current.error).toBeUndefined();
 
@@ -66,83 +66,92 @@ describe('useQuery', () => {
     );
 
     expect(queryFnMock).toHaveBeenCalledTimes(1);
-    await waitFor(() => expect(result.current.isFetching).toEqual(false));
+    expect(result.current.isFetching).toEqual(true);
+    await act(() => vi.waitFor(() => !result.current.isFetching));
     expect(result.current.data).toEqual('foo');
+    expect(result.current.error).toBeUndefined();
 
+    // Should clear data immediately if the key changes.
+    //  NOTE: Setting up error for later.
     queryFnMock.mockRejectedValueOnce(new Error('error'));
     rerender({ key: [{ a: 1 }] });
     expect(queryFnMock).toHaveBeenCalledTimes(2);
-    // Should clear data if the key changes.
     expect(result.current.data).toBeUndefined();
-    await waitFor(() => expect(result.current.isFetching).toEqual(false));
-    expect(result.current.data).toBeUndefined();
-    expect(result.current.error).toBeInstanceOf(Error);
 
+    await act(() => vi.waitFor(() => !result.current.isFetching));
+
+    // Should clear error immediately if the key changes.
+    expect(result.current.error).toBeInstanceOf(Error);
     rerender({ key: [{ a: 1, b: 2 }] });
     expect(queryFnMock).toHaveBeenCalledTimes(3);
-    // Should clear error if the key changes.
     expect(result.current.error).toBeUndefined();
-    await waitFor(() => expect(result.current.isFetching).toEqual(false));
-    expect(result.current.data).toEqual('foo');
-    expect(result.current.error).toBeUndefined();
+
+    await act(() => vi.waitFor(() => !result.current.isFetching));
 
     rerender({ key: [{ b: 2, a: 1 }] });
     // Property order isn't a key "change"
     expect(queryFnMock).toHaveBeenCalledTimes(3);
 
-    await waitFor(() => expect(result.current.isFetching).toEqual(false));
+    await act(() => vi.waitFor(() => !result.current.isFetching));
   });
 
   it('should query when imperatively triggered', async () => {
     const { result } = renderHook(() => useQuery(['a'], queryFnMock));
 
     expect(queryFnMock).toHaveBeenCalledTimes(1);
-    await waitFor(() => expect(result.current.isFetching).toEqual(false));
+    expect(result.current.isFetching).toEqual(true);
+
+    await act(() => vi.waitFor(() => !result.current.isFetching));
     expect(result.current.data).toEqual('foo');
 
     // Should keep previous data, because the key didn't change.
-    queryFnMock.mockRejectedValueOnce(new Error('error'));
     act(() => result.current.refetch());
     expect(queryFnMock).toHaveBeenCalledTimes(2);
     expect(result.current.data).toEqual('foo');
-    await waitFor(() => expect(result.current.isFetching).toEqual(false));
-    // Keep the data if an error occurs too.
+    await act(() => vi.waitFor(() => !result.current.isFetching));
     expect(result.current.data).toEqual('foo');
-    expect(result.current.error).toBeInstanceOf(Error);
 
+    // Keep the data if an error occurs too.
+    queryFnMock.mockRejectedValueOnce(new Error('error'));
     act(() => result.current.refetch());
     expect(queryFnMock).toHaveBeenCalledTimes(3);
-    expect(result.current.error).toBeInstanceOf(Error);
-    await waitFor(() => expect(result.current.isFetching).toEqual(false));
     expect(result.current.data).toEqual('foo');
-    // Error is cleared when the query succeeds.
-    expect(result.current.error).toBeUndefined();
+    await act(() => vi.waitFor(() => !result.current.isFetching));
+    expect(result.current.data).toEqual('foo');
+    expect(result.current.error).toBeInstanceOf(Error);
 
-    await waitFor(() => expect(result.current.isFetching).toEqual(false));
+    // Error is cleared when the query succeeds.
+    act(() => result.current.refetch());
+    await act(() => vi.waitFor(() => !result.current.isFetching));
+    expect(result.current.data).toEqual('foo');
+    expect(result.current.error).toBeUndefined();
   });
 
   it('should query when the refresh interval elapses', async () => {
     const { result } = renderHook(() => useQuery([], queryFnMock, { refetchInterval: 1000 }));
 
-    await waitFor(() => expect(result.current.isFetching).toEqual(false));
     expect(queryFnMock).toHaveBeenCalledTimes(1);
+    expect(result.current.isFetching).toEqual(true);
+
+    await act(() => vi.waitFor(() => !result.current.isFetching));
 
     // Not elapsed yet.
-    act(() => void jest.advanceTimersByTime(500));
+    act(() => void vi.advanceTimersByTime(500));
     expect(queryFnMock).toHaveBeenCalledTimes(1);
 
     // Now the refetch interval has elapsed, so refetch should be in progress.
-    act(() => void jest.advanceTimersByTime(501));
+    act(() => void vi.advanceTimersByTime(501));
     expect(queryFnMock).toHaveBeenCalledTimes(2);
 
-    await waitFor(() => expect(result.current.isFetching).toEqual(false));
+    await act(() => vi.waitFor(() => !result.current.isFetching));
   });
 
   it('should query when reconnected', async () => {
     const { result, rerender } = renderHook((options: QueryOptions) => useQuery([], queryFnMock, options));
 
     expect(queryFnMock).toHaveBeenCalledTimes(1);
-    await waitFor(() => expect(result.current.isFetching).toEqual(false));
+    expect(result.current.isFetching).toEqual(true);
+    await act(() => vi.waitFor(() => !result.current.isFetching));
 
     act(() => void fireEvent(window, new Event('online')));
     expect(queryFnMock).toHaveBeenCalledTimes(2);
@@ -151,22 +160,23 @@ describe('useQuery', () => {
     act(() => void fireEvent(window, new Event('online')));
     expect(queryFnMock).toHaveBeenCalledTimes(2);
 
-    // Not when disabled
-    await waitFor(() => expect(result.current.isFetching).toEqual(false));
+    await act(() => vi.waitFor(() => !result.current.isFetching));
 
     // Not when disabled
     rerender({ refetchOnReconnect: false });
     act(() => void fireEvent(window, new Event('online')));
     expect(queryFnMock).toHaveBeenCalledTimes(2);
 
-    await waitFor(() => expect(result.current.isFetching).toEqual(false));
+    await act(() => vi.waitFor(() => !result.current.isFetching));
   });
 
   it('should query when the window is focused', async () => {
     const { result, rerender } = renderHook((options: QueryOptions) => useQuery([], queryFnMock, options));
 
     expect(queryFnMock).toHaveBeenCalledTimes(1);
-    await waitFor(() => expect(result.current.isFetching).toEqual(false));
+    expect(result.current.isFetching).toEqual(true);
+
+    await act(() => vi.waitFor(() => !result.current.isFetching));
 
     act(() => void fireEvent(window, new Event('focus')));
     expect(queryFnMock).toHaveBeenCalledTimes(2);
@@ -175,13 +185,14 @@ describe('useQuery', () => {
     act(() => void fireEvent(window, new Event('focus')));
     expect(queryFnMock).toHaveBeenCalledTimes(2);
 
+    await act(() => vi.waitFor(() => !result.current.isFetching));
+
     // Not when disabled
-    await waitFor(() => expect(result.current.isFetching).toEqual(false));
     rerender({ refetchOnWindowFocus: false });
     act(() => void fireEvent(window, new Event('focus')));
     expect(queryFnMock).toHaveBeenCalledTimes(2);
 
-    await waitFor(() => expect(result.current.isFetching).toEqual(false));
+    await act(() => vi.waitFor(() => !result.current.isFetching));
   });
 
   it('should cancel the previous query when a new query starts', async () => {
@@ -203,11 +214,11 @@ describe('useQuery', () => {
     expect(queryFnMock).toHaveBeenCalledTimes(3);
     expect(queryFnMock.mock.calls.at(-2)?.[0].signal.aborted).toEqual(true);
 
-    await waitFor(() => expect(result.current.isFetching).toEqual(false));
+    await act(() => vi.waitFor(() => !result.current.isFetching));
   });
 
   it('should always use the most recent query function instance', async () => {
-    const queryFnUpdate = jest.fn().mockResolvedValue('bar');
+    const queryFnUpdate = vi.fn().mockResolvedValue('bar');
     const { result, rerender } = renderHook((queryFn: QueryFn = queryFnMock) => useQuery(['a'], queryFn));
 
     expect(queryFnMock).toHaveBeenCalledTimes(1);
@@ -221,7 +232,7 @@ describe('useQuery', () => {
     expect(queryFnMock).toHaveBeenCalledTimes(1);
     expect(queryFnUpdate).toHaveBeenCalledTimes(1);
 
-    await waitFor(() => expect(result.current.isFetching).toEqual(false));
+    await act(() => vi.waitFor(() => !result.current.isFetching));
   });
 
   it('should abort fetch on unmount', async () => {
@@ -233,13 +244,15 @@ describe('useQuery', () => {
   });
 
   it('should unmount without error when no query is running', async () => {
-    jest.useRealTimers();
+    vi.useRealTimers();
     const { result, unmount } = renderHook(() => useQuery(['a'], queryFnMock));
 
-    await waitFor(() => expect(result.current.isFetching).toEqual(false));
+    await act(() => vi.waitFor(() => !result.current.isFetching));
     expect(queryFnMock).toHaveBeenCalledTimes(1);
     expect(queryFnMock.mock.calls.at(-1)?.[0].signal.aborted).toEqual(false);
     unmount();
+
+    // Wait for all awaited promises to resolve.
     await new Promise((resolve) => setTimeout(resolve));
   });
 });

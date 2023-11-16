@@ -1,14 +1,12 @@
 // Modern code (to be polyfilled) and explicit ambient types.
 {
   "compilerOptions": {
-    "moduleResolution": "NodeNext",
-    "module": "ES2022",
+    "module": "NodeNext",
     "target": "ES2022",
     "lib": ["ES2022", "DOM"],
-    "types": ["jest", "node"],
+    "types": ["jest", "vitest/globals", "node"],
     "strict": true,
     "skipLibCheck": true,
-    "resolveJsonModule": true,
     "esModuleInterop": true,
     "isolatedModules": true,
     "forceConsistentCasingInFileNames": true,
@@ -20,6 +18,6 @@
     "declaration": true,
     "noEmit": true
   },
-  "include": ["*/**/*.ts", "*/**/*.tsx"],
+  "include": ["**/*.ts", "**/*.tsx"],
   "exclude": ["**/node_modules", "**/.*"]
 }

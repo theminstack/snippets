@@ -3,6 +3,7 @@ type UnionToIntersection<T> = (T extends any ? (x: T) => any : never) extends (x
 type Simplify<T> = any extends any ? { [K in keyof T]: T[K] } : never;
 
 type Predicate<T> = {
+  // eslint-disable-next-line @typescript-eslint/no-redundant-type-constituents
   <U>(u: U): u is unknown extends U ? T & unknown : T & U;
 };
 
@@ -56,9 +57,9 @@ export const assert: <P extends AnyPredicate, T extends Infer<P>>(
   }
 };
 
-//
-// Simple Schemas
-//
+/*
+ * Simple Schemas
+ */
 
 export const string = (): Schema<string> => schema((u) => typeof u === 'string');
 export const number = (): Schema<number> => schema((u) => typeof u === 'number');
@@ -78,9 +79,9 @@ export const notNil = (): Schema<{}> => schema((u) => u != null);
 export const any = (): Schema<any> => schema(() => true);
 export const unknown = (): Schema<unknown> => schema(() => true);
 
-//
-// Configurable Schemas
-//
+/*
+ * Configurable Schemas
+ */
 
 type Primitive = bigint | boolean | number | string | symbol | null | undefined;
 
@@ -103,9 +104,9 @@ type AnyConstructor = new (...args: any[]) => unknown;
 export const instance = <C extends AnyConstructor[]>(...constructors: C): Schema<InstanceType<ArrayType<C>>> =>
   schema((u) => constructors.some((c) => u instanceof c));
 
-//
-// Composition Schemas
-//
+/*
+ * Composition Schemas
+ */
 
 export const union = <P extends [AnyPredicate, AnyPredicate, ...AnyPredicate[]]>(
   ...predicates: P

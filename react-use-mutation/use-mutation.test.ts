@@ -1,26 +1,22 @@
-/* eslint-disable @typescript-eslint/no-non-null-assertion */
-import { renderHook, waitFor } from '@testing-library/react';
-import { act } from 'react-dom/test-utils';
+import { act, renderHook } from '@testing-library/react';
 
 import { useMutation } from './use-mutation.js';
 
-jest.setTimeout(999_999);
-
-describe('useQuery', () => {
-  let mutationFnMock: jest.Mock;
+describe('useMutation', () => {
+  let mutationFnMock: any;
 
   beforeEach(() => {
-    mutationFnMock = jest.fn().mockResolvedValue('foo');
-    jest.useFakeTimers();
+    mutationFnMock = vi.fn().mockResolvedValue('foo');
+    vi.useFakeTimers();
   });
 
   afterEach(() => {
-    jest.useRealTimers();
+    vi.useRealTimers();
   });
 
   it('should imperatively mutate', async () => {
-    const onMutate = jest.fn().mockResolvedValue('context');
-    const onSettled = jest.fn().mockResolvedValue(undefined);
+    const onMutate = vi.fn().mockResolvedValue('context');
+    const onSettled = vi.fn().mockResolvedValue(undefined);
     const { result } = renderHook(() => useMutation(mutationFnMock, { onMutate, onSettled }));
 
     // Does nothing on mount
@@ -30,10 +26,11 @@ describe('useQuery', () => {
 
     // Begin the mutation, passing variables through to the mutationFn
     act(() => result.current.mutate('variables'));
-    await waitFor(() => expect(result.current.isLoading).toEqual(true));
+    expect(result.current.isLoading).toEqual(true);
+
+    await act(() => vi.waitFor(() => !result.current.isLoading));
 
     // Has success state on resolve
-    await waitFor(() => expect(result.current.isLoading).toEqual(false));
     expect(onMutate).toHaveBeenCalledTimes(1);
     expect(onSettled).toHaveBeenCalledTimes(1);
     expect(onSettled).toHaveBeenLastCalledWith('foo', undefined, 'variables', 'context');
@@ -51,7 +48,7 @@ describe('useQuery', () => {
     expect(result.current.error).toBeUndefined();
 
     // Has error state on reject
-    await waitFor(() => expect(result.current.isLoading).toEqual(false));
+    await act(() => vi.waitFor(() => !result.current.isLoading));
     expect(onMutate).toHaveBeenCalledTimes(2);
     expect(onSettled).toHaveBeenCalledTimes(2);
     expect(onSettled).toHaveBeenLastCalledWith(undefined, expect.any(Error), 'variables2', 'context');
@@ -66,7 +63,7 @@ describe('useQuery', () => {
     expect(result.current.data).toBeUndefined();
     expect(result.current.error).toBeUndefined();
 
-    await waitFor(() => expect(result.current.isLoading).toEqual(false));
+    await act(() => vi.waitFor(() => !result.current.isLoading));
     expect(mutationFnMock).toHaveBeenCalledTimes(3);
   });
 
@@ -75,7 +72,8 @@ describe('useQuery', () => {
 
     // Do a successful mutation.
     act(() => result.current.mutate());
-    await waitFor(() => expect(result.current.data).toBeDefined());
+    await act(() => vi.waitFor(() => !result.current.isLoading));
+    expect(result.current.data).toBeDefined();
 
     // Reset should clear the data.
     act(() => result.current.reset());
@@ -84,7 +82,8 @@ describe('useQuery', () => {
     // Do a failed mutation.
     mutationFnMock.mockRejectedValueOnce(new Error('error'));
     act(() => result.current.mutate());
-    await waitFor(() => expect(result.current.error).toBeDefined());
+    await act(() => vi.waitFor(() => !result.current.isLoading));
+    expect(result.current.error).toBeDefined();
 
     // Reset should clear the error.
     act(() => result.current.reset());
@@ -97,15 +96,17 @@ describe('useQuery', () => {
     const { result } = renderHook(() => useMutation(mutationFnMock));
 
     act(() => result.current.mutate());
+    expect(result.current.isLoading).toEqual(true);
     act(() => result.current.mutate());
-    await waitFor(() => expect(result.current.isLoading).toEqual(true));
-    await waitFor(() => expect(result.current.isLoading).toEqual(false));
+    expect(result.current.isLoading).toEqual(true);
+    await act(() => vi.waitFor(() => !result.current.isLoading));
+
     expect(mutationFnMock).toHaveBeenCalledTimes(2);
     expect(result.current.data).toEqual('foo');
 
-    act(() => void jest.advanceTimersByTime(2000));
-    await expect(mutationFnMock.mock.results[0]!.value).resolves.toEqual('bar');
-    await waitFor(() => expect(result.current.isLoading).toEqual(false));
+    act(() => void vi.advanceTimersByTime(2000));
+    await act(() => vi.waitFor(() => !result.current.isLoading));
+    expect(mutationFnMock.mock.results[0]!.value).toEqual('bar');
     expect(result.current.data).toEqual('foo');
   });
 
@@ -113,11 +114,12 @@ describe('useQuery', () => {
     const { result, unmount } = renderHook(() => useMutation(mutationFnMock));
 
     act(() => result.current.mutate());
-    await waitFor(() => expect(result.current.isLoading).toEqual(false));
+    await act(() => vi.waitFor(() => !result.current.isLoading));
     expect(mutationFnMock).toHaveBeenCalledTimes(1);
 
     unmount();
     act(() => result.current.mutate());
+    await act(() => vi.waitFor(() => !result.current.isLoading));
     expect(mutationFnMock).toHaveBeenCalledTimes(1);
   });
 });

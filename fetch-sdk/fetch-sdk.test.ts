@@ -12,14 +12,14 @@ describe('createFetchSdk', () => {
 
   beforeEach(() => {
     res.status = 200;
-    (global as any).fetch = jest.fn().mockResolvedValue(res);
+    (global as any).fetch = vi.fn().mockResolvedValue(res);
     (global as any).Request = class {
       constructor(url: string, init: Record<string, string>) {
         Object.assign(this, { url: String(url), ...init, headers: new Headers(init.headers as any) });
       }
     };
-    res.text = jest.fn().mockResolvedValue('');
-    res.json = jest.fn().mockResolvedValue({});
+    res.text = vi.fn().mockResolvedValue('');
+    res.json = vi.fn().mockResolvedValue({});
   });
 
   afterEach(() => {
@@ -41,7 +41,7 @@ describe('createFetchSdk', () => {
     });
 
     test('constructor with arguments', () => {
-      const definitions = jest.fn().mockReturnValue({});
+      const definitions = vi.fn().mockReturnValue({});
       const Sdk = createFetchSdk(definitions);
       new Sdk('foo', 123, true);
 
@@ -106,9 +106,9 @@ describe('createFetchSdk', () => {
           body: 'foo',
         }),
       );
-      expect(Object.fromEntries((jest.mocked(fetch).mock.lastCall?.[0] as any).headers.entries())).toEqual({
-        'x-foo': 'foo',
-      });
+      const args = vi.mocked(fetch).mock.lastCall!;
+      const request = args[0] as unknown as Request;
+      expect(request.headers.get('x-foo')).toBe('foo');
 
       await sdk.bar();
       expect(fetch).toHaveBeenLastCalledWith(
@@ -146,9 +146,9 @@ describe('createFetchSdk', () => {
       const Sdk = createFetchSdk({ foo: { url: 'https://example.com' } });
       const sdk = new Sdk();
       const reason = new Error('fetch');
-      jest.mocked(fetch).mockRejectedValue(reason);
+      vi.mocked(fetch).mockRejectedValue(reason);
       await expect(sdk.foo()).rejects.toMatchObject({
-        message: expect.stringMatching(/^failed fetching /),
+        message: expect.stringMatching(/^failed fetching /u),
         code: 'network_error',
         reason,
       });
@@ -158,7 +158,7 @@ describe('createFetchSdk', () => {
       const Sdk = createFetchSdk({ foo: { url: 'https://example.com', accept: () => false } });
       const sdk = new Sdk();
       await expect(sdk.foo()).rejects.toMatchObject({
-        message: expect.stringMatching(/^failed fetching /),
+        message: expect.stringMatching(/^failed fetching /u),
         code: 'unacceptable',
       });
     });
@@ -175,7 +175,7 @@ describe('createFetchSdk', () => {
       });
       const sdk = new Sdk();
       await expect(sdk.foo()).rejects.toMatchObject({
-        message: expect.stringMatching(/^failed fetching /),
+        message: expect.stringMatching(/^failed fetching /u),
         code: 'unacceptable',
         reason,
       });
@@ -186,7 +186,7 @@ describe('createFetchSdk', () => {
       const Sdk = createFetchSdk({ foo: { url: 'https://example.com' } });
       const sdk = new Sdk();
       await expect(sdk.foo()).rejects.toMatchObject({
-        message: expect.stringMatching(/^failed fetching /),
+        message: expect.stringMatching(/^failed fetching /u),
         code: 'unacceptable',
       });
     });
@@ -204,15 +204,15 @@ describe('createFetchSdk', () => {
       );
       const sdk = new Sdk();
       await expect(sdk.foo()).rejects.toMatchObject({
-        message: expect.stringMatching(/^failed fetching /),
+        message: expect.stringMatching(/^failed fetching /u),
         code: 'foo',
       });
       await expect(sdk.bar()).rejects.toMatchObject({
-        message: expect.stringMatching(/^failed fetching /),
+        message: expect.stringMatching(/^failed fetching /u),
         code: 'bar',
       });
       await expect(sdk.baz()).rejects.toMatchObject({
-        message: expect.stringMatching(/^failed fetching /),
+        message: expect.stringMatching(/^failed fetching /u),
         code: 1,
       });
     });
@@ -227,7 +227,7 @@ describe('createFetchSdk', () => {
       });
       const sdk = new Sdk();
       await expect(sdk.foo()).rejects.toMatchObject({
-        message: expect.stringMatching(/^failed fetching /),
+        message: expect.stringMatching(/^failed fetching /u),
         code: 'unacceptable',
       });
     });
@@ -242,7 +242,7 @@ describe('createFetchSdk', () => {
       });
       const sdk = new Sdk();
       await expect(sdk.foo()).rejects.toMatchObject({
-        message: expect.stringMatching(/^failed fetching /),
+        message: expect.stringMatching(/^failed fetching /u),
         code: 'parse_error',
         reason,
       });

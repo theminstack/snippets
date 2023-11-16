@@ -168,7 +168,7 @@ describe('sorted-list', () => {
   test('forEach', () => {
     const values = [1, 2, 3];
     const list = new SortedList(values);
-    const callback = jest.fn();
+    const callback = vi.fn();
     list.forEach(callback);
     expect(callback).toHaveBeenCalledTimes(values.length);
 

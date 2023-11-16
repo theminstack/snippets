@@ -4,14 +4,14 @@ test('subject', () => {
   const subject = createSubject('first-value');
   expect(subject.value).toBe('first-value');
 
-  const nextA = jest.fn();
+  const nextA = vi.fn();
   const subscription = subject.subscribe(nextA);
   expect(nextA).toHaveBeenCalledTimes(0);
 
   subject.next('second-value');
   expect(nextA).toHaveBeenLastCalledWith('second-value');
 
-  const nextB = jest.fn();
+  const nextB = vi.fn();
   subject.subscribe(nextB, { immediate: true });
   expect(nextB).toHaveBeenLastCalledWith('second-value');
 

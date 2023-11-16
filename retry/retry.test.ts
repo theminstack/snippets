@@ -1,12 +1,12 @@
 import { retry } from './retry.js';
 
 describe('retry', () => {
-  let handler: jest.Mock;
-  let setTimeoutSpy: jest.SpyInstance;
+  let handler: any;
+  let setTimeoutSpy: any;
 
   beforeEach(() => {
-    setTimeoutSpy = jest.spyOn(globalThis, 'setTimeout').mockImplementation((callback): any => void callback());
-    handler = jest.fn().mockResolvedValue('success');
+    setTimeoutSpy = vi.spyOn(globalThis, 'setTimeout').mockImplementation((callback): any => void callback());
+    handler = vi.fn().mockResolvedValue('success');
   });
 
   afterEach(() => {

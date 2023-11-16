@@ -70,7 +70,7 @@ const createLimiter = (concurrency: number, options: LimiterOptions = {}): Limit
   const update = (): void => {
     while (!isPaused && active < safeConcurrency && queue.length) {
       active += 1;
-      queue
+      void queue
         .shift()
         ?.start()
         .finally(() => {

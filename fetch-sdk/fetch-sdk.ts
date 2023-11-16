@@ -95,12 +95,12 @@ type FetchSdkInstance<TDefinitions extends FetchSdkRequests> = {
   [P in keyof TDefinitions]: TDefinitions[P] extends string
     ? FetchSdkFunction<Response, []>
     : TDefinitions[P] extends FetchSdkRequestFactory<any, infer TArgs>
-    ? ReturnType<TDefinitions[P]> extends { parse(...args: any[]): Promise<infer TResult> }
-      ? FetchSdkFunction<TResult, TArgs>
-      : FetchSdkFunction<Response, TArgs>
-    : TDefinitions[P] extends { parse(...args: any[]): Promise<infer TResult> }
-    ? FetchSdkFunction<TResult, []>
-    : FetchSdkFunction<Response, []>;
+      ? ReturnType<TDefinitions[P]> extends { parse(...args: any[]): Promise<infer TResult> }
+        ? FetchSdkFunction<TResult, TArgs>
+        : FetchSdkFunction<Response, TArgs>
+      : TDefinitions[P] extends { parse(...args: any[]): Promise<infer TResult> }
+        ? FetchSdkFunction<TResult, []>
+        : FetchSdkFunction<Response, []>;
 };
 
 type FetchSdkConstructor<TDefinitions extends FetchSdkRequests, TArgs extends any[]> = new (
@@ -172,10 +172,10 @@ class FetchSdkError extends Error {
  * ```
  */
 const createFetchSdk: {
-  <TDefinitions extends FetchSdkRequests>(definitions: TDefinitions, defaults?: FetchSdkDefaults): FetchSdkConstructor<
-    TDefinitions,
-    []
-  >;
+  <TDefinitions extends FetchSdkRequests>(
+    definitions: TDefinitions,
+    defaults?: FetchSdkDefaults,
+  ): FetchSdkConstructor<TDefinitions, []>;
   <TDefinitions extends FetchSdkRequests, TArgs extends any[] = []>(
     definitions: (...args: TArgs) => TDefinitions,
     defaults?: FetchSdkDefaults,

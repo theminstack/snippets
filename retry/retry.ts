@@ -56,8 +56,8 @@ const retry = async <TValue>(handler: RetryHandler<TValue>, options: RetryOption
         typeof next === 'number'
           ? next
           : typeof defaultDelay === 'number'
-          ? defaultDelay
-          : defaultDelay.at(errorCount - 1) ?? defaultDelay.at(-1);
+            ? defaultDelay
+            : defaultDelay.at(errorCount - 1) ?? defaultDelay.at(-1);
 
       if (delay && delay > 0) {
         await new Promise((resolve) => setTimeout(resolve, delay));

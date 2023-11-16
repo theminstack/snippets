@@ -3,11 +3,11 @@ import { createLimiter } from './limiter.js';
 
 const tasks: { reject(): void; resolve(): void }[] = [];
 const nextTick = (): Promise<void> => new Promise(process.nextTick);
-let task: jest.Mock;
+let task: any;
 
 beforeEach(() => {
   tasks.length = 0;
-  task = jest
+  task = vi
     .fn()
     .mockImplementation(
       (arg) =>

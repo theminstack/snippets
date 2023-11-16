@@ -80,10 +80,9 @@ type createSubjectContext = {
    * Returns the `defaultValue` if no subject is provided by the current React
    * context.
    */
-  <TValue = undefined>(defaultValue?: TValue): readonly [
-    hook: () => SubjectHookResult<TValue>,
-    context: Context<SubjectLike<TValue>>,
-  ];
+  <TValue = undefined>(
+    defaultValue?: TValue,
+  ): readonly [hook: () => SubjectHookResult<TValue>, context: Context<SubjectLike<TValue>>];
 };
 
 const createSubjectContext: createSubjectContext = <TValue = undefined>(

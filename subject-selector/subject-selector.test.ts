@@ -29,12 +29,12 @@ test('subject-selector', () => {
   b.next(b.value + 1);
   expect(sum.value).toBe(expected());
 
-  const next0 = jest.fn();
+  const next0 = vi.fn();
   const subscription0 = sum.subscribe(next0);
   // Not an immediate subscription.
   expect(next0).not.toHaveBeenCalled();
 
-  const next1 = jest.fn();
+  const next1 = vi.fn();
   sum.subscribe(next1, { immediate: true });
   // Immediate subscription.
   expect(next1).toHaveBeenCalledTimes(1);
@@ -77,7 +77,7 @@ test('subject-selector', () => {
   b.next(b.value + 1);
   expect(next1).toHaveBeenCalledTimes(5);
   expect(sum.value).toBe(lastValue);
-  const next2 = jest.fn();
+  const next2 = vi.fn();
   const subscription2 = sum.subscribe(next2);
   subscription2.unsubscribe();
   expect(next2).not.toHaveBeenCalled();

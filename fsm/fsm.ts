@@ -13,8 +13,8 @@ type FsmTransition<
 > = TStates[TToState] extends undefined | void
   ? () => FsmState<TStates, TEdges, TToState>
   : undefined extends TStates[TToState]
-  ? (value?: TStates[TToState]) => FsmState<TStates, TEdges, TToState>
-  : (value: TStates[TToState]) => FsmState<TStates, TEdges, TToState>;
+    ? (value?: TStates[TToState]) => FsmState<TStates, TEdges, TToState>
+    : (value: TStates[TToState]) => FsmState<TStates, TEdges, TToState>;
 
 type FsmState<
   TStates extends FsmStatesDefinition = Readonly<Record<FsmStateKey, any>>,
@@ -43,8 +43,8 @@ type Fsm<TStates extends FsmStatesDefinition = FsmStatesDefinition, TEdges exten
     ...args: TStates[TState] extends undefined | void
       ? readonly []
       : undefined extends TStates[TState]
-      ? readonly [value?: TStates[TState]]
-      : readonly [value: TStates[TState]]
+        ? readonly [value?: TStates[TState]]
+        : readonly [value: TStates[TState]]
   ): FsmState<TStates, TEdges, TState>;
   transition<
     TAction extends string,
@@ -70,8 +70,8 @@ type Fsm<TStates extends FsmStatesDefinition = FsmStatesDefinition, TEdges exten
 type InferFsmStateKeys<TFsm> = TFsm extends Fsm<infer TStates>
   ? keyof TStates
   : TFsm extends FsmState<infer TStates>
-  ? keyof TStates
-  : never;
+    ? keyof TStates
+    : never;
 
 type InferFsmStates<TFsm, TStateSubset extends InferFsmStateKeys<TFsm> = InferFsmStateKeys<TFsm>> = TFsm extends Fsm<
   infer TStates,
@@ -79,8 +79,8 @@ type InferFsmStates<TFsm, TStateSubset extends InferFsmStateKeys<TFsm> = InferFs
 >
   ? FsmStatesUnion<TStates, TEdges, TStateSubset>
   : TFsm extends FsmState<infer TStates, infer TEdges>
-  ? FsmStatesUnion<TStates, TEdges, TStateSubset>
-  : never;
+    ? FsmStatesUnion<TStates, TEdges, TStateSubset>
+    : never;
 
 const createFsmState = (
   transitions: Readonly<Record<FsmStateKey, Readonly<Record<string, FsmTransition>>>>,

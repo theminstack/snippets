@@ -1,14 +1,14 @@
 import { createDeferred } from './deferred.js';
 
 test('deferred', () => {
-  jest.useFakeTimers();
-  const callback = jest.fn();
+  vi.useFakeTimers();
+  const callback = vi.fn();
   const deferred = createDeferred(1000, callback);
   deferred(1);
   expect(callback).not.toHaveBeenCalled();
   deferred(2);
   expect(callback).not.toHaveBeenCalled();
-  jest.runAllTimers();
+  vi.runAllTimers();
   expect(callback).toHaveBeenCalledTimes(1);
   expect(callback).toHaveBeenLastCalledWith(2);
   deferred(3);
@@ -17,6 +17,6 @@ test('deferred', () => {
   expect(callback).toHaveBeenLastCalledWith(3);
   deferred(4);
   deferred.cancel();
-  jest.runAllTimers();
+  vi.runAllTimers();
   expect(callback).toHaveBeenCalledTimes(2);
 });

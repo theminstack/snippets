@@ -12,8 +12,8 @@ describe('Events', () => {
 
   test('emit calls listeners', () => {
     const events = new Events();
-    const a = jest.fn();
-    const b = jest.fn();
+    const a = vi.fn();
+    const b = vi.fn();
     const off = events.on('event', a);
     events.on('event', b);
     events.emit('event', 1, 2);
@@ -29,7 +29,7 @@ describe('Events', () => {
 
   test('emit only calls listeners for the emitted event', () => {
     const events = new Events();
-    const a = jest.fn();
+    const a = vi.fn();
     events.on('event', a);
     events.emit('other');
     expect(a).not.toHaveBeenCalled();

@@ -26,20 +26,20 @@ type TypeOfString = 'bigint' | 'boolean' | 'function' | 'number' | 'object' | 's
 type TypeOfType<TString> = TString extends 'string'
   ? string
   : TString extends 'number'
-  ? number
-  : TString extends 'boolean'
-  ? boolean
-  : TString extends 'object'
-  ? object
-  : TString extends 'function'
-  ? Function
-  : TString extends 'bigint'
-  ? bigint
-  : TString extends 'symbol'
-  ? symbol
-  : TString extends 'undefined'
-  ? undefined
-  : unknown;
+    ? number
+    : TString extends 'boolean'
+      ? boolean
+      : TString extends 'object'
+        ? object
+        : TString extends 'function'
+          ? Function
+          : TString extends 'bigint'
+            ? bigint
+            : TString extends 'symbol'
+              ? symbol
+              : TString extends 'undefined'
+                ? undefined
+                : unknown;
 
 /**
  * Convert a union type (`|`) to an intersection type (`&`).
@@ -62,7 +62,6 @@ type SmartPartial<T> = Simplify<
  */
 type Simplify<T> = T extends Record<string, unknown> ? { [P in keyof T]: T[P] } : T;
 
-// eslint-disable-next-line @typescript-eslint/sort-type-union-intersection-members
 type _OverloadUnion<TOverload, TPartialOverload = unknown> = TPartialOverload & TOverload extends (
   ...args: infer TArgs
 ) => infer TReturn
@@ -83,7 +82,6 @@ type _OverloadUnion<TOverload, TPartialOverload = unknown> = TPartialOverload & 
  * ```
  */
 type OverloadUnion<TOverload extends (...args: any[]) => any> = Exclude<
-  // eslint-disable-next-line @typescript-eslint/sort-type-union-intersection-members
   _OverloadUnion<(() => never) & TOverload>,
   TOverload extends () => never ? never : () => never
 >;

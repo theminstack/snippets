@@ -5,7 +5,7 @@ import { createSubjectContext, type SubjectLike, useSubject } from './use-subjec
 
 const createMockSubject = ({
   value = 0,
-  subscribe = jest.fn().mockReturnValue({ unsubscribe: jest.fn() }),
+  subscribe = vi.fn().mockReturnValue({ unsubscribe: vi.fn() }),
   next,
 }: Partial<SubjectLike<number>> = {}): SubjectLike<number> => {
   return { next, subscribe, value };
@@ -19,7 +19,7 @@ describe('react-use-subject', () => {
     expect(result.current[0]).toEqual(0);
     expect(result.current[1](1)).toBe(false);
     act(() => {
-      jest.mocked(subject.subscribe).mock.calls.at(-1)?.[0](2);
+      vi.mocked(subject.subscribe).mock.calls.at(-1)?.[0](2);
     });
     expect(result.current[0]).toBe(2);
     unmount();
@@ -27,7 +27,7 @@ describe('react-use-subject', () => {
   });
 
   test('useSubject (writable)', () => {
-    const subject = createMockSubject({ next: jest.fn() });
+    const subject = createMockSubject({ next: vi.fn() });
     const { result, unmount } = renderHook(() => useSubject(subject));
     expect(subject.subscribe).toHaveBeenCalledTimes(1);
     expect(result.current[0]).toEqual(0);
@@ -35,7 +35,7 @@ describe('react-use-subject', () => {
     expect(subject.next).toHaveBeenCalledTimes(1);
     expect(subject.next).toHaveBeenLastCalledWith(1);
     Object.assign(subject, { value: 1 });
-    const setter = jest.fn().mockReturnValue(2);
+    const setter = vi.fn().mockReturnValue(2);
     result.current[1](setter);
     expect(setter).toHaveBeenCalledTimes(1);
     expect(setter).toHaveBeenLastCalledWith(1);
@@ -48,9 +48,9 @@ describe('react-use-subject', () => {
   test('useSubject (immediate)', () => {
     const subject = createMockSubject();
     let value = 0;
-    jest.mocked(subject.subscribe).mockImplementation((next) => {
+    vi.mocked(subject.subscribe).mockImplementation((next) => {
       next(value++);
-      return { unsubscribe: jest.fn() };
+      return { unsubscribe: vi.fn() };
     });
     const { result } = renderHook(() => useSubject(subject));
     expect(result.current[0]).toBe(0);
@@ -64,7 +64,7 @@ describe('react-use-subject', () => {
 
   test('createSubjectContext with context', () => {
     const [useTest, TestContext] = createSubjectContext(1);
-    const subject = createMockSubject({ next: jest.fn() });
+    const subject = createMockSubject({ next: vi.fn() });
     const wrapper: FC<PropsWithChildren> = ({ children }) => {
       return <TestContext.Provider value={subject}>{children}</TestContext.Provider>;
     };
