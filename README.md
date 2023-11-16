@@ -27,6 +27,7 @@ Completely free TypeScript one-file source code snippets _with tests_, which can
 - [read-stream](read-stream) - Read all data from a stream.
 - [retry](retry) - Retry asynchronous actions on error (rejection).
 - [schema](schema) - Composable type predicates for runtime type checking.
+- [semaphore](semaphore) - Limit the concurrency of asynchronous tasks.
 - [sorted-list](sorted-list) - Always sorted list with binary searching.
 - [subject](subject) - Values you can subscribe to.
 - [subject-selector](subject-selector) - Computed values you can subscribe to.
