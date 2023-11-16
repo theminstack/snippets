@@ -21,6 +21,7 @@ export default defineConfig({
     reporters: ['verbose'],
     coverage: {
       enabled: true,
+      reporter: ['lcov', 'html', 'text'],
       reportsDirectory: './out/coverage',
       all: true,
       include: ['**/*'],
